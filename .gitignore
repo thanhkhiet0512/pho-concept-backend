@@ -5,3 +5,4 @@ docs
 .env.*
 !.env.example
 .claude/
+CLAUDE.md

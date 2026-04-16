@@ -1,0 +1,42 @@
+{
+  "enableAllProjectMcpServers": true,
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); if echo \"$f\" | grep -qE '\\.ts$' && echo \"$f\" | grep -q 'pho-concept-backend'; then cd /Users/mac/Documents/MyProject/UnikSmart/pho-concept-backend && npm run lint -- --fix \"$f\" 2>&1 | tail -5; fi",
+            "timeout": 30,
+            "statusMessage": "Linting TypeScript...",
+            "async": true
+          }
+        ]
+      },
+      {
+        "matcher": "Edit|Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "f=$(jq -r '.tool_input.file_path // empty'); if echo \"$f\" | grep -qE '\\.prisma$' && echo \"$f\" | grep -q 'pho-concept-backend'; then cd /Users/mac/Documents/MyProject/UnikSmart/pho-concept-backend && npm run prisma:validate 2>&1 | tail -3 && npm run prisma:format 2>&1 | tail -3; fi",
+            "timeout": 30,
+            "statusMessage": "Validating Prisma schema...",
+            "async": true
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"Reminder: nếu session này có thay đổi lớn, hãy cập nhật docs/implementation-plan.md và commit với message rõ ràng.\"}'",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

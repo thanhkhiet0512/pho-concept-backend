@@ -1,16 +1,11 @@
-import { prisma } from './seeders/prisma-client';
+import { prisma } from './seeders/prisma-client.js';
 
 async function main() {
-  console.log('🌱 Seeding database...\n');
-  console.log('  → No seed data configured yet for Sprint 0 scaffold');
-  console.log('\n✅ Seed completed!\n');
+  console.log('🌱 Seeding database...');
+  await prisma.$disconnect();
 }
 
-main()
-  .catch((error) => {
-    console.error(error);
-    process.exit(1);
-  })
-  .finally(async () => {
-    await prisma.$disconnect();
-  });
+main().catch((error) => {
+  console.error(error);
+  process.exit(1);
+});

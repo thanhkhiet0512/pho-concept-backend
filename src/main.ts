@@ -1,33 +1,41 @@
-import Fastify from 'fastify';
-import { env } from '@config/env.js';
+import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
+import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
+import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 
-const app = Fastify({ logger: true });
+async function bootstrap() {
+  const app = await NestFactory.create(AppModule);
 
-app.get('/', async () => {
-  return {
-    name: 'Pho Concept API',
-    version: '0.1.0',
-    docs: '/api/v1/health',
-  };
-});
+  app.useGlobalPipes(
+    new ValidationPipe({
+      whitelist: true,
+      transform: true,
+      transformOptions: { enableImplicitConversion: true },
+    }),
+  );
 
-app.get('/api/v1/health', async () => {
-  return {
-    data: {
-      status: 'ok',
-      timestamp: new Date().toISOString(),
-    },
-  };
-});
+  app.useGlobalFilters(new HttpExceptionFilter());
+  app.useGlobalInterceptors(new ResponseInterceptor());
 
-const start = async () => {
-  try {
-    await app.listen({ port: env.PORT, host: '0.0.0.0' });
-    app.log.info({ event: 'server_started', module: 'bootstrap', data: { port: env.PORT } });
-  } catch (error) {
-    app.log.error({ err: error, context: 'bootstrap' });
-    process.exit(1);
-  }
-};
+  app.setGlobalPrefix('api/v1', {
+    exclude: ['docs', 'health'],
+  });
 
-void start();
+  const config = new DocumentBuilder()
+    .setTitle('Pho Concept API')
+    .setDescription('Restaurant management API')
+    .setVersion('1.0')
+    .addBearerAuth()
+    .build();
+
+  const document = SwaggerModule.createDocument(app, config);
+  SwaggerModule.setup('docs', app, document);
+
+  await app.listen(process.env.PORT ?? 3000, '0.0.0.0');
+  console.log(`Application running on: http://localhost:${process.env.PORT ?? 3000}`);
+  console.log(`API docs at: http://localhost:${process.env.PORT ?? 3000}/docs`);
+}
+
+bootstrap();

@@ -1,7 +1,3 @@
-export type PrismaClientLike = {
-  $disconnect: () => Promise<void>;
-};
+import { PrismaClient } from '@prisma/client';
 
-export const prisma = {
-  $disconnect: async () => undefined,
-} satisfies PrismaClientLike;
+export const prisma = new PrismaClient();

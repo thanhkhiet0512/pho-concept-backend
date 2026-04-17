@@ -1,25 +1,46 @@
 {
   "compilerOptions": {
     "target": "ES2022",
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "strict": true,
-    "noUncheckedIndexedAccess": true,
-    "exactOptionalPropertyTypes": true,
+    "module": "commonjs",
+    "lib": ["ES2022"],
+    "declaration": true,
+    "removeComments": true,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "allowSyntheticDefaultImports": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-      "@config/*": ["src/config/*"],
-      "@core/*": ["src/core/*"],
-      "@infrastructure/*": ["src/infrastructure/*"],
-      "@modules/*": ["src/modules/*"]
-    },
-    "lib": ["ES2022"],
+    "strict": true,
+    "strictPropertyInitialization": false,
+    "noUncheckedIndexedAccess": true,
     "outDir": "dist",
-    "rootDir": "."
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["src/*"],
+      "@application/*": ["src/application/*"],
+      "@domain/*": ["src/domain/*"],
+      "@presentation/*": ["src/presentation/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@common/*": ["src/common/*"],
+      "@config/*": ["src/config/*"]
+    }
   },
-  "include": ["src", "test", "prisma/**/*.ts", "prisma.config.ts"],
-  "exclude": ["dist", "node_modules"]
+  "ts-node": {
+    "require": ["tsconfig-paths/register"],
+    "transpileOnly": true,
+    "compilerOptions": {
+      "paths": {
+        "@/*": ["src/*"],
+        "@application/*": ["src/application/*"],
+        "@domain/*": ["src/domain/*"],
+        "@presentation/*": ["src/presentation/*"],
+        "@infrastructure/*": ["src/infrastructure/*"],
+        "@common/*": ["src/common/*"],
+        "@config/*": ["src/config/*"]
+      }
+    }
+  },
+  "include": ["src", "test", "prisma/**/*.ts"],
+  "exclude": ["dist", "node_modules", "prisma/seed.ts"]
 }

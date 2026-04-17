@@ -8,6 +8,11 @@ import { ResponseInterceptor } from './common/interceptors/response.interceptor'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
+  const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000')
+    .split(',')
+    .map((o) => o.trim());
+  app.enableCors({ origin: allowedOrigins, credentials: true });
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,

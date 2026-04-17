@@ -9,6 +9,8 @@ RUN addgroup -g 1001 -S appgroup \
 WORKDIR /app
 RUN chown -R appuser:appgroup /app
 
+# Force development so devDependencies are installed
+ARG NODE_ENV=development
 ENV NODE_ENV=development
 
 COPY --chown=appuser:appgroup package*.json ./
@@ -30,6 +32,8 @@ RUN addgroup -g 1001 -S appgroup \
 WORKDIR /app
 RUN chown -R appuser:appgroup /app
 
+# Force development so nest build works
+ARG NODE_ENV=development
 ENV NODE_ENV=development
 
 COPY --from=deps --chown=appuser:appgroup /app/node_modules ./node_modules

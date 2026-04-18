@@ -1,33 +1,23 @@
-import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity } from '../entities/menu.entity';
+import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity, I18nField } from '../entities/menu.entity';
 
 export interface CreateCategoryData {
-  name: string;
-  nameVi?: string | null;
   slug: string;
-  description?: string | null;
-  descriptionVi?: string | null;
-  imageUrl?: string | null;
+  nameI18n: I18nField;
   sortOrder?: number;
   isActive?: boolean;
 }
 
 export interface UpdateCategoryData {
-  name?: string;
-  nameVi?: string | null;
-  description?: string | null;
-  descriptionVi?: string | null;
-  imageUrl?: string | null;
+  nameI18n?: I18nField;
   sortOrder?: number;
   isActive?: boolean;
 }
 
 export interface CreateMenuItemData {
   categoryId: bigint;
-  name: string;
-  nameVi?: string | null;
   slug: string;
-  description?: string | null;
-  descriptionVi?: string | null;
+  nameI18n: I18nField;
+  descriptionI18n?: I18nField | null;
   imageUrl?: string | null;
   isFeatured?: boolean;
   sortOrder?: number;
@@ -35,11 +25,9 @@ export interface CreateMenuItemData {
 
 export interface UpdateMenuItemData {
   categoryId?: bigint;
-  name?: string;
-  nameVi?: string | null;
   slug?: string;
-  description?: string | null;
-  descriptionVi?: string | null;
+  nameI18n?: I18nField;
+  descriptionI18n?: I18nField | null;
   imageUrl?: string | null;
   isFeatured?: boolean;
   sortOrder?: number;
@@ -75,7 +63,7 @@ export abstract class MenuCategoryRepositoryPort {
 }
 
 export abstract class MenuItemRepositoryPort {
-  abstract findAll(params?: PaginationParams & { categoryId?: bigint; locationId?: bigint; isActive?: boolean }): Promise<PaginatedResult<MenuItemEntity>>;
+  abstract findAll(params?: PaginationParams & { categoryId?: bigint; locationId?: bigint; isActive?: boolean; isFeatured?: boolean }): Promise<PaginatedResult<MenuItemEntity>>;
   abstract findById(id: bigint): Promise<MenuItemEntity | null>;
   abstract findBySlug(slug: string): Promise<MenuItemEntity | null>;
   abstract create(data: CreateMenuItemData): Promise<MenuItemEntity>;

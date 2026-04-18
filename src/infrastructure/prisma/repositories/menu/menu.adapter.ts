@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 import { PrismaService } from '../../prisma.service';
 import {
   MenuCategoryRepositoryPort,
@@ -12,59 +13,44 @@ import {
   PaginatedResult,
   PaginationParams,
 } from '@domain/menu/ports/menu.repository.port';
-import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity } from '@domain/menu/entities/menu.entity';
+import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity, I18nField } from '@domain/menu/entities/menu.entity';
+
+function toI18n(raw: unknown): I18nField {
+  if (raw && typeof raw === 'object' && 'en' in raw) {
+    const obj = raw as Record<string, unknown>;
+    return { en: String(obj.en ?? ''), vi: obj.vi ? String(obj.vi) : undefined };
+  }
+  return { en: '' };
+}
+
+function toI18nOrNull(raw: unknown): I18nField | null {
+  if (!raw) return null;
+  return toI18n(raw);
+}
+
+function toPrice(raw: unknown): number {
+  return typeof raw === 'string' ? parseFloat(raw) : Number(raw);
+}
 
 @Injectable()
 export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(data: {
-    id: bigint;
-    name: string;
-    nameVi: string | null;
-    slug: string;
-    description: string | null;
-    descriptionVi: string | null;
-    imageUrl: string | null;
-    sortOrder: number;
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
+  private map(data: {
+    id: bigint; slug: string; nameI18n: unknown; sortOrder: number;
+    isActive: boolean; createdAt: Date; updatedAt: Date;
     items?: Array<{
-      id: bigint;
-      categoryId: bigint;
-      name: string;
-      nameVi: string | null;
-      slug: string;
-      description: string | null;
-      descriptionVi: string | null;
-      imageUrl: string | null;
-      isFeatured: boolean;
-      isActive: boolean;
-      sortOrder: number;
-      deletedAt: Date | null;
-      createdAt: Date;
-      updatedAt: Date;
-      prices?: Array<{
-        id: bigint;
-        menuItemId: bigint;
-        locationId: bigint;
-        sizeLabel: string | null;
-        price: unknown;
-        isActive: boolean;
-        createdAt: Date;
-        updatedAt: Date;
-      }>;
+      id: bigint; categoryId: bigint; slug: string; nameI18n: unknown;
+      descriptionI18n: unknown; imageUrl: string | null; isFeatured: boolean;
+      isActive: boolean; sortOrder: number; deletedAt: Date | null;
+      createdAt: Date; updatedAt: Date;
+      prices?: Array<{ id: bigint; menuItemId: bigint; locationId: bigint; sizeLabel: string | null; price: unknown; isActive: boolean; createdAt: Date; updatedAt: Date }>;
     }>;
   }): MenuCategoryEntity {
     return MenuCategoryEntity.reconstitute({
       id: data.id,
-      name: data.name,
-      nameVi: data.nameVi,
       slug: data.slug,
-      description: data.description,
-      descriptionVi: data.descriptionVi,
-      imageUrl: data.imageUrl,
+      nameI18n: toI18n(data.nameI18n),
       sortOrder: data.sortOrder,
       isActive: data.isActive,
       createdAt: data.createdAt,
@@ -73,11 +59,9 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
         MenuItemEntity.reconstitute({
           id: item.id,
           categoryId: item.categoryId,
-          name: item.name,
-          nameVi: item.nameVi,
           slug: item.slug,
-          description: item.description,
-          descriptionVi: item.descriptionVi,
+          nameI18n: toI18n(item.nameI18n),
+          descriptionI18n: toI18nOrNull(item.descriptionI18n),
           imageUrl: item.imageUrl,
           isFeatured: item.isFeatured,
           isActive: item.isActive,
@@ -87,14 +71,9 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
           updatedAt: item.updatedAt,
           prices: item.prices?.map((p) =>
             MenuItemPriceEntity.reconstitute({
-              id: p.id,
-              menuItemId: p.menuItemId,
-              locationId: p.locationId,
-              sizeLabel: p.sizeLabel,
-              price: typeof p.price === 'string' ? parseFloat(p.price) : Number(p.price),
-              isActive: p.isActive,
-              createdAt: p.createdAt,
-              updatedAt: p.updatedAt,
+              id: p.id, menuItemId: p.menuItemId, locationId: p.locationId,
+              sizeLabel: p.sizeLabel, price: toPrice(p.price),
+              isActive: p.isActive, createdAt: p.createdAt, updatedAt: p.updatedAt,
             }),
           ),
         }),
@@ -106,11 +85,8 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-
     const where: Record<string, unknown> = {};
-    if (params?.isActive !== undefined) {
-      where.isActive = params.isActive;
-    }
+    if (params?.isActive !== undefined) where.isActive = params.isActive;
 
     const [categories, total] = await Promise.all([
       this.prisma.menuCategory.findMany({
@@ -118,9 +94,7 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
         include: {
           items: {
             where: { deletedAt: null },
-            include: {
-              prices: { where: { isActive: true } },
-            },
+            include: { prices: { where: { isActive: true } } },
             orderBy: { sortOrder: 'asc' },
           },
         },
@@ -131,136 +105,59 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
       this.prisma.menuCategory.count({ where }),
     ]);
 
-    return {
-      data: categories.map((c) => this.mapToEntity(c)),
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    };
+    return { data: categories.map((c) => this.map(c)), total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findById(id: bigint): Promise<MenuCategoryEntity | null> {
-    const category = await this.prisma.menuCategory.findUnique({
+    const c = await this.prisma.menuCategory.findUnique({
       where: { id },
       include: {
-        items: {
-          where: { deletedAt: null },
-          include: {
-            prices: { where: { isActive: true } },
-          },
-          orderBy: { sortOrder: 'asc' },
-        },
+        items: { where: { deletedAt: null }, include: { prices: { where: { isActive: true } } }, orderBy: { sortOrder: 'asc' } },
       },
     });
-    if (!category) return null;
-    return this.mapToEntity(category);
+    return c ? this.map(c) : null;
   }
 
   async findBySlug(slug: string): Promise<MenuCategoryEntity | null> {
-    const category = await this.prisma.menuCategory.findUnique({
+    const c = await this.prisma.menuCategory.findUnique({
       where: { slug },
       include: {
-        items: {
-          where: { deletedAt: null },
-          include: {
-            prices: { where: { isActive: true } },
-          },
-          orderBy: { sortOrder: 'asc' },
-        },
+        items: { where: { deletedAt: null }, include: { prices: { where: { isActive: true } } }, orderBy: { sortOrder: 'asc' } },
       },
     });
-    if (!category) return null;
-    return this.mapToEntity(category);
+    return c ? this.map(c) : null;
   }
 
   async create(data: CreateCategoryData): Promise<MenuCategoryEntity> {
-    const category = await this.prisma.menuCategory.create({
+    const c = await this.prisma.menuCategory.create({
       data: {
-        name: data.name,
-        nameVi: data.nameVi,
         slug: data.slug,
-        description: data.description,
-        descriptionVi: data.descriptionVi,
-        imageUrl: data.imageUrl,
+        nameI18n: data.nameI18n as unknown as Prisma.InputJsonValue,
         sortOrder: data.sortOrder ?? 0,
         isActive: data.isActive ?? true,
       },
     });
-    return MenuCategoryEntity.reconstitute({
-      id: category.id,
-      name: category.name,
-      nameVi: category.nameVi,
-      slug: category.slug,
-      description: category.description,
-      descriptionVi: category.descriptionVi,
-      imageUrl: category.imageUrl,
-      sortOrder: category.sortOrder,
-      isActive: category.isActive,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    });
+    return this.map(c);
   }
 
   async update(id: bigint, data: UpdateCategoryData): Promise<MenuCategoryEntity> {
-    const category = await this.prisma.menuCategory.update({
-      where: { id },
-      data: {
-        ...(data.name !== undefined && { name: data.name }),
-        ...(data.nameVi !== undefined && { nameVi: data.nameVi }),
-        ...(data.description !== undefined && { description: data.description }),
-        ...(data.descriptionVi !== undefined && { descriptionVi: data.descriptionVi }),
-        ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
-        ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
-        ...(data.isActive !== undefined && { isActive: data.isActive }),
-      },
-    });
-    return MenuCategoryEntity.reconstitute({
-      id: category.id,
-      name: category.name,
-      nameVi: category.nameVi,
-      slug: category.slug,
-      description: category.description,
-      descriptionVi: category.descriptionVi,
-      imageUrl: category.imageUrl,
-      sortOrder: category.sortOrder,
-      isActive: category.isActive,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    });
+    const updateData: Prisma.MenuCategoryUncheckedUpdateInput = {};
+    if (data.nameI18n !== undefined) updateData.nameI18n = data.nameI18n as unknown as Prisma.InputJsonValue;
+    if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+    const c = await this.prisma.menuCategory.update({ where: { id }, data: updateData });
+    return this.map(c);
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<MenuCategoryEntity> {
-    const category = await this.prisma.menuCategory.update({
-      where: { id },
-      data: { isActive },
-    });
-    return MenuCategoryEntity.reconstitute({
-      id: category.id,
-      name: category.name,
-      nameVi: category.nameVi,
-      slug: category.slug,
-      description: category.description,
-      descriptionVi: category.descriptionVi,
-      imageUrl: category.imageUrl,
-      sortOrder: category.sortOrder,
-      isActive: category.isActive,
-      createdAt: category.createdAt,
-      updatedAt: category.updatedAt,
-    });
+    const c = await this.prisma.menuCategory.update({ where: { id }, data: { isActive } });
+    return this.map(c);
   }
 
   async softDelete(id: bigint): Promise<void> {
-    // Soft delete category and all its items for consistency
     await this.prisma.$transaction([
-      this.prisma.menuItem.updateMany({
-        where: { categoryId: id },
-        data: { deletedAt: new Date() },
-      }),
-      this.prisma.menuCategory.update({
-        where: { id },
-        data: { isActive: false },
-      }),
+      this.prisma.menuItem.updateMany({ where: { categoryId: id }, data: { deletedAt: new Date() } }),
+      this.prisma.menuCategory.update({ where: { id }, data: { isActive: false } }),
     ]);
   }
 }
@@ -269,40 +166,19 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
 export class MenuItemAdapter implements MenuItemRepositoryPort {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(data: {
-    id: bigint;
-    categoryId: bigint;
-    name: string;
-    nameVi: string | null;
-    slug: string;
-    description: string | null;
-    descriptionVi: string | null;
-    imageUrl: string | null;
-    isFeatured: boolean;
-    isActive: boolean;
-    sortOrder: number;
-    deletedAt: Date | null;
-    createdAt: Date;
-    updatedAt: Date;
-    prices?: Array<{
-      id: bigint;
-      menuItemId: bigint;
-      locationId: bigint;
-      sizeLabel: string | null;
-      price: unknown;
-      isActive: boolean;
-      createdAt: Date;
-      updatedAt: Date;
-    }>;
+  private map(data: {
+    id: bigint; categoryId: bigint; slug: string; nameI18n: unknown;
+    descriptionI18n: unknown; imageUrl: string | null; isFeatured: boolean;
+    isActive: boolean; sortOrder: number; deletedAt: Date | null;
+    createdAt: Date; updatedAt: Date;
+    prices?: Array<{ id: bigint; menuItemId: bigint; locationId: bigint; sizeLabel: string | null; price: unknown; isActive: boolean; createdAt: Date; updatedAt: Date }>;
   }): MenuItemEntity {
     return MenuItemEntity.reconstitute({
       id: data.id,
       categoryId: data.categoryId,
-      name: data.name,
-      nameVi: data.nameVi,
       slug: data.slug,
-      description: data.description,
-      descriptionVi: data.descriptionVi,
+      nameI18n: toI18n(data.nameI18n),
+      descriptionI18n: toI18nOrNull(data.descriptionI18n),
       imageUrl: data.imageUrl,
       isFeatured: data.isFeatured,
       isActive: data.isActive,
@@ -312,34 +188,31 @@ export class MenuItemAdapter implements MenuItemRepositoryPort {
       updatedAt: data.updatedAt,
       prices: data.prices?.map((p) =>
         MenuItemPriceEntity.reconstitute({
-          id: p.id,
-          menuItemId: p.menuItemId,
-          locationId: p.locationId,
-          sizeLabel: p.sizeLabel,
-          price: typeof p.price === 'string' ? parseFloat(p.price) : Number(p.price),
-          isActive: p.isActive,
-          createdAt: p.createdAt,
-          updatedAt: p.updatedAt,
+          id: p.id, menuItemId: p.menuItemId, locationId: p.locationId,
+          sizeLabel: p.sizeLabel, price: toPrice(p.price),
+          isActive: p.isActive, createdAt: p.createdAt, updatedAt: p.updatedAt,
         }),
       ),
     });
   }
 
-  async findAll(params?: PaginationParams & { categoryId?: bigint; locationId?: bigint; isActive?: boolean }): Promise<PaginatedResult<MenuItemEntity>> {
+  async findAll(params?: PaginationParams & { categoryId?: bigint; locationId?: bigint; isActive?: boolean; isFeatured?: boolean }): Promise<PaginatedResult<MenuItemEntity>> {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-
     const where: Record<string, unknown> = { deletedAt: null };
     if (params?.categoryId) where.categoryId = params.categoryId;
     if (params?.isActive !== undefined) where.isActive = params.isActive;
+    if (params?.isFeatured !== undefined) where.isFeatured = params.isFeatured;
+
+    const priceWhere = params?.locationId
+      ? { locationId: params.locationId, isActive: true }
+      : { isActive: true };
 
     const [items, total] = await Promise.all([
       this.prisma.menuItem.findMany({
         where,
-        include: {
-          prices: params?.locationId ? { where: { locationId: params.locationId, isActive: true } } : { where: { isActive: true } },
-        },
+        include: { prices: { where: priceWhere } },
         orderBy: { sortOrder: 'asc' },
         skip,
         take: limit,
@@ -347,93 +220,62 @@ export class MenuItemAdapter implements MenuItemRepositoryPort {
       this.prisma.menuItem.count({ where }),
     ]);
 
-    return {
-      data: items.map((item) => this.mapToEntity(item)),
-      total,
-      page,
-      limit,
-      totalPages: Math.ceil(total / limit),
-    };
+    return { data: items.map((i) => this.map(i)), total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findById(id: bigint): Promise<MenuItemEntity | null> {
     const item = await this.prisma.menuItem.findUnique({
       where: { id },
-      include: {
-        prices: { where: { isActive: true } },
-      },
+      include: { prices: { where: { isActive: true } } },
     });
     if (!item || item.deletedAt) return null;
-    return this.mapToEntity(item);
+    return this.map(item);
   }
 
   async findBySlug(slug: string): Promise<MenuItemEntity | null> {
     const item = await this.prisma.menuItem.findUnique({
       where: { slug },
-      include: {
-        prices: { where: { isActive: true } },
-      },
+      include: { prices: { where: { isActive: true } } },
     });
     if (!item || item.deletedAt) return null;
-    return this.mapToEntity(item);
+    return this.map(item);
   }
 
   async create(data: CreateMenuItemData): Promise<MenuItemEntity> {
     const item = await this.prisma.menuItem.create({
       data: {
         categoryId: data.categoryId,
-        name: data.name,
-        nameVi: data.nameVi,
         slug: data.slug,
-        description: data.description,
-        descriptionVi: data.descriptionVi,
+        nameI18n: data.nameI18n as unknown as Prisma.InputJsonValue,
+        descriptionI18n: data.descriptionI18n != null ? (data.descriptionI18n as unknown as Prisma.InputJsonValue) : undefined,
         imageUrl: data.imageUrl,
         isFeatured: data.isFeatured ?? false,
         sortOrder: data.sortOrder ?? 0,
       },
+      include: { prices: { where: { isActive: true } } },
     });
-    return MenuItemEntity.reconstitute({
-      id: item.id,
-      categoryId: item.categoryId,
-      name: item.name,
-      nameVi: item.nameVi,
-      slug: item.slug,
-      description: item.description,
-      descriptionVi: item.descriptionVi,
-      imageUrl: item.imageUrl,
-      isFeatured: item.isFeatured,
-      isActive: item.isActive,
-      sortOrder: item.sortOrder,
-      deletedAt: item.deletedAt,
-      createdAt: item.createdAt,
-      updatedAt: item.updatedAt,
-    });
+    return this.map(item);
   }
 
   async update(id: bigint, data: UpdateMenuItemData): Promise<MenuItemEntity> {
+    const updateData: Prisma.MenuItemUncheckedUpdateInput = {};
+    if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.nameI18n !== undefined) updateData.nameI18n = data.nameI18n as unknown as Prisma.InputJsonValue;
+    if (data.descriptionI18n !== undefined) updateData.descriptionI18n = data.descriptionI18n != null ? (data.descriptionI18n as unknown as Prisma.InputJsonValue) : Prisma.DbNull;
+    if (data.imageUrl !== undefined) updateData.imageUrl = data.imageUrl;
+    if (data.isFeatured !== undefined) updateData.isFeatured = data.isFeatured;
+    if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
     const item = await this.prisma.menuItem.update({
       where: { id },
-      data: {
-        ...(data.categoryId !== undefined && { categoryId: data.categoryId }),
-        ...(data.name !== undefined && { name: data.name }),
-        ...(data.nameVi !== undefined && { nameVi: data.nameVi }),
-        ...(data.slug !== undefined && { slug: data.slug }),
-        ...(data.description !== undefined && { description: data.description }),
-        ...(data.descriptionVi !== undefined && { descriptionVi: data.descriptionVi }),
-        ...(data.imageUrl !== undefined && { imageUrl: data.imageUrl }),
-        ...(data.isFeatured !== undefined && { isFeatured: data.isFeatured }),
-        ...(data.sortOrder !== undefined && { sortOrder: data.sortOrder }),
-      },
+      data: updateData,
       include: { prices: { where: { isActive: true } } },
     });
-    return this.mapToEntity(item);
+    return this.map(item);
   }
 
   async softDelete(id: bigint): Promise<void> {
-    await this.prisma.menuItem.update({
-      where: { id },
-      data: { deletedAt: new Date() },
-    });
+    await this.prisma.menuItem.update({ where: { id }, data: { deletedAt: new Date() } });
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<MenuItemEntity> {
@@ -442,7 +284,7 @@ export class MenuItemAdapter implements MenuItemRepositoryPort {
       data: { isActive },
       include: { prices: { where: { isActive: true } } },
     });
-    return this.mapToEntity(item);
+    return this.map(item);
   }
 }
 
@@ -450,75 +292,37 @@ export class MenuItemAdapter implements MenuItemRepositoryPort {
 export class MenuItemPriceAdapter implements MenuItemPriceRepositoryPort {
   constructor(private readonly prisma: PrismaService) {}
 
-  private mapToEntity(data: {
-    id: bigint;
-    menuItemId: bigint;
-    locationId: bigint;
-    sizeLabel: string | null;
-    price: unknown;
-    isActive: boolean;
-    createdAt: Date;
-    updatedAt: Date;
-  }): MenuItemPriceEntity {
+  private map(data: { id: bigint; menuItemId: bigint; locationId: bigint; sizeLabel: string | null; price: unknown; isActive: boolean; createdAt: Date; updatedAt: Date }): MenuItemPriceEntity {
     return MenuItemPriceEntity.reconstitute({
-      id: data.id,
-      menuItemId: data.menuItemId,
-      locationId: data.locationId,
-      sizeLabel: data.sizeLabel,
-      price: typeof data.price === 'string' ? parseFloat(data.price) : Number(data.price),
-      isActive: data.isActive,
-      createdAt: data.createdAt,
-      updatedAt: data.updatedAt,
+      id: data.id, menuItemId: data.menuItemId, locationId: data.locationId,
+      sizeLabel: data.sizeLabel, price: toPrice(data.price),
+      isActive: data.isActive, createdAt: data.createdAt, updatedAt: data.updatedAt,
     });
   }
 
   async findByMenuItemId(menuItemId: bigint): Promise<MenuItemPriceEntity[]> {
-    const prices = await this.prisma.menuItemPrice.findMany({
-      where: { menuItemId },
-    });
-    return prices.map((p) => this.mapToEntity(p));
+    const prices = await this.prisma.menuItemPrice.findMany({ where: { menuItemId } });
+    return prices.map((p) => this.map(p));
   }
 
   async findByMenuItemAndLocation(menuItemId: bigint, locationId: bigint): Promise<MenuItemPriceEntity[]> {
-    const prices = await this.prisma.menuItemPrice.findMany({
-      where: { menuItemId, locationId },
-    });
-    return prices.map((p) => this.mapToEntity(p));
+    const prices = await this.prisma.menuItemPrice.findMany({ where: { menuItemId, locationId } });
+    return prices.map((p) => this.map(p));
   }
 
   async upsert(menuItemId: bigint, locationId: bigint, prices: MenuItemPriceData[]): Promise<MenuItemPriceEntity[]> {
-    // Use transaction to ensure data consistency
     const result = await this.prisma.$transaction(async (tx) => {
-      await tx.menuItemPrice.deleteMany({
-        where: { menuItemId, locationId },
-      });
-
-      if (prices.length === 0) {
-        return [];
-      }
-
+      await tx.menuItemPrice.deleteMany({ where: { menuItemId, locationId } });
+      if (prices.length === 0) return [];
       await tx.menuItemPrice.createMany({
-        data: prices.map((p) => ({
-          menuItemId,
-          locationId,
-          sizeLabel: p.sizeLabel,
-          price: p.price,
-          isActive: p.isActive ?? true,
-        })),
+        data: prices.map((p) => ({ menuItemId, locationId, sizeLabel: p.sizeLabel, price: p.price, isActive: p.isActive ?? true })),
       });
-
-      return tx.menuItemPrice.findMany({
-        where: { menuItemId, locationId },
-      });
+      return tx.menuItemPrice.findMany({ where: { menuItemId, locationId } });
     });
-
-    return result.map((p) => this.mapToEntity(p));
+    return result.map((p) => this.map(p));
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<void> {
-    await this.prisma.menuItemPrice.update({
-      where: { id },
-      data: { isActive },
-    });
+    await this.prisma.menuItemPrice.update({ where: { id }, data: { isActive } });
   }
 }

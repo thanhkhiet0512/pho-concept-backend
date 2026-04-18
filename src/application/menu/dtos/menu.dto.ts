@@ -1,6 +1,19 @@
-import { IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, Max, IsArray, ValidateNested, IsDefined, MaxLength } from 'class-validator';
+import { IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, IsArray, ValidateNested, IsDefined, MaxLength } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+
+export class I18nFieldDto {
+  @ApiProperty({ example: 'Pho' })
+  @IsString()
+  @MaxLength(255)
+  en!: string;
+
+  @ApiPropertyOptional({ example: 'Phở' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  vi?: string;
+}
 
 export class MenuItemPriceDto {
   @ApiPropertyOptional({ example: 'S' })
@@ -22,39 +35,16 @@ export class MenuItemPriceDto {
 }
 
 export class CreateCategoryDto {
-  @ApiProperty({ example: 'Pho' })
-  @IsString()
-  @MaxLength(255)
-  name!: string;
-
-  @ApiPropertyOptional({ example: 'Phở' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  nameVi?: string;
-
   @ApiProperty({ example: 'pho-noodles' })
   @IsString()
   @MaxLength(100)
   slug!: string;
 
-  @ApiPropertyOptional({ example: 'Traditional Vietnamese noodle soup' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  description?: string;
-
-  @ApiPropertyOptional({ example: 'Món súp mì ý truyền thống Việt Nam' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  descriptionVi?: string;
-
-  @ApiPropertyOptional({ example: 'https://cdn.example.com/category-pho.jpg' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  imageUrl?: string;
+  @ApiProperty({ type: I18nFieldDto })
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n!: I18nFieldDto;
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
@@ -65,35 +55,11 @@ export class CreateCategoryDto {
 }
 
 export class UpdateCategoryDto {
-  @ApiPropertyOptional({ example: 'Pho' })
+  @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  name?: string;
-
-  @ApiPropertyOptional({ example: 'Phở' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  nameVi?: string;
-
-  @ApiPropertyOptional({ example: 'Traditional Vietnamese noodle soup' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  description?: string;
-
-  @ApiPropertyOptional({ example: 'Món súp mì ý truyền thống Việt Nam' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  descriptionVi?: string;
-
-  @ApiPropertyOptional({ example: 'https://cdn.example.com/category-pho.jpg' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  imageUrl?: string;
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n?: I18nFieldDto;
 
   @ApiPropertyOptional({ example: 1 })
   @IsOptional()
@@ -116,33 +82,22 @@ export class CreateMenuItemDto {
   @Min(1)
   categoryId!: number;
 
-  @ApiProperty({ example: 'Pho Bo' })
-  @IsString()
-  @MaxLength(255)
-  name!: string;
-
-  @ApiPropertyOptional({ example: 'Phở Bò' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  nameVi?: string;
-
   @ApiProperty({ example: 'pho-bo' })
   @IsString()
   @MaxLength(100)
   slug!: string;
 
-  @ApiPropertyOptional({ example: 'Beef noodle soup with herbs' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  description?: string;
+  @ApiProperty({ type: I18nFieldDto })
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n!: I18nFieldDto;
 
-  @ApiPropertyOptional({ example: 'Món súp bò với mì và rau thơm' })
+  @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  descriptionVi?: string;
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  descriptionI18n?: I18nFieldDto;
 
   @ApiPropertyOptional({ example: 'https://cdn.example.com/pho-bo.jpg' })
   @IsOptional()
@@ -171,35 +126,23 @@ export class UpdateMenuItemDto {
   @Min(1)
   categoryId?: number;
 
-  @ApiPropertyOptional({ example: 'Pho Bo' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  name?: string;
-
-  @ApiPropertyOptional({ example: 'Phở Bò' })
-  @IsOptional()
-  @IsString()
-  @MaxLength(255)
-  nameVi?: string;
-
   @ApiPropertyOptional({ example: 'pho-bo' })
   @IsOptional()
   @IsString()
   @MaxLength(100)
   slug?: string;
 
-  @ApiPropertyOptional({ example: 'Beef noodle soup with herbs' })
+  @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  description?: string;
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n?: I18nFieldDto;
 
-  @ApiPropertyOptional({ example: 'Món súp bò với mì và rau thơm' })
+  @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()
-  @IsString()
-  @MaxLength(2000)
-  descriptionVi?: string;
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  descriptionI18n?: I18nFieldDto;
 
   @ApiPropertyOptional({ example: 'https://cdn.example.com/pho-bo.jpg' })
   @IsOptional()

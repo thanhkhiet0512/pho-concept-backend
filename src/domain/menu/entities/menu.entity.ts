@@ -1,25 +1,22 @@
+export interface I18nField {
+  en: string;
+  vi?: string;
+}
+
 export class MenuCategoryEntity {
   id!: bigint;
   createdAt!: Date;
   updatedAt!: Date;
-  private _name!: string;
-  private _nameVi: string | null = null;
   private _slug!: string;
-  private _description: string | null = null;
-  private _descriptionVi: string | null = null;
-  private _imageUrl: string | null = null;
+  private _nameI18n!: I18nField;
   private _sortOrder!: number;
   private _isActive!: boolean;
   private _items: MenuItemEntity[] = [];
 
   static reconstitute(data: {
     id: bigint;
-    name: string;
-    nameVi: string | null;
     slug: string;
-    description: string | null;
-    descriptionVi: string | null;
-    imageUrl: string | null;
+    nameI18n: I18nField;
     sortOrder: number;
     isActive: boolean;
     createdAt: Date;
@@ -28,55 +25,21 @@ export class MenuCategoryEntity {
   }): MenuCategoryEntity {
     const entity = new MenuCategoryEntity();
     entity.id = data.id;
-    entity._name = data.name;
-    entity._nameVi = data.nameVi;
     entity._slug = data.slug;
-    entity._description = data.description;
-    entity._descriptionVi = data.descriptionVi;
-    entity._imageUrl = data.imageUrl;
+    entity._nameI18n = data.nameI18n;
     entity._sortOrder = data.sortOrder;
     entity._isActive = data.isActive;
     entity.createdAt = data.createdAt;
     entity.updatedAt = data.updatedAt;
-    entity._items = data.items || [];
+    entity._items = data.items ?? [];
     return entity;
   }
 
-  get name(): string {
-    return this._name;
-  }
-
-  get nameVi(): string | null {
-    return this._nameVi;
-  }
-
-  get slug(): string {
-    return this._slug;
-  }
-
-  get description(): string | null {
-    return this._description;
-  }
-
-  get descriptionVi(): string | null {
-    return this._descriptionVi;
-  }
-
-  get imageUrl(): string | null {
-    return this._imageUrl;
-  }
-
-  get sortOrder(): number {
-    return this._sortOrder;
-  }
-
-  get isActive(): boolean {
-    return this._isActive;
-  }
-
-  get items(): MenuItemEntity[] {
-    return this._items;
-  }
+  get slug(): string { return this._slug; }
+  get nameI18n(): I18nField { return this._nameI18n; }
+  get sortOrder(): number { return this._sortOrder; }
+  get isActive(): boolean { return this._isActive; }
+  get items(): MenuItemEntity[] { return this._items; }
 }
 
 export class MenuItemEntity {
@@ -84,11 +47,9 @@ export class MenuItemEntity {
   createdAt!: Date;
   updatedAt!: Date;
   private _categoryId!: bigint;
-  private _name!: string;
-  private _nameVi: string | null = null;
   private _slug!: string;
-  private _description: string | null = null;
-  private _descriptionVi: string | null = null;
+  private _nameI18n!: I18nField;
+  private _descriptionI18n: I18nField | null = null;
   private _imageUrl: string | null = null;
   private _isFeatured!: boolean;
   private _isActive!: boolean;
@@ -99,11 +60,9 @@ export class MenuItemEntity {
   static reconstitute(data: {
     id: bigint;
     categoryId: bigint;
-    name: string;
-    nameVi: string | null;
     slug: string;
-    description: string | null;
-    descriptionVi: string | null;
+    nameI18n: I18nField;
+    descriptionI18n: I18nField | null;
     imageUrl: string | null;
     isFeatured: boolean;
     isActive: boolean;
@@ -116,11 +75,9 @@ export class MenuItemEntity {
     const entity = new MenuItemEntity();
     entity.id = data.id;
     entity._categoryId = data.categoryId;
-    entity._name = data.name;
-    entity._nameVi = data.nameVi;
     entity._slug = data.slug;
-    entity._description = data.description;
-    entity._descriptionVi = data.descriptionVi;
+    entity._nameI18n = data.nameI18n;
+    entity._descriptionI18n = data.descriptionI18n;
     entity._imageUrl = data.imageUrl;
     entity._isFeatured = data.isFeatured;
     entity._isActive = data.isActive;
@@ -128,61 +85,21 @@ export class MenuItemEntity {
     entity._deletedAt = data.deletedAt;
     entity.createdAt = data.createdAt;
     entity.updatedAt = data.updatedAt;
-    entity._prices = data.prices || [];
+    entity._prices = data.prices ?? [];
     return entity;
   }
 
-  get categoryId(): bigint {
-    return this._categoryId;
-  }
-
-  get name(): string {
-    return this._name;
-  }
-
-  get nameVi(): string | null {
-    return this._nameVi;
-  }
-
-  get slug(): string {
-    return this._slug;
-  }
-
-  get description(): string | null {
-    return this._description;
-  }
-
-  get descriptionVi(): string | null {
-    return this._descriptionVi;
-  }
-
-  get imageUrl(): string | null {
-    return this._imageUrl;
-  }
-
-  get isFeatured(): boolean {
-    return this._isFeatured;
-  }
-
-  get isActive(): boolean {
-    return this._isActive;
-  }
-
-  get sortOrder(): number {
-    return this._sortOrder;
-  }
-
-  get deletedAt(): Date | null {
-    return this._deletedAt;
-  }
-
-  get prices(): MenuItemPriceEntity[] {
-    return this._prices;
-  }
-
-  get isDeleted(): boolean {
-    return this._deletedAt !== null;
-  }
+  get categoryId(): bigint { return this._categoryId; }
+  get slug(): string { return this._slug; }
+  get nameI18n(): I18nField { return this._nameI18n; }
+  get descriptionI18n(): I18nField | null { return this._descriptionI18n; }
+  get imageUrl(): string | null { return this._imageUrl; }
+  get isFeatured(): boolean { return this._isFeatured; }
+  get isActive(): boolean { return this._isActive; }
+  get sortOrder(): number { return this._sortOrder; }
+  get deletedAt(): Date | null { return this._deletedAt; }
+  get prices(): MenuItemPriceEntity[] { return this._prices; }
+  get isDeleted(): boolean { return this._deletedAt !== null; }
 }
 
 export class MenuItemPriceEntity {
@@ -217,23 +134,9 @@ export class MenuItemPriceEntity {
     return entity;
   }
 
-  get menuItemId(): bigint {
-    return this._menuItemId;
-  }
-
-  get locationId(): bigint {
-    return this._locationId;
-  }
-
-  get sizeLabel(): string | null {
-    return this._sizeLabel;
-  }
-
-  get price(): number {
-    return this._price;
-  }
-
-  get isActive(): boolean {
-    return this._isActive;
-  }
+  get menuItemId(): bigint { return this._menuItemId; }
+  get locationId(): bigint { return this._locationId; }
+  get sizeLabel(): string | null { return this._sizeLabel; }
+  get price(): number { return this._price; }
+  get isActive(): boolean { return this._isActive; }
 }

@@ -2,6 +2,7 @@ import { Injectable, Inject, UnauthorizedException, NotFoundException } from '@n
 import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from '../dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
+import { RedisService } from '@infrastructure/redis/redis.service';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 
@@ -13,10 +14,16 @@ export class RefreshTokenCustomerUseCase {
   constructor(
     @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
 
   async execute(dto: RefreshTokenDto): Promise<AuthTokens> {
     try {
+      const isBlacklisted = await this.redisService.exists(`blacklist:customer:${dto.refresh_token}`);
+      if (isBlacklisted) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+
       const payload = await this.jwtService.verifyAsync<CustomerJwtPayload>(dto.refresh_token, {
         secret: process.env.JWT_REFRESH_SECRET,
       });

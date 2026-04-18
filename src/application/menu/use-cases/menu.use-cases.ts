@@ -5,7 +5,7 @@ import {
   MenuItemPriceRepositoryPort,
 } from '@domain/menu/ports/menu.repository.port';
 import { MENU_CATEGORY_REPOSITORY_TOKEN, MENU_ITEM_REPOSITORY_TOKEN, MENU_ITEM_PRICE_REPOSITORY_TOKEN } from '@domain/menu/ports/menu.repository.token';
-import { CreateCategoryDto, UpdateCategoryDto, CreateMenuItemDto, UpdateMenuItemDto, UpdateMenuItemPricesDto } from '../dtos/menu.dto';
+import { CreateCategoryDto, UpdateCategoryDto, CreateMenuItemDto, UpdateMenuItemDto, UpdateMenuItemPricesDto } from '@application/menu/dtos/menu.dto';
 import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import { PaginationDto } from '@common/dto/pagination.dto';
 

@@ -5,7 +5,7 @@ import { CustomerAuthController } from './customer-auth.controller';
 import { PrismaModule } from '@infrastructure/prisma/prisma.module';
 import { RedisModule } from '@infrastructure/redis/redis.module';
 import { CustomerAdapter } from '@infrastructure/prisma/repositories/customer/customer.adapter';
-import { AuthModule } from '../auth/auth.module';
+import { AuthModule } from '@presentation/auth/auth.module';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { JwtStrategy } from '@common/strategies/jwt.strategy';
 import {

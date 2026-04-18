@@ -4,7 +4,10 @@
   "sourceRoot": "src",
   "compilerOptions": {
     "deleteOutDir": true,
-    "assets": ["**/*.prisma", "i18n/**/*.json"],
+    "assets": [
+      "**/*.prisma",
+      { "include": "i18n/**/*.json", "outDir": "dist/src", "flat": false }
+    ],
     "watchAssets": true
   }
 }

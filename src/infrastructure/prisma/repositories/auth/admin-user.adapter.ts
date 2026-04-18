@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import { AdminUserRepositoryPort } from '@domain/auth/ports/admin-user.repository.port';
 import { AdminUserEntity } from '@domain/auth/entities/admin-user.entity';
 import { AdminRole } from '@common/enums/admin-role.enum';

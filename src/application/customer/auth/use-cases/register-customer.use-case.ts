@@ -1,7 +1,7 @@
 import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { RegisterCustomerDto } from '../dtos';
+import { RegisterCustomerDto } from '@application/customer/auth/dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';

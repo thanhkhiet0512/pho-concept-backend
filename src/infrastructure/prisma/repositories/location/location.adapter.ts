@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import { LocationRepositoryPort, CreateLocationData, UpdateLocationData, LocationHourData } from '@domain/location/ports/location.repository.port';
 import { LocationEntity } from '@domain/location/entities/location.entity';
 

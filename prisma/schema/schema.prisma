@@ -13,3 +13,15 @@ enum AdminRole {
   staff
   view_only
 }
+
+enum BlogPostStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum EventType {
+  PROMOTION
+  HOLIDAY
+  SPECIAL_EVENT
+}

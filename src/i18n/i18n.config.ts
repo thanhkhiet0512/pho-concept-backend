@@ -15,12 +15,8 @@ export const DEFAULT_LANG =
       : 'en'
     : 'en';
 
-// In dev (ts-node): __dirname = src/i18n → path resolves to src/i18n/
-// In prod (node):   __dirname = dist/src/i18n → path resolves to dist/i18n/ (where assets are copied)
-const i18nPath =
-  process.env.NODE_ENV === 'production'
-    ? path.join(__dirname, '../../i18n/')
-    : path.join(__dirname, './');
+// Both dev (src/i18n/) and prod (dist/src/i18n/) — __dirname points to same folder as JSON files
+const i18nPath = path.join(__dirname, './');
 
 export const I18nConfig = I18nModule.forRoot({
   fallbackLanguage: DEFAULT_LANG,

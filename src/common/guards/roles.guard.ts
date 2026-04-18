@@ -1,8 +1,8 @@
 import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
-import { AdminRole } from '../enums/admin-role.enum';
-import { ROLES_KEY } from '../decorators/roles.decorator';
-import { IS_PUBLIC_KEY } from '../decorators/public.decorator';
+import { AdminRole } from '@common/enums/admin-role.enum';
+import { ROLES_KEY } from '@common/decorators/roles.decorator';
+import { IS_PUBLIC_KEY } from '@common/decorators/public.decorator';
 
 interface AuthInfo {
   id: number;

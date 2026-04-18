@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { NotFoundException, ConflictException } from '@nestjs/common';
-import { LocationService } from '../../../src/application/location/services/location.service';
-import { LOCATION_REPOSITORY } from '../../../src/domain/location/ports/location.repository.token';
+import { LocationService } from '@/application/location/services/location.service';
+import { LOCATION_REPOSITORY } from '@/domain/location/ports/location.repository.token';
 
 describe('LocationService', () => {
   let service: LocationService;

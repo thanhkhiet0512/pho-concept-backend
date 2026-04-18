@@ -7,6 +7,7 @@ import { CustomerAuthModule } from './presentation/customer/customer-auth.module
 import { LocationModule } from './presentation/location/location.module';
 import { AdminUserModule } from './presentation/admin/admin-user.module';
 import { MenuModule } from './presentation/menu/menu.module';
+import { CmsModule } from './presentation/cms/cms.module';
 import { HealthModule } from './health/health.module';
 import { I18nConfig } from './i18n/i18n.config';
 import { I18nAppModule } from './i18n/i18n.module';
@@ -23,6 +24,7 @@ import { I18nAppModule } from './i18n/i18n.module';
     LocationModule,
     AdminUserModule,
     MenuModule,
+    CmsModule,
     HealthModule,
   ],
 })

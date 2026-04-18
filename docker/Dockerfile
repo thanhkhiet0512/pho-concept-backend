@@ -54,8 +54,6 @@ RUN npm prune --omit=dev
 # =========================
 FROM public.ecr.aws/docker/library/node:20-alpine AS runner
 
-RUN apk add --no-cache curl wget
-
 ENV NODE_ENV=production
 
 RUN addgroup -g 1001 -S appgroup \

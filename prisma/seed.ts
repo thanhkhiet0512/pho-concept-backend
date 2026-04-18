@@ -1,6 +1,5 @@
 import { prisma } from './seeders/prisma-client.js';
 import { hash } from 'bcryptjs';
-import { randomUUID } from 'crypto';
 
 const hashPassword = async (password: string): Promise<string> =>
   await hash(password, 12);
@@ -14,11 +13,10 @@ async function main() {
     where: { email: 'owner@phoconcept.com' },
     update: { passwordHash: ownerHash },
     create: {
-      uuid: randomUUID(),
       email: 'owner@phoconcept.com',
       passwordHash: ownerHash,
       name: 'Chris Hong',
-      role: 'OWNER',
+      role: 'owner',
       isActive: true,
     },
   });
@@ -29,7 +27,6 @@ async function main() {
     where: { slug: 'las-vegas-001' },
     update: {},
     create: {
-      uuid: randomUUID(),
       slug: 'las-vegas-001',
       name: 'Pho Concept Las Vegas',
       address: '4745 Spring Mountain Rd',

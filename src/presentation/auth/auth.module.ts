@@ -7,6 +7,7 @@ import { JwtStrategy } from '@common/strategies/jwt.strategy';
 import { AuthService } from '@application/auth/services/auth.service';
 import { AuthRepositoryPort } from '@domain/auth/ports/auth.repository.port';
 import { PrismaModule } from '@infrastructure/prisma/prisma.module';
+import { RedisModule } from '@infrastructure/redis/redis.module';
 import { AuthAdapter } from '@infrastructure/prisma/repositories/auth/auth.adapter';
 import { CustomerAdapter } from '@infrastructure/prisma/repositories/customer/customer.adapter';
 
@@ -15,9 +16,10 @@ const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 @Module({
   imports: [
     PrismaModule,
+    RedisModule,
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.register({
-      secret: process.env.JWT_ACCESS_SECRET || 'jwt-access-secret',
+      secret: process.env.JWT_ACCESS_SECRET,
       signOptions: { expiresIn: '24h' },
     }),
   ],

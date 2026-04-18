@@ -18,7 +18,7 @@ export class RefreshTokenCustomerUseCase {
   async execute(dto: RefreshTokenDto): Promise<AuthTokens> {
     try {
       const payload = await this.jwtService.verifyAsync<CustomerJwtPayload>(dto.refresh_token, {
-        secret: process.env.JWT_REFRESH_SECRET || 'jwt-refresh-secret',
+        secret: process.env.JWT_REFRESH_SECRET,
       });
 
       if (payload.type !== 'customer') {
@@ -50,7 +50,7 @@ export class RefreshTokenCustomerUseCase {
 
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.REFRESH_EXPIRES_IN,
-      secret: process.env.JWT_REFRESH_SECRET || 'jwt-refresh-secret',
+      secret: process.env.JWT_REFRESH_SECRET,
     });
 
     return {

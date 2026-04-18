@@ -11,7 +11,7 @@ export class CustomerJwtStrategy extends PassportStrategy(Strategy, 'customer-jw
     super({
       jwtFromRequest: extractJwtFromRequest,
       ignoreExpiration: false,
-      secretOrKey: process.env.JWT_ACCESS_SECRET || 'jwt-access-secret',
+      secretOrKey: process.env.JWT_ACCESS_SECRET!,
     });
   }
 

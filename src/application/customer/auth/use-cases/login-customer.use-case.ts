@@ -50,6 +50,7 @@ export class LoginCustomerUseCase {
 
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.REFRESH_EXPIRES_IN,
+      secret: process.env.JWT_REFRESH_SECRET,
     });
 
     return {

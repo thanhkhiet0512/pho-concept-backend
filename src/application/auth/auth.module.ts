@@ -7,8 +7,8 @@ import { AuthAdapter } from '@infrastructure/prisma/repositories/auth/auth.adapt
 @Module({
   imports: [
     JwtModule.register({
-      secret: process.env.JWT_SECRET || 'default-secret-change-in-production',
-      signOptions: { expiresIn: '15m' },
+      secret: process.env.JWT_ACCESS_SECRET,
+      signOptions: { expiresIn: '24h' },
     }),
   ],
   providers: [

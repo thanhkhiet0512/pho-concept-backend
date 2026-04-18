@@ -13,6 +13,7 @@ import {
   LoginCustomerUseCase,
   RefreshTokenCustomerUseCase,
   GetCustomerProfileUseCase,
+  LogoutCustomerUseCase,
 } from '@application/customer/auth/use-cases';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
@@ -38,6 +39,7 @@ const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
     LoginCustomerUseCase,
     RefreshTokenCustomerUseCase,
     GetCustomerProfileUseCase,
+    LogoutCustomerUseCase,
   ],
   exports: [CustomerAuthModule, CustomerAdapter, CUSTOMER_REPO_TOKEN],
 })

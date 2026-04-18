@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
+import * as cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
@@ -12,6 +13,7 @@ async function bootstrap() {
     .split(',')
     .map((o) => o.trim());
   app.enableCors({ origin: allowedOrigins, credentials: true });
+  app.use(cookieParser());
 
   app.useGlobalPipes(
     new ValidationPipe({

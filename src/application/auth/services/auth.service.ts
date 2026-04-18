@@ -39,6 +39,11 @@ export class AuthService {
 
   async refresh(refreshToken: string): Promise<AuthTokens> {
     try {
+      const isBlacklisted = await this.redisService.exists(`blacklist:admin:${refreshToken}`);
+      if (isBlacklisted) {
+        throw new UnauthorizedException('Token has been revoked');
+      }
+
       const payload = await this.jwtService.verifyAsync<AdminJwtPayload>(refreshToken, {
         secret: process.env.JWT_REFRESH_SECRET,
       });

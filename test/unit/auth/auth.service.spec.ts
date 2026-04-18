@@ -4,12 +4,17 @@ import { AuthService } from '../../../src/application/auth/services/auth.service
 import { UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { AdminRole } from '../../../src/common/enums/admin-role.enum';
 import { AuthRepositoryPort } from '../../../src/domain/auth/ports/auth.repository.port';
+import { RedisService } from '../../../src/infrastructure/redis/redis.service';
 import * as bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {
   let service: AuthService;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockAuthRepository: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   let mockJwtService: any;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  let mockRedisService: any;
 
   const TEST_PASSWORD = 'password123';
   let hashedPassword: string;
@@ -43,11 +48,19 @@ describe('AuthService', () => {
       verifyAsync: jest.fn(),
     };
 
+    mockRedisService = {
+      set: jest.fn().mockResolvedValue(undefined),
+      get: jest.fn().mockResolvedValue(null),
+      del: jest.fn().mockResolvedValue(undefined),
+      exists: jest.fn().mockResolvedValue(false),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         { provide: AuthRepositoryPort, useValue: mockAuthRepository },
         { provide: JwtService, useValue: mockJwtService },
+        { provide: RedisService, useValue: mockRedisService },
       ],
     }).compile();
 

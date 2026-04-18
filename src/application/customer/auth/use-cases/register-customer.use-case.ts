@@ -1,7 +1,7 @@
-import { Injectable, Inject, ConflictException, UnauthorizedException } from '@nestjs/common';
+import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { LoginCustomerDto, RegisterCustomerDto } from '../dtos';
+import { RegisterCustomerDto } from '../dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
@@ -47,6 +47,7 @@ export class RegisterCustomerUseCase {
 
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.REFRESH_EXPIRES_IN,
+      secret: process.env.JWT_REFRESH_SECRET,
     });
 
     return {

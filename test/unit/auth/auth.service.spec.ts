@@ -134,7 +134,7 @@ describe('AuthService', () => {
 
   describe('logout', () => {
     it('should resolve without error', async () => {
-      await expect(service.logout(BigInt(1))).resolves.toBeUndefined();
+      await expect(service.logout(BigInt(1), 'some-token')).resolves.toBeUndefined();
     });
   });
 });

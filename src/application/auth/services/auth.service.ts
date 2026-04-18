@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/c
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { AuthRepositoryPort } from '@domain/auth/ports/auth.repository.port';
+import { RedisService } from '@infrastructure/redis/redis.service';
 import { LoginDto } from '../dtos/login.dto';
 import { AuthTokens, AdminJwtPayload } from '@domain/auth/types/auth.types';
 
@@ -13,6 +14,7 @@ export class AuthService {
   constructor(
     private readonly authRepository: AuthRepositoryPort,
     private readonly jwtService: JwtService,
+    private readonly redisService: RedisService,
   ) {}
 
   async login(dto: LoginDto): Promise<AuthTokens> {
@@ -38,7 +40,7 @@ export class AuthService {
   async refresh(refreshToken: string): Promise<AuthTokens> {
     try {
       const payload = await this.jwtService.verifyAsync<AdminJwtPayload>(refreshToken, {
-        secret: process.env.JWT_REFRESH_SECRET || 'jwt-refresh-secret',
+        secret: process.env.JWT_REFRESH_SECRET,
       });
 
       if (payload.type !== 'admin') {
@@ -56,8 +58,9 @@ export class AuthService {
     }
   }
 
-  async logout(userId: bigint): Promise<void> {
-    // In a real app, you might want to invalidate the refresh token in Redis
+  async logout(userId: bigint, refreshToken: string): Promise<void> {
+    const ttl = 7 * 24 * 60 * 60; // 7 days in seconds
+    await this.redisService.set(`blacklist:admin:${refreshToken}`, '1', ttl);
   }
 
   private generateTokens(userId: bigint, email: string, name: string, role: any): AuthTokens {
@@ -75,7 +78,7 @@ export class AuthService {
 
     const refreshToken = this.jwtService.sign(payload, {
       expiresIn: this.REFRESH_EXPIRES_IN,
-      secret: process.env.JWT_REFRESH_SECRET || 'jwt-refresh-secret',
+      secret: process.env.JWT_REFRESH_SECRET,
     });
 
     return {

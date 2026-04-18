@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Put, Patch, Body, Param, ParseIntPipe, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Body, Param, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { LocationService } from '@application/location/services/location.service';
 import { CreateLocationDto, UpdateLocationDto, LocationHourDto } from '@application/location/dtos/location.dto';
@@ -7,6 +7,7 @@ import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Roles } from '@common/decorators/roles.decorator';
 import { AdminRole } from '@common/enums/admin-role.enum';
+import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';
 
 @ApiTags('Locations - Admin')
 @ApiBearerAuth()
@@ -35,7 +36,7 @@ export class InternalLocationController {
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
   @ApiOperation({ summary: 'Update location' })
   async update(
-    @Param('id', ParseIntPipe) id: bigint,
+    @Param('id', ParseBigIntPipe) id: bigint,
     @Body() dto: UpdateLocationDto,
   ) {
     const location = await this.locationService.update(id, dto);
@@ -46,7 +47,7 @@ export class InternalLocationController {
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
   @ApiOperation({ summary: 'Update location hours' })
   async updateHours(
-    @Param('id', ParseIntPipe) id: bigint,
+    @Param('id', ParseBigIntPipe) id: bigint,
     @Body() hours: LocationHourDto[],
   ) {
     await this.locationService.updateHours(id, hours);
@@ -58,7 +59,7 @@ export class InternalLocationController {
   @Roles(AdminRole.OWNER)
   @ApiOperation({ summary: 'Toggle location active status' })
   async toggle(
-    @Param('id', ParseIntPipe) id: bigint,
+    @Param('id', ParseBigIntPipe) id: bigint,
     @Body('isActive') isActive: boolean,
   ) {
     await this.locationService.toggle(id, isActive);

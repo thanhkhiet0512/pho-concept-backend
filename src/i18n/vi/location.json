@@ -1,0 +1,11 @@
+{
+  "not_found": "Không tìm thấy địa điểm",
+  "created": "Tạo địa điểm thành công",
+  "updated": "Cập nhật địa điểm thành công",
+  "deleted": "Xóa địa điểm thành công",
+  "already_exists": "Địa điểm với slug này đã tồn tại",
+  "hours": {
+    "not_found": "Không tìm thấy giờ mở cửa",
+    "updated": "Cập nhật giờ mở cửa thành công"
+  }
+}

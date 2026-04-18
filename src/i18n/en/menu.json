@@ -1,0 +1,20 @@
+{
+  "category": {
+    "not_found": "Category not found",
+    "created": "Category created successfully",
+    "updated": "Category updated successfully",
+    "deleted": "Category deleted successfully",
+    "slug_exists": "A category with this slug already exists"
+  },
+  "item": {
+    "not_found": "Menu item not found",
+    "created": "Menu item created successfully",
+    "updated": "Menu item updated successfully",
+    "deleted": "Menu item deleted successfully",
+    "slug_exists": "A menu item with this slug already exists"
+  },
+  "price": {
+    "updated": "Prices updated successfully",
+    "location_not_found": "Location not found"
+  }
+}

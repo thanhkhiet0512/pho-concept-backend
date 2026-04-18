@@ -1,0 +1,20 @@
+{
+  "category": {
+    "not_found": "Không tìm thấy danh mục",
+    "created": "Tạo danh mục thành công",
+    "updated": "Cập nhật danh mục thành công",
+    "deleted": "Xóa danh mục thành công",
+    "slug_exists": "Danh mục với slug này đã tồn tại"
+  },
+  "item": {
+    "not_found": "Không tìm thấy món ăn",
+    "created": "Tạo món ăn thành công",
+    "updated": "Cập nhật món ăn thành công",
+    "deleted": "Xóa món ăn thành công",
+    "slug_exists": "Món ăn với slug này đã tồn tại"
+  },
+  "price": {
+    "updated": "Cập nhật giá thành công",
+    "location_not_found": "Không tìm thấy địa điểm"
+  }
+}

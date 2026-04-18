@@ -1,0 +1,14 @@
+{
+  "not_found": "Customer not found",
+  "created": "Customer created successfully",
+  "updated": "Customer updated successfully",
+  "deleted": "Customer deleted successfully",
+  "email_exists": "A customer with this email already exists",
+  "phone_exists": "A customer with this phone already exists",
+  "address": {
+    "not_found": "Address not found",
+    "created": "Address created successfully",
+    "updated": "Address updated successfully",
+    "deleted": "Address deleted successfully"
+  }
+}

@@ -23,7 +23,8 @@
       "@presentation/*": ["src/presentation/*"],
       "@infrastructure/*": ["src/infrastructure/*"],
       "@common/*": ["src/common/*"],
-      "@config/*": ["src/config/*"]
+      "@config/*": ["src/config/*"],
+      "@i18n/*": ["src/i18n/*"]
     }
   },
   "ts-node": {
@@ -37,7 +38,8 @@
         "@presentation/*": ["src/presentation/*"],
         "@infrastructure/*": ["src/infrastructure/*"],
         "@common/*": ["src/common/*"],
-        "@config/*": ["src/config/*"]
+        "@config/*": ["src/config/*"],
+        "@i18n/*": ["src/i18n/*"]
       }
     }
   },

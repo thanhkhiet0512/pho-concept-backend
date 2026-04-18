@@ -7,6 +7,7 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { winstonConfig } from './logger/winston.config';
+import validationOptions from './common/validation-options';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -17,16 +18,20 @@ async function bootstrap() {
   const allowedOrigins = (process.env.ALLOWED_ORIGINS ?? 'http://localhost:3000')
     .split(',')
     .map((o) => o.trim());
-  app.enableCors({ origin: allowedOrigins, credentials: true });
+  app.enableCors({
+    origin: allowedOrigins,
+    credentials: true,
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'Accept',
+      'x-lang',
+      'Cookie',
+    ],
+  });
   app.use(cookieParser());
 
-  app.useGlobalPipes(
-    new ValidationPipe({
-      whitelist: true,
-      transform: true,
-      transformOptions: { enableImplicitConversion: true },
-    }),
-  );
+  app.useGlobalPipes(new ValidationPipe(validationOptions));
 
   app.useGlobalFilters(new HttpExceptionFilter());
   app.useGlobalInterceptors(new ResponseInterceptor());

@@ -1,0 +1,29 @@
+{
+  "CONSTRAINTS": {
+    "isNotEmpty": "Trường này không được để trống",
+    "isString": "Trường này phải là chuỗi ký tự",
+    "isNumber": "Trường này phải là số",
+    "isInt": "Trường này phải là số nguyên",
+    "isBoolean": "Trường này phải là giá trị boolean",
+    "isEmail": "Phải là địa chỉ email hợp lệ",
+    "isUrl": "Phải là URL hợp lệ",
+    "isUUID": "Phải là UUID hợp lệ",
+    "isDateString": "Phải là ngày hợp lệ",
+    "isEnum": "Phải là giá trị hợp lệ",
+    "isArray": "Trường này phải là mảng",
+    "isObject": "Trường này phải là object",
+    "min": "Giá trị quá nhỏ",
+    "max": "Giá trị quá lớn",
+    "minLength": "Nội dung quá ngắn",
+    "maxLength": "Nội dung quá dài",
+    "arrayMinSize": "Chưa đủ số lượng phần tử",
+    "arrayMaxSize": "Vượt quá số lượng phần tử cho phép",
+    "isPositive": "Phải là số dương",
+    "isIn": "Phải là một trong các giá trị cho phép",
+    "isPhoneNumber": "Phải là số điện thoại hợp lệ",
+    "isDefined": "Trường này là bắt buộc"
+  },
+  "MESSAGES": {
+    "VALIDATION_FAILED": "Xác thực dữ liệu thất bại"
+  }
+}

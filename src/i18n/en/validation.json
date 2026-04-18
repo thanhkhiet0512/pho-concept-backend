@@ -1,0 +1,29 @@
+{
+  "CONSTRAINTS": {
+    "isNotEmpty": "This field should not be empty",
+    "isString": "This field must be a string",
+    "isNumber": "This field must be a number",
+    "isInt": "This field must be an integer",
+    "isBoolean": "This field must be a boolean",
+    "isEmail": "Must be a valid email address",
+    "isUrl": "Must be a valid URL",
+    "isUUID": "Must be a valid UUID",
+    "isDateString": "Must be a valid date",
+    "isEnum": "Must be a valid value",
+    "isArray": "This field must be an array",
+    "isObject": "This field must be an object",
+    "min": "Value is too small",
+    "max": "Value is too large",
+    "minLength": "Value is too short",
+    "maxLength": "Value is too long",
+    "arrayMinSize": "Not enough items",
+    "arrayMaxSize": "Too many items",
+    "isPositive": "Must be a positive number",
+    "isIn": "Must be one of the allowed values",
+    "isPhoneNumber": "Must be a valid phone number",
+    "isDefined": "This field is required"
+  },
+  "MESSAGES": {
+    "VALIDATION_FAILED": "Validation failed"
+  }
+}

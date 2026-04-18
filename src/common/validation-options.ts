@@ -1,7 +1,7 @@
 import type { ValidationError, ValidationPipeOptions } from '@nestjs/common';
 import { HttpStatus, UnprocessableEntityException } from '@nestjs/common';
 import { I18nContext } from 'nestjs-i18n';
-import { DEFAULT_LANG } from '../i18n/i18n.config';
+import { DEFAULT_LANG } from '@i18n/i18n.config';
 
 function translateConstraint(constraint: string, constraintValue: unknown): string {
   if (

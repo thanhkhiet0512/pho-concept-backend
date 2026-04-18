@@ -1,10 +1,10 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { JwtService } from '@nestjs/jwt';
-import { AuthService } from '../../../src/application/auth/services/auth.service';
+import { AuthService } from '@/application/auth/services/auth.service';
 import { UnauthorizedException, ForbiddenException } from '@nestjs/common';
-import { AdminRole } from '../../../src/common/enums/admin-role.enum';
-import { AuthRepositoryPort } from '../../../src/domain/auth/ports/auth.repository.port';
-import { RedisService } from '../../../src/infrastructure/redis/redis.service';
+import { AdminRole } from '@/common/enums/admin-role.enum';
+import { AuthRepositoryPort } from '@/domain/auth/ports/auth.repository.port';
+import { RedisService } from '@/infrastructure/redis/redis.service';
 import * as bcrypt from 'bcryptjs';
 
 describe('AuthService', () => {

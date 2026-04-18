@@ -1,7 +1,7 @@
 import { Injectable, NotFoundException, ConflictException, Inject } from '@nestjs/common';
 import { LocationRepositoryPort } from '@domain/location/ports/location.repository.port';
 import { LocationEntity } from '@domain/location/entities/location.entity';
-import { CreateLocationDto, UpdateLocationDto, LocationHourDto } from '../dtos/location.dto';
+import { CreateLocationDto, UpdateLocationDto, LocationHourDto } from '@application/location/dtos/location.dto';
 import { LOCATION_REPOSITORY_TOKEN } from '@domain/location/ports/location.repository.token';
 
 @Injectable()

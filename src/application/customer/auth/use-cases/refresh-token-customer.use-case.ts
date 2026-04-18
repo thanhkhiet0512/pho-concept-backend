@@ -1,6 +1,6 @@
 import { Injectable, Inject, UnauthorizedException, NotFoundException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { RefreshTokenDto } from '../dtos';
+import { RefreshTokenDto } from '@application/customer/auth/dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
 import { RedisService } from '@infrastructure/redis/redis.service';
 

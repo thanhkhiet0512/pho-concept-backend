@@ -3,7 +3,7 @@ import { Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AdminUserRepositoryPort } from '@domain/auth/ports/admin-user.repository.port';
 import { AdminUserEntity } from '@domain/auth/entities/admin-user.entity';
-import { CreateAdminUserDto, AdminUserQueryDto } from '../dtos';
+import { CreateAdminUserDto, AdminUserQueryDto } from '@application/admin/user/dtos';
 import { ADMIN_USER_REPOSITORY_TOKEN } from '@domain/auth/ports/admin-user.repository.token';
 
 @Injectable()

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
-import { PrismaService } from '../../prisma.service';
+import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import {
   MenuCategoryRepositoryPort,
   MenuItemRepositoryPort,

@@ -1,0 +1,14 @@
+model CmsPage {
+  id                  BigInt   @id @default(autoincrement()) @map("cms_page_id")
+  slug                String   @unique @map("slug") @db.VarChar(255)
+  titleI18n           Json     @map("title_i18n") @db.JsonB
+  metaDescriptionI18n Json?    @map("meta_description_i18n") @db.JsonB
+  ogImageUrl          String?  @map("og_image_url") @db.VarChar(500)
+  sections            Json     @default("[]") @map("sections") @db.JsonB
+  isPublished         Boolean  @default(false) @map("is_published")
+  createdAt           DateTime @default(now()) @map("created_at")
+  updatedAt           DateTime @updatedAt @map("updated_at")
+
+  @@index([isPublished])
+  @@map("cms_pages")
+}

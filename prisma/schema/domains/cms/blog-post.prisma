@@ -1,0 +1,16 @@
+model BlogPost {
+  id                  BigInt          @id @default(autoincrement()) @map("blog_post_id")
+  slug                String          @unique @map("slug") @db.VarChar(255)
+  titleI18n           Json            @map("title_i18n") @db.JsonB
+  contentI18n         Json            @map("content_i18n") @db.JsonB
+  excerptI18n         Json?           @map("excerpt_i18n") @db.JsonB
+  metaDescriptionI18n Json?           @map("meta_description_i18n") @db.JsonB
+  coverImageUrl       String?         @map("cover_image_url") @db.VarChar(500)
+  status              BlogPostStatus  @default(DRAFT)
+  publishedAt         DateTime?       @map("published_at")
+  createdAt           DateTime        @default(now()) @map("created_at")
+  updatedAt           DateTime        @updatedAt @map("updated_at")
+
+  @@index([status, publishedAt])
+  @@map("blog_posts")
+}

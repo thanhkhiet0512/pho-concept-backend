@@ -43,13 +43,13 @@ async function main() {
 
   // ── Business hours (Mon–Sun) ──────────────────────────────────────────────────
   const hours = [
-    { dayOfWeek: 0, openTime: '10:00', closeTime: '21:00', isClosed: false }, // Sun
-    { dayOfWeek: 1, openTime: '10:00', closeTime: '21:00', isClosed: false }, // Mon
-    { dayOfWeek: 2, openTime: '10:00', closeTime: '21:00', isClosed: false }, // Tue
-    { dayOfWeek: 3, openTime: '10:00', closeTime: '21:00', isClosed: false }, // Wed
-    { dayOfWeek: 4, openTime: '10:00', closeTime: '21:00', isClosed: false }, // Thu
-    { dayOfWeek: 5, openTime: '10:00', closeTime: '22:00', isClosed: false }, // Fri
-    { dayOfWeek: 6, openTime: '10:00', closeTime: '22:00', isClosed: false }, // Sat
+    { dayOfWeek: 0, openTime: '10:00', closeTime: '21:00', isOpen: true }, // Sun
+    { dayOfWeek: 1, openTime: '10:00', closeTime: '21:00', isOpen: true }, // Mon
+    { dayOfWeek: 2, openTime: '10:00', closeTime: '21:00', isOpen: true }, // Tue
+    { dayOfWeek: 3, openTime: '10:00', closeTime: '21:00', isOpen: true }, // Wed
+    { dayOfWeek: 4, openTime: '10:00', closeTime: '21:00', isOpen: true }, // Thu
+    { dayOfWeek: 5, openTime: '10:00', closeTime: '22:00', isOpen: true }, // Fri
+    { dayOfWeek: 6, openTime: '10:00', closeTime: '22:00', isOpen: true }, // Sat
   ];
 
   await prisma.locationHour.createMany({

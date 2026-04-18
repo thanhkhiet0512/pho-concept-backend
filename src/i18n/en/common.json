@@ -1,0 +1,16 @@
+{
+  "SUCCESS": "Success",
+  "ERROR": "Error",
+  "CREATED": "Created successfully",
+  "UPDATED": "Updated successfully",
+  "DELETED": "Deleted successfully",
+  "NOT_FOUND": "{resource} not found",
+  "INVALID_INPUT": "Invalid input",
+  "UNAUTHORIZED": "Unauthorized",
+  "FORBIDDEN": "Access denied",
+  "CONFLICT": "{resource} already exists",
+  "VALIDATION_ERROR": "Validation failed",
+  "TOO_MANY_REQUESTS": "Too many requests, please try again later",
+  "INTERNAL_ERROR": "Internal server error",
+  "SERVICE_UNAVAILABLE": "Service unavailable"
+}

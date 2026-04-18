@@ -1,0 +1,11 @@
+{
+  "not_found": "Location not found",
+  "created": "Location created successfully",
+  "updated": "Location updated successfully",
+  "deleted": "Location deleted successfully",
+  "already_exists": "Location with this slug already exists",
+  "hours": {
+    "not_found": "Location hours not found",
+    "updated": "Location hours updated successfully"
+  }
+}

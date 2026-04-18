@@ -1,0 +1,14 @@
+{
+  "not_found": "Không tìm thấy khách hàng",
+  "created": "Tạo khách hàng thành công",
+  "updated": "Cập nhật khách hàng thành công",
+  "deleted": "Xóa khách hàng thành công",
+  "email_exists": "Khách hàng với email này đã tồn tại",
+  "phone_exists": "Khách hàng với số điện thoại này đã tồn tại",
+  "address": {
+    "not_found": "Không tìm thấy địa chỉ",
+    "created": "Tạo địa chỉ thành công",
+    "updated": "Cập nhật địa chỉ thành công",
+    "deleted": "Xóa địa chỉ thành công"
+  }
+}

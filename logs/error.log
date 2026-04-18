@@ -1,0 +1,2 @@
+{"context":"I18nAbstractLoader","level":"error","message":"Error while parsing i18n languages. Ignoring this change.","stack":[{"code":"ENOENT","errno":-2,"path":"/Users/mac/Documents/MyProject/UnikSmart/pho-concept-backend/dist/src/i18n/","syscall":"scandir"}],"timestamp":"2026-04-18T06:57:24.265Z"}
+{"context":"I18nAbstractLoader","level":"error","message":"Error while parsing i18n translations. Ignoring this change.","stack":[{"name":"I18nError"}],"timestamp":"2026-04-18T06:57:24.266Z"}

@@ -1,0 +1,72 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: pho-concept-postgres
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pho_concept
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U postgres']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pho_network
+
+  redis:
+    image: redis:7-alpine
+    container_name: pho-concept-redis
+    command: redis-server --appendonly yes --maxmemory 256mb --maxmemory-policy allkeys-lru
+    ports:
+      - '6380:6379'
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ['CMD', 'redis-cli', 'ping']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - pho_network
+
+  api:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.dev
+    container_name: pho-concept-api
+    ports:
+      - '3000:3000'
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      NODE_ENV: development
+      PORT: 3000
+      DATABASE_URL: postgresql://postgres:postgres@postgres:5432/pho_concept
+      REDIS_URL: redis://redis:6379
+      JWT_ACCESS_SECRET: local-access-secret
+      JWT_REFRESH_SECRET: local-refresh-secret
+      ALLOWED_ORIGINS: http://localhost:3000,http://localhost:5173
+      COOKIE_SAME_SITE: lax
+    env_file:
+      - .env.local
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    networks:
+      - pho_network
+
+volumes:
+  postgres_data:
+  redis_data:
+
+networks:
+  pho_network:
+    driver: bridge

@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ConflictException } from '@nestjs/common';
 import {
   MenuCategoryRepositoryPort,
   MenuItemRepositoryPort,
@@ -51,16 +51,12 @@ export class CreateCategoryUseCase {
   async execute(dto: CreateCategoryDto) {
     const existing = await this.categoryRepository.findBySlug(dto.slug);
     if (existing) {
-      throw new ConflictException(`Category with slug ${dto.slug} already exists`);
+      throw new ConflictException(`Category with slug "${dto.slug}" already exists`);
     }
 
     return this.categoryRepository.create({
-      name: dto.name,
-      nameVi: dto.nameVi,
       slug: dto.slug,
-      description: dto.description,
-      descriptionVi: dto.descriptionVi,
-      imageUrl: dto.imageUrl,
+      nameI18n: dto.nameI18n,
       sortOrder: dto.sortOrder,
       isActive: true,
     });
@@ -80,24 +76,8 @@ export class UpdateCategoryUseCase {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
 
-    // Check slug uniqueness if slug is being updated
-    if (dto.nameVi !== undefined || dto.name !== undefined) {
-      const slug = dto.nameVi ?? dto.name ?? '';
-      const newSlug = slug.toLowerCase().replace(/\s+/g, '-').replace(/[^a-z0-9-]/g, '');
-      if (newSlug !== category.slug) {
-        const existing = await this.categoryRepository.findBySlug(newSlug);
-        if (existing && existing.id !== id) {
-          throw new ConflictException(`Category with slug ${newSlug} already exists`);
-        }
-      }
-    }
-
     return this.categoryRepository.update(id, {
-      name: dto.name,
-      nameVi: dto.nameVi,
-      description: dto.description,
-      descriptionVi: dto.descriptionVi,
-      imageUrl: dto.imageUrl,
+      nameI18n: dto.nameI18n,
       sortOrder: dto.sortOrder,
       isActive: dto.isActive,
     });
@@ -132,7 +112,6 @@ export class DeleteCategoryUseCase {
     if (!category) {
       throw new NotFoundException(`Category with id ${id} not found`);
     }
-    // Use soft delete for consistency with menu items
     await this.categoryRepository.softDelete(id);
   }
 }
@@ -146,7 +125,7 @@ export class GetMenuItemsUseCase {
     private readonly itemRepository: MenuItemRepositoryPort,
   ) {}
 
-  async execute(pagination?: PaginationDto, params?: { categoryId?: bigint; locationId?: bigint; isActive?: boolean }) {
+  async execute(pagination?: PaginationDto, params?: { categoryId?: bigint; locationId?: bigint; isActive?: boolean; isFeatured?: boolean }) {
     const page = pagination?.page ?? 1;
     const limit = pagination?.limit ?? 20;
     return this.itemRepository.findAll({ ...params, page, limit });
@@ -181,7 +160,7 @@ export class CreateMenuItemUseCase {
   async execute(dto: CreateMenuItemDto) {
     const existing = await this.itemRepository.findBySlug(dto.slug);
     if (existing) {
-      throw new ConflictException(`Menu item with slug ${dto.slug} already exists`);
+      throw new ConflictException(`Menu item with slug "${dto.slug}" already exists`);
     }
 
     const category = await this.categoryRepository.findById(BigInt(dto.categoryId));
@@ -189,19 +168,15 @@ export class CreateMenuItemUseCase {
       throw new NotFoundException(`Category with id ${dto.categoryId} not found`);
     }
 
-    const item = await this.itemRepository.create({
+    return this.itemRepository.create({
       categoryId: BigInt(dto.categoryId),
-      name: dto.name,
-      nameVi: dto.nameVi,
       slug: dto.slug,
-      description: dto.description,
-      descriptionVi: dto.descriptionVi,
-      imageUrl: dto.imageUrl,
+      nameI18n: dto.nameI18n,
+      descriptionI18n: dto.descriptionI18n ?? null,
+      imageUrl: dto.imageUrl ?? null,
       isFeatured: dto.isFeatured,
       sortOrder: dto.sortOrder,
     });
-
-    return item;
   }
 }
 
@@ -220,11 +195,10 @@ export class UpdateMenuItemUseCase {
       throw new NotFoundException(`Menu item with id ${id} not found`);
     }
 
-    // Check slug uniqueness if slug is being updated
     if (dto.slug && dto.slug !== item.slug) {
       const existing = await this.itemRepository.findBySlug(dto.slug);
       if (existing && existing.id !== id) {
-        throw new ConflictException(`Menu item with slug ${dto.slug} already exists`);
+        throw new ConflictException(`Menu item with slug "${dto.slug}" already exists`);
       }
     }
 
@@ -237,11 +211,9 @@ export class UpdateMenuItemUseCase {
 
     return this.itemRepository.update(id, {
       categoryId: dto.categoryId ? BigInt(dto.categoryId) : undefined,
-      name: dto.name,
-      nameVi: dto.nameVi,
       slug: dto.slug,
-      description: dto.description,
-      descriptionVi: dto.descriptionVi,
+      nameI18n: dto.nameI18n,
+      descriptionI18n: dto.descriptionI18n,
       imageUrl: dto.imageUrl,
       isFeatured: dto.isFeatured,
       sortOrder: dto.sortOrder,
@@ -299,14 +271,13 @@ export class UpdateMenuItemPricesUseCase {
       throw new NotFoundException(`Menu item with id ${menuItemId} not found`);
     }
 
-    // Validate location exists
     const locationId = BigInt(dto.locationId);
     const location = await this.prisma.location.findUnique({ where: { id: locationId } });
     if (!location) {
       throw new NotFoundException(`Location with id ${dto.locationId} not found`);
     }
 
-    const prices = await this.priceRepository.upsert(
+    return this.priceRepository.upsert(
       menuItemId,
       locationId,
       dto.prices.map((p) => ({
@@ -315,7 +286,5 @@ export class UpdateMenuItemPricesUseCase {
         isActive: p.isActive,
       })),
     );
-
-    return prices;
   }
 }

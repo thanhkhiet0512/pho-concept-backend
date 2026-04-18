@@ -1,7 +1,20 @@
-import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity } from '@domain/menu/entities/menu.entity';
+import { MenuCategoryEntity, MenuItemEntity, MenuItemPriceEntity, I18nField } from '@domain/menu/entities/menu.entity';
+
+export class I18nFieldResponseDto {
+  en!: string;
+  vi?: string;
+
+  static from(field: I18nField): I18nFieldResponseDto {
+    const dto = new I18nFieldResponseDto();
+    dto.en = field.en;
+    if (field.vi !== undefined) dto.vi = field.vi;
+    return dto;
+  }
+}
 
 export class MenuItemPriceResponseDto {
   id!: number;
+  locationId!: number;
   sizeLabel!: string | null;
   price!: number;
   isActive!: boolean;
@@ -9,6 +22,7 @@ export class MenuItemPriceResponseDto {
   static from(entity: MenuItemPriceEntity): MenuItemPriceResponseDto {
     const dto = new MenuItemPriceResponseDto();
     dto.id = Number(entity.id);
+    dto.locationId = Number(entity.locationId);
     dto.sizeLabel = entity.sizeLabel;
     dto.price = entity.price;
     dto.isActive = entity.isActive;
@@ -23,11 +37,9 @@ export class MenuItemPriceResponseDto {
 export class MenuItemResponseDto {
   id!: number;
   categoryId!: number;
-  name!: string;
-  nameVi!: string | null;
   slug!: string;
-  description!: string | null;
-  descriptionVi!: string | null;
+  nameI18n!: I18nFieldResponseDto;
+  descriptionI18n!: I18nFieldResponseDto | null;
   imageUrl!: string | null;
   isFeatured!: boolean;
   isActive!: boolean;
@@ -40,11 +52,9 @@ export class MenuItemResponseDto {
     const dto = new MenuItemResponseDto();
     dto.id = Number(entity.id);
     dto.categoryId = Number(entity.categoryId);
-    dto.name = entity.name;
-    dto.nameVi = entity.nameVi;
     dto.slug = entity.slug;
-    dto.description = entity.description;
-    dto.descriptionVi = entity.descriptionVi;
+    dto.nameI18n = I18nFieldResponseDto.from(entity.nameI18n);
+    dto.descriptionI18n = entity.descriptionI18n ? I18nFieldResponseDto.from(entity.descriptionI18n) : null;
     dto.imageUrl = entity.imageUrl;
     dto.isFeatured = entity.isFeatured;
     dto.isActive = entity.isActive;
@@ -62,12 +72,8 @@ export class MenuItemResponseDto {
 
 export class MenuCategoryResponseDto {
   id!: number;
-  name!: string;
-  nameVi!: string | null;
   slug!: string;
-  description!: string | null;
-  descriptionVi!: string | null;
-  imageUrl!: string | null;
+  nameI18n!: I18nFieldResponseDto;
   sortOrder!: number;
   isActive!: boolean;
   items!: MenuItemResponseDto[];
@@ -77,12 +83,8 @@ export class MenuCategoryResponseDto {
   static from(entity: MenuCategoryEntity): MenuCategoryResponseDto {
     const dto = new MenuCategoryResponseDto();
     dto.id = Number(entity.id);
-    dto.name = entity.name;
-    dto.nameVi = entity.nameVi;
     dto.slug = entity.slug;
-    dto.description = entity.description;
-    dto.descriptionVi = entity.descriptionVi;
-    dto.imageUrl = entity.imageUrl;
+    dto.nameI18n = I18nFieldResponseDto.from(entity.nameI18n);
     dto.sortOrder = entity.sortOrder;
     dto.isActive = entity.isActive;
     dto.items = MenuItemResponseDto.fromList(entity.items);

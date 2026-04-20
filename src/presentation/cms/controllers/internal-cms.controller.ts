@@ -1,4 +1,5 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, HttpCode, HttpStatus, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
@@ -31,6 +32,7 @@ import {
   CreateMediaFileUseCase,
   UpdateMediaFileUseCase,
   DeleteMediaFileUseCase,
+  UploadMediaUseCase,
 } from '@application/cms/use-cases/cms.use-cases';
 import {
   CreateCmsPageDto,
@@ -75,6 +77,7 @@ export class InternalCmsController {
     private readonly createMediaFileUseCase: CreateMediaFileUseCase,
     private readonly updateMediaFileUseCase: UpdateMediaFileUseCase,
     private readonly deleteMediaFileUseCase: DeleteMediaFileUseCase,
+    private readonly uploadMediaUseCase: UploadMediaUseCase,
   ) {}
 
   // ===================== CMS PAGES =====================
@@ -296,24 +299,31 @@ export class InternalCmsController {
   @Post('media/upload')
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
   @HttpCode(HttpStatus.CREATED)
-  @ApiOperation({ summary: 'Upload file to R2 (metadata only in 2B-i)' })
+  @ApiOperation({ summary: 'Upload file to MinIO storage' })
+  @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }))
   async uploadMedia(
-    @Body() dto: {
-      filename: string;
-      r2Key: string;
-      url: string;
-      mimeType: string;
-      sizeBytes: number;
-      altTextI18n?: { en: string; vi?: string };
-      uploadedBy: number;
-    },
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }),
+          new FileTypeValidator({ fileType: /^(image\/(jpeg|png|webp|gif|svg\+xml)|video\/(mp4|webm)|application\/pdf)$/ }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @Body('uploadedBy') uploadedBy: string,
+    @Body('altTextEn') altTextEn?: string,
+    @Body('altTextVi') altTextVi?: string,
   ) {
-    const file = await this.createMediaFileUseCase.execute({
-      ...dto,
-      sizeBytes: BigInt(dto.sizeBytes),
-      uploadedBy: BigInt(dto.uploadedBy),
+    const result = await this.uploadMediaUseCase.execute({
+      buffer: file.buffer,
+      originalname: file.originalname,
+      mimetype: file.mimetype,
+      size: file.size,
+      uploadedBy: BigInt(uploadedBy),
+      altTextI18n: altTextEn ? { en: altTextEn, vi: altTextVi } : null,
     });
-    return MediaFileResponseDto.from(file);
+    return MediaFileResponseDto.from(result);
   }
 
   @Put('media/:id')

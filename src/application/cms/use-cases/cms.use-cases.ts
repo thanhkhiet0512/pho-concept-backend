@@ -1,4 +1,7 @@
-import { Injectable, Inject, NotFoundException, ConflictException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { extname } from 'path';
+import { v4 as uuidv4 } from 'uuid';
+import { IStoragePort } from '@infrastructure/storage/storage.port';
 import {
   CmsPageRepositoryPort,
   BlogPostRepositoryPort,
@@ -507,5 +510,55 @@ export class DeleteMediaFileUseCase {
       throw new NotFoundException(`Media file with id ${id} not found`);
     }
     return this.repository.hardDelete(id);
+  }
+}
+
+export const STORAGE_SERVICE_TOKEN = 'STORAGE_SERVICE_TOKEN';
+
+const ALLOWED_MIME_TYPES = [
+  'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
+  'video/mp4', 'video/webm',
+  'application/pdf',
+];
+const MAX_FILE_SIZE = 50 * 1024 * 1024; // 50MB
+
+@Injectable()
+export class UploadMediaUseCase {
+  constructor(
+    @Inject(STORAGE_SERVICE_TOKEN)
+    private readonly storage: IStoragePort,
+    @Inject(MEDIA_FILE_REPOSITORY_TOKEN)
+    private readonly repository: MediaFileRepositoryPort,
+  ) {}
+
+  async execute(input: {
+    buffer: Buffer;
+    originalname: string;
+    mimetype: string;
+    size: number;
+    uploadedBy: bigint;
+    altTextI18n?: { en: string; vi?: string } | null;
+  }) {
+    if (!ALLOWED_MIME_TYPES.includes(input.mimetype)) {
+      throw new BadRequestException(`File type not allowed: ${input.mimetype}`);
+    }
+    if (input.size > MAX_FILE_SIZE) {
+      throw new BadRequestException('File size exceeds 50MB limit');
+    }
+
+    const ext = extname(input.originalname).toLowerCase();
+    const key = `media/${uuidv4()}${ext}`;
+
+    const uploaded = await this.storage.uploadFile(key, input.buffer, input.size, input.mimetype);
+
+    return this.repository.create({
+      filename: input.originalname,
+      r2Key: uploaded.key,
+      url: uploaded.url,
+      mimeType: input.mimetype,
+      sizeBytes: BigInt(input.size),
+      altTextI18n: input.altTextI18n ?? null,
+      uploadedBy: input.uploadedBy,
+    });
   }
 }

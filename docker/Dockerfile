@@ -1,7 +1,7 @@
 # =========================
 # 1) Dependencies
 # =========================
-FROM public.ecr.aws/docker/library/node:20-alpine AS deps
+FROM public.ecr.aws/docker/library/node:22-alpine AS deps
 
 RUN addgroup -g 1001 -S appgroup \
   && adduser -S appuser -u 1001 -G appgroup
@@ -24,7 +24,7 @@ RUN npm ci
 # =========================
 # 2) Builder
 # =========================
-FROM public.ecr.aws/docker/library/node:20-alpine AS builder
+FROM public.ecr.aws/docker/library/node:22-alpine AS builder
 
 RUN addgroup -g 1001 -S appgroup \
   && adduser -S appuser -u 1001 -G appgroup
@@ -52,7 +52,9 @@ RUN npm prune --omit=dev
 # =========================
 # 3) Runner (Production)
 # =========================
-FROM public.ecr.aws/docker/library/node:20-alpine AS runner
+FROM public.ecr.aws/docker/library/node:22-alpine AS runner
+
+RUN apk add --no-cache curl wget
 
 ENV NODE_ENV=production
 

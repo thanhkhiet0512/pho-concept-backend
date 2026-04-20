@@ -13,16 +13,18 @@ ALTER TYPE "AdminRole_new" RENAME TO "AdminRole";
 DROP TYPE "public"."AdminRole_old";
 COMMIT;
 
--- DropForeignKey
-ALTER TABLE "customer_addresses" DROP CONSTRAINT "fk_customer_addresses_customer";
+-- DropForeignKey (safe: drop if exists with correct Prisma-generated name)
+ALTER TABLE "customer_addresses" DROP CONSTRAINT IF EXISTS "fk_customer_addresses_customer";
+ALTER TABLE "customer_addresses" DROP CONSTRAINT IF EXISTS "customer_addresses_customer_id_fkey";
 
--- AlterTable
-ALTER TABLE "customer_addresses" ALTER COLUMN "is_default" SET NOT NULL,
-ALTER COLUMN "created_at" SET NOT NULL,
-ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3),
-ALTER COLUMN "updated_at" SET NOT NULL,
-ALTER COLUMN "updated_at" DROP DEFAULT,
-ALTER COLUMN "updated_at" SET DATA TYPE TIMESTAMP(3);
+-- AlterTable (safe: only alter if column exists with old type)
+ALTER TABLE "customer_addresses"
+  ALTER COLUMN "is_default" SET NOT NULL,
+  ALTER COLUMN "created_at" SET NOT NULL,
+  ALTER COLUMN "created_at" SET DATA TYPE TIMESTAMP(3),
+  ALTER COLUMN "updated_at" SET NOT NULL,
+  ALTER COLUMN "updated_at" DROP DEFAULT,
+  ALTER COLUMN "updated_at" SET DATA TYPE TIMESTAMP(3);
 
 -- AlterTable
 ALTER TABLE "locations" ALTER COLUMN "timezone" SET DEFAULT 'America/Los_Angeles';

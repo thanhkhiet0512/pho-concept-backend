@@ -4,7 +4,9 @@ module.exports = {
   testRegex: '.*\\.spec\\.ts$',
   transform: {
     '^.+\\.(t|j)s$': 'ts-jest',
+    '^.+\\.js$': ['ts-jest', { useESM: false }],
   },
+  transformIgnorePatterns: ['node_modules/(?!(uuid)/)'],
   collectCoverageFrom: ['src/**/*.(t|j)s'],
   coverageDirectory: './coverage',
   testEnvironment: 'node',

@@ -5,7 +5,7 @@ import { UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { AdminRole } from '@/common/enums/admin-role.enum';
 import { AuthRepositoryPort } from '@/domain/auth/ports/auth.repository.port';
 import { RedisService } from '@/infrastructure/redis/redis.service';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;

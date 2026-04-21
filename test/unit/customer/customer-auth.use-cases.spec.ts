@@ -3,7 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RegisterCustomerUseCase } from '@/application/customer/auth/use-cases/register-customer.use-case';
 import { LoginCustomerUseCase } from '@/application/customer/auth/use-cases/login-customer.use-case';
 import { UnauthorizedException, ForbiddenException, ConflictException } from '@nestjs/common';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 describe('CustomerAuth Use Cases', () => {
   let registerUseCase: RegisterCustomerUseCase;

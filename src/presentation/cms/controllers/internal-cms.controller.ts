@@ -1,10 +1,11 @@
-import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, HttpCode, HttpStatus, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator } from '@nestjs/common';
+import { Controller, Get, Post, Put, Patch, Delete, Body, Param, Query, UseGuards, HttpCode, HttpStatus, UseInterceptors, UploadedFile, ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, BadRequestException } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Roles } from '@common/decorators/roles.decorator';
 import { AdminRole } from '@common/enums/admin-role.enum';
+import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';
 import { PaginationDto } from '@common/dto/pagination.dto';
 import {
@@ -311,16 +312,17 @@ export class InternalCmsController {
       }),
     )
     file: Express.Multer.File,
-    @Body('uploadedBy') uploadedBy: string,
+    @CurrentUser() currentUser: { id: number },
     @Body('altTextEn') altTextEn?: string,
     @Body('altTextVi') altTextVi?: string,
   ) {
+    if (!currentUser?.id) throw new BadRequestException('User not authenticated');
     const result = await this.uploadMediaUseCase.execute({
       buffer: file.buffer,
       originalname: file.originalname,
       mimetype: file.mimetype,
       size: file.size,
-      uploadedBy: BigInt(uploadedBy),
+      uploadedBy: BigInt(currentUser.id),
       altTextI18n: altTextEn ? { en: altTextEn, vi: altTextVi } : null,
     });
     return MediaFileResponseDto.from(result);

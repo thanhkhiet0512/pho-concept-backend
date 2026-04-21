@@ -1,13 +1,15 @@
 model MediaFile {
-  id          BigInt   @id @default(autoincrement()) @map("media_file_id")
-  filename    String   @map("filename") @db.VarChar(255)
-  r2Key       String   @unique @map("r2_key") @db.VarChar(1000)
-  url         String   @map("url") @db.VarChar(1000)
-  mimeType    String   @map("mime_type") @db.VarChar(100)
-  sizeBytes   BigInt   @map("size_bytes")
-  altTextI18n Json?    @map("alt_text_i18n") @db.JsonB
-  uploadedBy  BigInt   @map("uploaded_by")
-  createdAt   DateTime @default(now()) @map("created_at")
+  id          BigInt     @id @default(autoincrement()) @map("media_file_id")
+  filename    String     @map("filename") @db.VarChar(255)
+  r2Key       String     @unique @map("r2_key") @db.VarChar(1000)
+  url         String     @map("url") @db.VarChar(1000)
+  mimeType    String     @map("mime_type") @db.VarChar(100)
+  sizeBytes   BigInt     @map("size_bytes")
+  altTextI18n Json?      @map("alt_text_i18n") @db.JsonB
+  uploadedBy  BigInt     @map("uploaded_by")
+  uploader    AdminUser  @relation(fields: [uploadedBy], references: [id], onDelete: Restrict)
+  createdAt   DateTime   @default(now()) @map("created_at")
+  updatedAt   DateTime   @updatedAt @map("updated_at")
 
   @@index([uploadedBy])
   @@index([mimeType])

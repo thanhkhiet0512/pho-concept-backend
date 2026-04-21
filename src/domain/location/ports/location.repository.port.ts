@@ -32,7 +32,7 @@ export interface UpdateLocationData {
 }
 
 export abstract class LocationRepositoryPort {
-  abstract findAll(): Promise<LocationEntity[]>;
+  abstract findAll(params?: { includeInactive?: boolean }): Promise<LocationEntity[]>;
   abstract findById(id: bigint): Promise<LocationEntity | null>;
   abstract findBySlug(slug: string): Promise<LocationEntity | null>;
   abstract create(data: CreateLocationData): Promise<LocationEntity>;

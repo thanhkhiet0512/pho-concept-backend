@@ -3,6 +3,7 @@ import { JwtService } from '@nestjs/jwt';
 import { RefreshTokenDto } from '@application/customer/auth/dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
 import { RedisService } from '@infrastructure/redis/redis.service';
+import { CustomerRepositoryPort } from '@domain/customer/ports/customer.repository.port';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 
@@ -12,7 +13,7 @@ export class RefreshTokenCustomerUseCase {
   private readonly REFRESH_EXPIRES_IN = '7d';
 
   constructor(
-    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
+    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: CustomerRepositoryPort,
     private readonly jwtService: JwtService,
     private readonly redisService: RedisService,
   ) {}

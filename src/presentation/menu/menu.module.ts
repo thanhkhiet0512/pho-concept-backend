@@ -20,11 +20,13 @@ import {
   MenuItemAdapter,
   MenuItemPriceAdapter,
 } from '@infrastructure/prisma/repositories/menu/menu.adapter';
+import { LocationAdapter } from '@infrastructure/prisma/repositories/location/location.adapter';
 import {
   MENU_CATEGORY_REPOSITORY_TOKEN,
   MENU_ITEM_REPOSITORY_TOKEN,
   MENU_ITEM_PRICE_REPOSITORY_TOKEN,
 } from '@domain/menu/ports/menu.repository.token';
+import { LOCATION_REPOSITORY_TOKEN } from '@domain/location/ports/location.repository.token';
 
 @Module({
   controllers: [PublicMenuController, InternalMenuController],
@@ -33,10 +35,12 @@ import {
     MenuCategoryAdapter,
     MenuItemAdapter,
     MenuItemPriceAdapter,
+    LocationAdapter,
     // Tokens
     { provide: MENU_CATEGORY_REPOSITORY_TOKEN, useClass: MenuCategoryAdapter },
     { provide: MENU_ITEM_REPOSITORY_TOKEN, useClass: MenuItemAdapter },
     { provide: MENU_ITEM_PRICE_REPOSITORY_TOKEN, useClass: MenuItemPriceAdapter },
+    { provide: LOCATION_REPOSITORY_TOKEN, useClass: LocationAdapter },
     // Use Cases - Category
     GetCategoriesUseCase,
     GetCategoryByIdUseCase,

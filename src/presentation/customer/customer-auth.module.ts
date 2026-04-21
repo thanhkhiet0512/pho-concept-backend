@@ -41,6 +41,6 @@ const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
     GetCustomerProfileUseCase,
     LogoutCustomerUseCase,
   ],
-  exports: [CustomerAuthModule, CustomerAdapter, CUSTOMER_REPO_TOKEN],
+  exports: [CustomerAdapter, CUSTOMER_REPO_TOKEN],
 })
 export class CustomerAuthModule {}

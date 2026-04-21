@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from 'minio';
 import type { Readable } from 'stream';
-import { IStoragePort, UploadResult } from './storage.port';
+import { IStoragePort, UploadResult } from '@application/cms/ports/storage.port';
 
 @Injectable()
 export class MinioService extends IStoragePort implements OnModuleInit {

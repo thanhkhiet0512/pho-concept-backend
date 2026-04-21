@@ -11,8 +11,8 @@ export class LocationService {
     private readonly locationRepository: LocationRepositoryPort,
   ) {}
 
-  async findAll(): Promise<LocationEntity[]> {
-    return this.locationRepository.findAll();
+  async findAll(includeInactive = false): Promise<LocationEntity[]> {
+    return this.locationRepository.findAll({ includeInactive });
   }
 
   async findById(id: bigint): Promise<LocationEntity> {

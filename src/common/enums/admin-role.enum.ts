@@ -1,6 +1,1 @@
-export enum AdminRole {
-  OWNER = 'owner',
-  MANAGER = 'manager',
-  STAFF = 'staff',
-  VIEW_ONLY = 'view_only',
-}
+export { AdminRole } from '@domain/auth/enums/admin-role.enum';

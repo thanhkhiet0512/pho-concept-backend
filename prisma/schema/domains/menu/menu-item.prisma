@@ -34,7 +34,6 @@ model MenuItemPrice {
   updatedAt  DateTime  @updatedAt @map("updated_at")
 
   @@unique([menuItemId, locationId, sizeLabel])
-  @@index([menuItemId])
   @@index([locationId])
   @@map("menu_item_prices")
 }

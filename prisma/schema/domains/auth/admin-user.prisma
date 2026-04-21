@@ -9,5 +9,9 @@ model AdminUser {
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
 
+  mediaFiles   MediaFile[]
+
+  @@index([role])
+  @@index([isActive])
   @@map("admin_users")
 }

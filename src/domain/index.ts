@@ -1,6 +1,14 @@
 export * from './auth/types/auth.types';
 export * from './auth/entities/admin-user.entity';
+export * from './auth/enums/admin-role.enum';
 export * from './auth/ports/auth.repository.port';
+export * from './auth/ports/admin-user.repository.port';
 export * from './location/entities/location.entity';
 export * from './location/entities/location-hour.entity';
 export * from './location/ports/location.repository.port';
+export * from './menu/entities/menu.entity';
+export { MenuCategoryRepositoryPort, MenuItemRepositoryPort, MenuItemPriceRepositoryPort } from './menu/ports/menu.repository.port';
+export * from './customer/entities/customer.entity';
+export * from './customer/ports/customer.repository.port';
+export * from './cms/entities/cms.entity';
+export * from './cms/ports/cms.repository.port';

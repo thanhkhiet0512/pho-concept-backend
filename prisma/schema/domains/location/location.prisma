@@ -16,6 +16,7 @@ model Location {
   hours      LocationHour[]
   menuPrices MenuItemPrice[]
 
+  @@index([isActive])
   @@map("locations")
 }
 

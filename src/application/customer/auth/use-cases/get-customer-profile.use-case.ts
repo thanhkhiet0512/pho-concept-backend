@@ -1,11 +1,12 @@
 import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
+import { CustomerRepositoryPort } from '@domain/customer/ports/customer.repository.port';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 
 @Injectable()
 export class GetCustomerProfileUseCase {
   constructor(
-    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
+    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: CustomerRepositoryPort,
   ) {}
 
   async execute(userId: bigint) {

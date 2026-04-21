@@ -14,17 +14,6 @@ export class PaginationDto {
   @IsOptional()
   @Type(() => Number)
   @IsInt()
-  @Min(-1)
+  @Min(1)
   limit?: number = 20;
-}
-
-export interface PaginatedResult<T> {
-  list: T[];
-  pagination: {
-    limit: number | undefined;
-    offset: number;
-    nextOffset: number | null;
-    hasNext: boolean;
-    total: number;
-  };
 }

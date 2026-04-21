@@ -1,8 +1,9 @@
 import { Injectable, Inject, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { LoginCustomerDto } from '@application/customer/auth/dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
+import { CustomerRepositoryPort } from '@domain/customer/ports/customer.repository.port';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 
@@ -12,7 +13,7 @@ export class LoginCustomerUseCase {
   private readonly REFRESH_EXPIRES_IN = '7d';
 
   constructor(
-    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
+    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: CustomerRepositoryPort,
     private readonly jwtService: JwtService,
   ) {}
 

@@ -25,7 +25,7 @@ import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { setAuthCookies, clearAuthCookies } from '@common/helpers/set-auth-cookies.helper';
 
 @ApiTags('Auth - Customer')
-@Controller('a/customer')
+@Controller('auth/customer')
 export class CustomerAuthController {
   constructor(
     private readonly registerUseCase: RegisterCustomerUseCase,

@@ -1,4 +1,4 @@
-import { AdminRole } from '@common/enums/admin-role.enum';
+import { AdminRole } from '@domain/auth/enums/admin-role.enum';
 import { AdminUserEntity } from '@domain/auth/entities/admin-user.entity';
 
 export interface AdminUserRepositoryPort {

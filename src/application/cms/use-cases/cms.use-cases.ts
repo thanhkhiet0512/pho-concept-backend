@@ -1,7 +1,7 @@
 import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
-import { IStoragePort } from '@infrastructure/storage/storage.port';
+import { IStoragePort } from '@application/cms/ports/storage.port';
 import {
   CmsPageRepositoryPort,
   BlogPostRepositoryPort,
@@ -285,10 +285,12 @@ export class GetActiveEventsUseCase {
     private readonly repository: EventRepositoryPort,
   ) {}
 
-  async execute(params?: { featured?: boolean; upcoming?: boolean }) {
+  async execute(params?: { featured?: boolean; upcoming?: boolean }, pagination?: PaginationDto) {
+    const page = pagination?.page ?? 1;
+    const limit = pagination?.limit ?? 20;
     return this.repository.findActive({
-      page: 1,
-      limit: 20,
+      page,
+      limit,
       isFeatured: params?.featured,
       upcoming: params?.upcoming,
     });
@@ -379,7 +381,7 @@ export class UpdateEventUseCase {
       descriptionI18n: dto.descriptionI18n,
       coverImageUrl: dto.coverImageUrl,
       eventDate: dto.eventDate ? new Date(dto.eventDate) : undefined,
-      eventEndDate: dto.eventEndDate ? new Date(dto.eventEndDate) : null,
+      eventEndDate: dto.eventEndDate !== undefined ? (dto.eventEndDate ? new Date(dto.eventEndDate) : null) : undefined,
       eventType: dto.eventType as EventType | undefined,
       isFeatured: dto.isFeatured,
       isActive: dto.isActive,

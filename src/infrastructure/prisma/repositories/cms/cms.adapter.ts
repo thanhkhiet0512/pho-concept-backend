@@ -175,7 +175,7 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     const [posts, total] = await Promise.all([
       this.prisma.blogPost.findMany({
         where,
-        orderBy: { publishedAt: 'desc' },
+        orderBy: [{ publishedAt: { sort: 'desc', nulls: 'last' } }, { updatedAt: 'desc' }],
         skip,
         take: limit,
       }),
@@ -253,12 +253,13 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
   }
 
   async updateStatus(id: bigint, status: DomainBlogPostStatus): Promise<BlogPostEntity> {
-    const publishedAt = status === DomainBlogPostStatus.PUBLISHED ? new Date() : undefined;
+    const current = await this.prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } });
+    const publishedAt = status === DomainBlogPostStatus.PUBLISHED && !current?.publishedAt ? new Date() : undefined;
     const post = await this.prisma.blogPost.update({
       where: { id },
       data: {
         status: BlogPostStatusToPrisma(status),
-        publishedAt: publishedAt ?? undefined,
+        ...(publishedAt ? { publishedAt } : {}),
       },
     });
     return this.map(post);

@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { AuthRepositoryPort } from '@domain/auth/ports/auth.repository.port';
 import { RedisService } from '@infrastructure/redis/redis.service';
 import { LoginDto } from '@application/auth/dtos/login.dto';

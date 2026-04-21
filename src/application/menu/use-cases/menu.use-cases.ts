@@ -5,8 +5,9 @@ import {
   MenuItemPriceRepositoryPort,
 } from '@domain/menu/ports/menu.repository.port';
 import { MENU_CATEGORY_REPOSITORY_TOKEN, MENU_ITEM_REPOSITORY_TOKEN, MENU_ITEM_PRICE_REPOSITORY_TOKEN } from '@domain/menu/ports/menu.repository.token';
+import { LocationRepositoryPort } from '@domain/location/ports/location.repository.port';
+import { LOCATION_REPOSITORY_TOKEN } from '@domain/location/ports/location.repository.token';
 import { CreateCategoryDto, UpdateCategoryDto, CreateMenuItemDto, UpdateMenuItemDto, UpdateMenuItemPricesDto } from '@application/menu/dtos/menu.dto';
-import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import { PaginationDto } from '@common/dto/pagination.dto';
 
 // ===================== CATEGORY USE CASES =====================
@@ -262,7 +263,8 @@ export class UpdateMenuItemPricesUseCase {
     private readonly itemRepository: MenuItemRepositoryPort,
     @Inject(MENU_ITEM_PRICE_REPOSITORY_TOKEN)
     private readonly priceRepository: MenuItemPriceRepositoryPort,
-    private readonly prisma: PrismaService,
+    @Inject(LOCATION_REPOSITORY_TOKEN)
+    private readonly locationRepository: LocationRepositoryPort,
   ) {}
 
   async execute(menuItemId: bigint, dto: UpdateMenuItemPricesDto) {
@@ -272,7 +274,7 @@ export class UpdateMenuItemPricesUseCase {
     }
 
     const locationId = BigInt(dto.locationId);
-    const location = await this.prisma.location.findUnique({ where: { id: locationId } });
+    const location = await this.locationRepository.findById(locationId);
     if (!location) {
       throw new NotFoundException(`Location with id ${dto.locationId} not found`);
     }

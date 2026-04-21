@@ -11,7 +11,7 @@ model Event {
   createdAt       DateTime    @default(now()) @map("created_at")
   updatedAt       DateTime    @updatedAt @map("updated_at")
 
-  @@index([eventDate, isActive])
+  @@index([isActive, eventDate])
   @@index([isFeatured])
   @@map("events")
 }

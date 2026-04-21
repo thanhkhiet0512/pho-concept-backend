@@ -8,8 +8,10 @@ import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { ResponseInterceptor } from './common/interceptors/response.interceptor';
 import { winstonConfig } from './logger/winston.config';
 import validationOptions from './common/validation-options';
+import { validateEnv } from './config/env.validation';
 
 async function bootstrap() {
+  validateEnv();
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
     logger: WinstonModule.createLogger(winstonConfig),

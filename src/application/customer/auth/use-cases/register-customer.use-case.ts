@@ -1,8 +1,9 @@
 import { Injectable, Inject, ConflictException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 import { RegisterCustomerDto } from '@application/customer/auth/dtos';
 import { AuthTokens, CustomerJwtPayload } from '@domain/auth/types/auth.types';
+import { CustomerRepositoryPort } from '@domain/customer/ports/customer.repository.port';
 
 const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 
@@ -12,7 +13,7 @@ export class RegisterCustomerUseCase {
   private readonly REFRESH_EXPIRES_IN = '7d';
 
   constructor(
-    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
+    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: CustomerRepositoryPort,
     private readonly jwtService: JwtService,
   ) {}
 
@@ -22,7 +23,7 @@ export class RegisterCustomerUseCase {
       throw new ConflictException('Email already registered');
     }
 
-    const passwordHash = await bcrypt.hash(dto.password, 10);
+    const passwordHash = await bcrypt.hash(dto.password, 12);
     const customer = await this.customerRepository.create({
       email: dto.email,
       passwordHash,

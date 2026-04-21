@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Get, Param, Query, NotFoundException } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
 import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';
@@ -57,6 +57,9 @@ export class PublicMenuController {
   @ApiOperation({ summary: 'Get menu item by ID' })
   async getItemById(@Param('id', ParseBigIntPipe) id: bigint) {
     const item = await this.getMenuItemByIdUseCase.execute(id);
+    if (!item.isActive || item.deletedAt) {
+      throw new NotFoundException(`Menu item with id ${id} not found`);
+    }
     return MenuItemResponseDto.from(item);
   }
 }

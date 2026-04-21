@@ -20,7 +20,7 @@ export class InternalLocationController {
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
   @ApiOperation({ summary: 'Get all locations (including inactive)' })
   async findAll() {
-    const locations = await this.locationService.findAll();
+    const locations = await this.locationService.findAll(true);
     return LocationResponseDto.toList(locations);
   }
 

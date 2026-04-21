@@ -59,9 +59,9 @@ export class LocationAdapter implements LocationRepositoryPort {
     });
   }
 
-  async findAll(): Promise<LocationEntity[]> {
+  async findAll(params?: { includeInactive?: boolean }): Promise<LocationEntity[]> {
     const locations = await this.prisma.location.findMany({
-      where: { isActive: true },
+      where: params?.includeInactive ? undefined : { isActive: true },
       include: { hours: true },
       orderBy: { id: 'asc' },
     });

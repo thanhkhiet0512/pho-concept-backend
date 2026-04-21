@@ -12,6 +12,8 @@ model Customer {
 
   addresses    CustomerAddress[]
 
+  @@index([isActive])
+  @@index([phone])
   @@map("customers")
 }
 

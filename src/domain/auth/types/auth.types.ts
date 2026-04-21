@@ -1,4 +1,4 @@
-import { AdminRole } from '@common/enums/admin-role.enum';
+import { AdminRole } from '@domain/auth/enums/admin-role.enum';
 
 export interface CustomerJwtPayload {
   sub: number;

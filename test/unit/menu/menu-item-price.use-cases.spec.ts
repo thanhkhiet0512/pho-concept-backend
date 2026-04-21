@@ -5,7 +5,7 @@ import {
   MENU_ITEM_REPOSITORY_TOKEN,
   MENU_ITEM_PRICE_REPOSITORY_TOKEN,
 } from '@/domain/menu/ports/menu.repository.token';
-import { PrismaService } from '@/infrastructure/prisma/prisma.service';
+import { LOCATION_REPOSITORY_TOKEN } from '@/domain/location/ports/location.repository.token';
 import { MenuItemEntity } from '@/domain/menu/entities/menu.entity';
 
 const mockItem = MenuItemEntity.reconstitute({
@@ -27,7 +27,7 @@ describe('Menu Item Price Use Cases', () => {
   let updatePricesUseCase: UpdateMenuItemPricesUseCase;
   let mockItemRepository: any;
   let mockPriceRepository: any;
-  let mockPrisma: any;
+  let mockLocationRepository: any;
 
   beforeEach(async () => {
     mockItemRepository = {
@@ -38,10 +38,8 @@ describe('Menu Item Price Use Cases', () => {
       upsert: jest.fn(),
     };
 
-    mockPrisma = {
-      location: {
-        findUnique: jest.fn(),
-      },
+    mockLocationRepository = {
+      findById: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -49,7 +47,7 @@ describe('Menu Item Price Use Cases', () => {
         UpdateMenuItemPricesUseCase,
         { provide: MENU_ITEM_REPOSITORY_TOKEN, useValue: mockItemRepository },
         { provide: MENU_ITEM_PRICE_REPOSITORY_TOKEN, useValue: mockPriceRepository },
-        { provide: PrismaService, useValue: mockPrisma },
+        { provide: LOCATION_REPOSITORY_TOKEN, useValue: mockLocationRepository },
       ],
     }).compile();
 
@@ -60,7 +58,7 @@ describe('Menu Item Price Use Cases', () => {
     it('should upsert prices for a valid item and location', async () => {
       const mockPrices: any[] = [];
       mockItemRepository.findById.mockResolvedValue(mockItem);
-      mockPrisma.location.findUnique.mockResolvedValue({ id: BigInt(1), slug: 'ho-chi-minh' });
+      mockLocationRepository.findById.mockResolvedValue({ id: BigInt(1), slug: 'ho-chi-minh' });
       mockPriceRepository.upsert.mockResolvedValue(mockPrices);
 
       const result = await updatePricesUseCase.execute(BigInt(1), {
@@ -74,7 +72,7 @@ describe('Menu Item Price Use Cases', () => {
 
       expect(result).toEqual(mockPrices);
       expect(mockItemRepository.findById).toHaveBeenCalledWith(BigInt(1));
-      expect(mockPrisma.location.findUnique).toHaveBeenCalledWith({ where: { id: BigInt(1) } });
+      expect(mockLocationRepository.findById).toHaveBeenCalledWith(BigInt(1));
       expect(mockPriceRepository.upsert).toHaveBeenCalledWith(
         BigInt(1),
         BigInt(1),
@@ -99,7 +97,7 @@ describe('Menu Item Price Use Cases', () => {
 
     it('should throw NotFoundException if location not found', async () => {
       mockItemRepository.findById.mockResolvedValue(mockItem);
-      mockPrisma.location.findUnique.mockResolvedValue(null);
+      mockLocationRepository.findById.mockResolvedValue(null);
 
       await expect(
         updatePricesUseCase.execute(BigInt(1), {
@@ -111,7 +109,7 @@ describe('Menu Item Price Use Cases', () => {
 
     it('should pass isActive to upsert when provided', async () => {
       mockItemRepository.findById.mockResolvedValue(mockItem);
-      mockPrisma.location.findUnique.mockResolvedValue({ id: BigInt(1) });
+      mockLocationRepository.findById.mockResolvedValue({ id: BigInt(1) });
       mockPriceRepository.upsert.mockResolvedValue([]);
 
       await updatePricesUseCase.execute(BigInt(1), {

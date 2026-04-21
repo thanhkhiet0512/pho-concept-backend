@@ -10,7 +10,7 @@ import {
 } from '@/application/admin/user/use-cases/admin-user.use-cases';
 import { AdminRole } from '@/common/enums/admin-role.enum';
 import { ADMIN_USER_REPOSITORY } from '@/domain/auth/ports/admin-user.repository.token';
-import * as bcrypt from 'bcryptjs';
+import * as bcrypt from 'bcrypt';
 
 describe('AdminUser Use Cases', () => {
   let getAdminUsersUseCase: GetAdminUsersUseCase;

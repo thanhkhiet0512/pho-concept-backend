@@ -1,5 +1,5 @@
 import { prisma } from './seeders/prisma-client.js';
-import { hash } from 'bcryptjs';
+import { hash } from 'bcrypt';
 
 const hashPassword = async (password: string): Promise<string> =>
   await hash(password, 12);

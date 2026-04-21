@@ -17,7 +17,8 @@
     "test:e2e": "jest --config test/jest-e2e.json",
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
-    "prisma:seed": "prisma db seed",
+    "prisma:seed:compile": "tsc prisma/seed.ts prisma/seeders/prisma-client.ts --outDir dist --module commonjs --esModuleInterop --skipLibCheck --target ES2022",
+    "prisma:seed": "npm run prisma:seed:compile && prisma db seed",
     "prisma:deploy": "prisma migrate deploy",
     "prisma:push": "prisma db push --force-reset"
   },
@@ -77,6 +78,6 @@
     "node": ">=22"
   },
   "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "seed": "node dist/prisma/seed.js"
   }
 }

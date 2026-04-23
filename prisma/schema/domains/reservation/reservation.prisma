@@ -1,0 +1,40 @@
+model ReservationSlotConfig {
+  id               BigInt   @id @default(autoincrement()) @map("slot_config_id")
+  locationId       BigInt   @unique @map("location_id")
+  location         Location @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  slotDuration     Int      @default(30) @map("slot_duration")
+  maxGuestsPerSlot Int      @default(20) @map("max_guests_per_slot")
+  minAdvanceHours  Int      @default(1) @map("min_advance_hours")
+  maxAdvanceDays   Int      @default(30) @map("max_advance_days")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  @@map("reservation_slot_configs")
+}
+
+model Reservation {
+  id              BigInt             @id @default(autoincrement()) @map("reservation_id")
+  token           String             @unique @default(uuid()) @map("token")
+  locationId      BigInt             @map("location_id")
+  location        Location           @relation(fields: [locationId], references: [id])
+  guestName       String             @map("guest_name") @db.VarChar(255)
+  guestEmail      String             @map("guest_email") @db.VarChar(255)
+  guestPhone      String             @map("guest_phone") @db.VarChar(20)
+  partySize       Int                @map("party_size")
+  reservationDate DateTime           @map("reservation_date") @db.Date
+  reservationTime String             @map("reservation_time") @db.VarChar(5)
+  status          ReservationStatus  @default(PENDING)
+  specialRequest  String?            @map("special_request") @db.Text
+  internalNote    String?            @map("internal_note") @db.Text
+  createdByAdminId BigInt?          @map("created_by_admin_id")
+  createdByAdmin AdminUser?        @relation("CreatedByAdmin", fields: [createdByAdminId], references: [id])
+  deletedAt       DateTime?          @map("deleted_at")
+  createdAt       DateTime           @default(now()) @map("created_at")
+  updatedAt       DateTime           @updatedAt @map("updated_at")
+
+  @@index([locationId, reservationDate])
+  @@index([status])
+  @@index([guestEmail])
+  @@index([token])
+  @@map("reservations")
+}

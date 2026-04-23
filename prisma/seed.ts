@@ -1,5 +1,6 @@
 import { prisma } from './seeders/prisma-client.js';
 import { hash } from 'bcrypt';
+import { AdminRole } from '@prisma/client';
 
 const hashPassword = async (password: string): Promise<string> =>
   await hash(password, 12);
@@ -16,7 +17,7 @@ async function main() {
       email: 'owner@phoconcept.com',
       passwordHash: ownerHash,
       name: 'Chris Hong',
-      role: 'owner',
+      role: AdminRole.owner,
       isActive: true,
     },
   });
@@ -57,6 +58,20 @@ async function main() {
     skipDuplicates: true,
   });
   console.log(`✅ Location hours: 7 days`);
+
+  // ── Reservation slot config ───────────────────────────────────────────────────
+  await prisma.reservationSlotConfig.upsert({
+    where: { locationId: location.id },
+    update: {},
+    create: {
+      locationId: location.id,
+      slotDuration: 30,
+      maxGuestsPerSlot: 20,
+      minAdvanceHours: 1,
+      maxAdvanceDays: 30,
+    },
+  });
+  console.log(`✅ Reservation slot config: 30min slots, max 20 guests`);
 
   console.log('🎉 Seed complete!');
 }

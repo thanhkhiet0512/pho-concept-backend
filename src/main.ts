@@ -14,6 +14,7 @@ async function bootstrap() {
   validateEnv();
   const app = await NestFactory.create(AppModule, {
     bufferLogs: true,
+    rawBody: true,
     logger: WinstonModule.createLogger(winstonConfig),
   });
 

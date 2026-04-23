@@ -12,6 +12,10 @@ import { ReservationModule } from './presentation/reservation/reservation.module
 import { HealthModule } from './health/health.module';
 import { I18nConfig } from './i18n/i18n.config';
 import { I18nAppModule } from './i18n/i18n.module';
+import { MailModule } from './infrastructure/mail/mail.module';
+import { SmsModule } from './infrastructure/sms/sms.module';
+import { QueueModule } from './infrastructure/queue/queue.module';
+import { CateringModule } from './presentation/catering/catering.module';
 
 @Module({
   imports: [
@@ -28,6 +32,10 @@ import { I18nAppModule } from './i18n/i18n.module';
     CmsModule,
     ReservationModule,
     HealthModule,
+    MailModule,
+    SmsModule,
+    QueueModule,
+    CateringModule,
   ],
 })
 export class AppModule {}

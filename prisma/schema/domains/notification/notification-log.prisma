@@ -1,0 +1,17 @@
+model NotificationLog {
+  id        BigInt    @id @default(autoincrement()) @map("log_id")
+  type      String    @db.VarChar(10)
+  recipient String    @db.VarChar(255)
+  subject   String?   @db.VarChar(500)
+  template  String    @db.VarChar(100)
+  status    String    @db.VarChar(10)
+  error     String?   @db.Text
+  metadata  Json?     @db.JsonB
+  sentAt    DateTime? @map("sent_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+
+  @@index([type, status])
+  @@index([recipient])
+  @@index([template])
+  @@map("notification_logs")
+}

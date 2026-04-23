@@ -17,6 +17,7 @@ model Location {
   menuPrices        MenuItemPrice[]
   slotConfig        ReservationSlotConfig?
   reservations      Reservation[]
+  cateringRequests CateringRequest[]
 
   @@index([isActive])
   @@map("locations")

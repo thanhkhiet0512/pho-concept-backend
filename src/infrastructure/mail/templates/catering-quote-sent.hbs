@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Your Catering Quote</title></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #8B0000;">Pho Concept — Your Catering Quote</h2>
+  <p>Dear <strong>{{contactName}}</strong>,</p>
+  <p>We are pleased to present your catering quote for the event on <strong>{{eventDate}}</strong>.</p>
+  <h3>Quote Details</h3>
+  <table style="width:100%; border-collapse:collapse; margin: 20px 0;">
+    <thead>
+      <tr style="background:#8B0000; color:white;">
+        <th style="padding:10px; text-align:left;">Item</th>
+        <th style="padding:10px; text-align:center;">Qty</th>
+        <th style="padding:10px; text-align:right;">Unit Price</th>
+        <th style="padding:10px; text-align:right;">Total</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{#each items}}
+      <tr style="border-bottom:1px solid #ddd;">
+        <td style="padding:8px;">{{this.name}}</td>
+        <td style="padding:8px; text-align:center;">{{this.quantity}}</td>
+        <td style="padding:8px; text-align:right;">${{this.unitPrice}}</td>
+        <td style="padding:8px; text-align:right;">${{this.lineTotal}}</td>
+      </tr>
+      {{/each}}
+    </tbody>
+    <tfoot>
+      <tr style="background:#f9f9f9; font-weight:bold;">
+        <td colspan="3" style="padding:10px; text-align:right;">Total:</td>
+        <td style="padding:10px; text-align:right;">${{quotedAmount}}</td>
+      </tr>
+      <tr>
+        <td colspan="3" style="padding:10px; text-align:right;">Deposit Required:</td>
+        <td style="padding:10px; text-align:right;">${{depositAmount}}</td>
+      </tr>
+    </tfoot>
+  </table>
+  <p style="color:#cc0000;"><strong>Please confirm by {{quotationDeadline}}. After this date, the quote will expire.</strong></p>
+  <p>To confirm or for any questions, please contact us at <a href="mailto:lasvegas@phoconcept.com">lasvegas@phoconcept.com</a> or call us directly.</p>
+  <p>Reference token: <strong>{{token}}</strong></p>
+  <p style="color:#666; font-size:12px;">Pho Concept Las Vegas | 4745 Spring Mountain Rd, Las Vegas, NV 89102</p>
+</body>
+</html>

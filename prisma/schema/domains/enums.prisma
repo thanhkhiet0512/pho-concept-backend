@@ -25,3 +25,12 @@ enum ReservationStatus {
   NO_SHOW
   CANCELLED
 }
+
+enum CateringStatus {
+  INQUIRY
+  QUOTED
+  DEPOSIT_PAID
+  CONFIRMED
+  COMPLETED
+  CANCELLED
+}

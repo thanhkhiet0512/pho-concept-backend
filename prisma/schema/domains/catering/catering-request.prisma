@@ -1,0 +1,38 @@
+model CateringRequest {
+  id                  BigInt         @id @default(autoincrement()) @map("request_id")
+  token               String         @unique @default(dbgenerated("gen_random_uuid()::text")) @db.VarChar(255)
+  locationId          BigInt         @map("location_id")
+  packageId           BigInt?        @map("package_id")
+  contactName         String         @map("contact_name") @db.VarChar(255)
+  contactEmail        String         @map("contact_email") @db.VarChar(255)
+  contactPhone        String         @map("contact_phone") @db.VarChar(20)
+  eventDate           DateTime       @map("event_date") @db.Date
+  eventTime           String         @map("event_time") @db.VarChar(5)
+  guestCount          Int            @map("guest_count")
+  venue               String?        @db.VarChar(500)
+  specialRequest      String?        @map("special_request") @db.Text
+  status              CateringStatus @default(INQUIRY)
+  quotedAmount        Decimal?       @map("quoted_amount") @db.Decimal(10, 2)
+  depositAmount       Decimal?       @map("deposit_amount") @db.Decimal(10, 2)
+  depositPaidAt       DateTime?      @map("deposit_paid_at")
+  stripePaymentIntent String?        @map("stripe_payment_intent") @db.VarChar(255)
+  quotationDeadline   DateTime?      @map("quotation_deadline")
+  internalNote        String?        @map("internal_note") @db.Text
+  handledByAdminId    BigInt?        @map("handled_by_admin_id")
+  deletedAt           DateTime?      @map("deleted_at")
+  createdAt           DateTime       @default(now()) @map("created_at")
+  updatedAt           DateTime       @updatedAt @map("updated_at")
+
+  location         Location         @relation(fields: [locationId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  package          CateringPackage? @relation(fields: [packageId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  handledByAdmin   AdminUser?       @relation(fields: [handledByAdminId], references: [id], onDelete: SetNull, onUpdate: Cascade)
+  items            CateringItem[]
+
+  @@index([status])
+  @@index([status, quotationDeadline])
+  @@index([eventDate])
+  @@index([locationId, eventDate])
+  @@index([contactEmail])
+  @@index([token])
+  @@map("catering_requests")
+}

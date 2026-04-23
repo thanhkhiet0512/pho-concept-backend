@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+<head><meta charset="utf-8"><title>Catering Inquiry Received</title></head>
+<body style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px;">
+  <h2 style="color: #8B0000;">Pho Concept — Catering Inquiry Received</h2>
+  <p>Dear <strong>{{contactName}}</strong>,</p>
+  <p>Thank you for your catering inquiry. We have received your request and will contact you within 24 hours.</p>
+  <table style="width:100%; border-collapse:collapse; margin: 20px 0;">
+    <tr><td style="padding:8px; border:1px solid #ddd; background:#f9f9f9;"><strong>Event Date</strong></td><td style="padding:8px; border:1px solid #ddd;">{{eventDate}}</td></tr>
+    <tr><td style="padding:8px; border:1px solid #ddd; background:#f9f9f9;"><strong>Event Time</strong></td><td style="padding:8px; border:1px solid #ddd;">{{eventTime}}</td></tr>
+    <tr><td style="padding:8px; border:1px solid #ddd; background:#f9f9f9;"><strong>Guest Count</strong></td><td style="padding:8px; border:1px solid #ddd;">{{guestCount}}</td></tr>
+    {{#if venue}}<tr><td style="padding:8px; border:1px solid #ddd; background:#f9f9f9;"><strong>Venue</strong></td><td style="padding:8px; border:1px solid #ddd;">{{venue}}</td></tr>{{/if}}
+    {{#if packageName}}<tr><td style="padding:8px; border:1px solid #ddd; background:#f9f9f9;"><strong>Package</strong></td><td style="padding:8px; border:1px solid #ddd;">{{packageName}}</td></tr>{{/if}}
+  </table>
+  <p>You can check your inquiry status anytime using your reference token: <strong>{{token}}</strong></p>
+  <p style="color:#666; font-size:12px;">Pho Concept Las Vegas | 4745 Spring Mountain Rd, Las Vegas, NV 89102</p>
+</body>
+</html>

@@ -11,6 +11,7 @@ model AdminUser {
 
   mediaFiles          MediaFile[]
   createdReservations Reservation[] @relation("CreatedByAdmin")
+  handledCateringRequests CateringRequest[]
 
   @@index([isActive])
   @@map("admin_users")

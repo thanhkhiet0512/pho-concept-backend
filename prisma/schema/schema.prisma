@@ -6,22 +6,3 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-
-enum AdminRole {
-  owner
-  manager
-  staff
-  view_only
-}
-
-enum BlogPostStatus {
-  DRAFT
-  PUBLISHED
-  ARCHIVED
-}
-
-enum EventType {
-  PROMOTION
-  HOLIDAY
-  SPECIAL_EVENT
-}

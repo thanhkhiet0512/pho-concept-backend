@@ -13,8 +13,10 @@ model Location {
   createdAt  DateTime        @default(now()) @map("created_at")
   updatedAt  DateTime        @updatedAt @map("updated_at")
 
-  hours      LocationHour[]
-  menuPrices MenuItemPrice[]
+  hours              LocationHour[]
+  menuPrices        MenuItemPrice[]
+  slotConfig        ReservationSlotConfig?
+  reservations      Reservation[]
 
   @@index([isActive])
   @@map("locations")

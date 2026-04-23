@@ -2,6 +2,7 @@ import { Injectable, Inject, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ExtractJwt, Strategy } from 'passport-jwt';
 import { AuthRepositoryPort } from '@domain/auth/ports/auth.repository.port';
+import { CustomerRepositoryPort } from '@domain/customer/ports/customer.repository.port';
 import { extractJwtFromRequest } from '@common/strategies/jwt-extractor.helper';
 import { AdminJwtPayload, CustomerJwtPayload } from '@domain/auth/types/auth.types';
 
@@ -11,7 +12,7 @@ const CUSTOMER_REPO_TOKEN = 'CustomerRepository';
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(
     private readonly authRepository: AuthRepositoryPort,
-    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: any,
+    @Inject(CUSTOMER_REPO_TOKEN) private readonly customerRepository: CustomerRepositoryPort,
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([extractJwtFromRequest]),

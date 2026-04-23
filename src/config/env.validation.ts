@@ -3,10 +3,6 @@ const REQUIRED_VARS = [
   'REDIS_URL',
   'JWT_ACCESS_SECRET',
   'JWT_REFRESH_SECRET',
-  'SENDGRID_API_KEY',
-  'TWILIO_ACCOUNT_SID',
-  'TWILIO_AUTH_TOKEN',
-  'TWILIO_FROM',
 ] as const;
 
 export function validateEnv(): void {

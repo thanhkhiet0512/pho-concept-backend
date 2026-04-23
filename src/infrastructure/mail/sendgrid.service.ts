@@ -17,12 +17,24 @@ export interface SendEmailParams {
 @Injectable()
 export class SendgridService {
   private readonly logger = new Logger(SendgridService.name);
+  private readonly enabled: boolean;
 
   constructor(private readonly prisma: PrismaService) {
-    sgMail.setApiKey(process.env['SENDGRID_API_KEY']!);
+    const apiKey = process.env['SENDGRID_API_KEY'];
+    this.enabled = !!apiKey;
+    if (apiKey) {
+      sgMail.setApiKey(apiKey);
+    } else {
+      this.logger.warn('SENDGRID_API_KEY not set — email sending disabled');
+    }
   }
 
   async sendEmail(params: SendEmailParams): Promise<void> {
+    if (!this.enabled) {
+      this.logger.warn(`Email skipped (no API key): ${params.template} → ${params.to}`);
+      return;
+    }
+
     let html: string;
     try {
       html = this.renderTemplate(params.template, params.context);

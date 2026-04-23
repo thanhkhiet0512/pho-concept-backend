@@ -15,16 +15,29 @@ export class TwilioService {
   private readonly logger = new Logger(TwilioService.name);
   private readonly client: twilio.Twilio;
   private readonly from: string;
+  private readonly enabled: boolean;
 
   constructor(private readonly prisma: PrismaService) {
-    this.client = twilio(
-      process.env['TWILIO_ACCOUNT_SID']!,
-      process.env['TWILIO_AUTH_TOKEN']!,
-    );
-    this.from = process.env['TWILIO_FROM']!;
+    const sid = process.env['TWILIO_ACCOUNT_SID'];
+    const token = process.env['TWILIO_AUTH_TOKEN'];
+    const from = process.env['TWILIO_FROM'];
+    this.enabled = !!(sid && token && from);
+    if (this.enabled) {
+      this.client = twilio(sid!, token!);
+      this.from = from!;
+    } else {
+      this.logger.warn('Twilio credentials not set — SMS sending disabled');
+      this.client = twilio('', '');
+      this.from = '';
+    }
   }
 
   async sendSms(params: SendSmsParams): Promise<void> {
+    if (!this.enabled) {
+      this.logger.warn(`SMS skipped (no credentials): ${params.template} → ${params.to}`);
+      return;
+    }
+
     try {
       await this.client.messages.create({
         to: params.to,

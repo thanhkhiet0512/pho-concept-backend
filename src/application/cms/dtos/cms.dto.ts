@@ -1,5 +1,5 @@
 import {
-  IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, IsArray, ValidateNested,
+  IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, IsArray, IsObject, ValidateNested,
   IsDefined, MaxLength, IsEnum, IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
@@ -10,7 +10,8 @@ export class CmsPageSectionsDto {
   @ApiPropertyOptional()
   @IsOptional()
   @IsArray()
-  sections?: unknown[];
+  @IsObject({ each: true })
+  sections?: Record<string, unknown>[];
 }
 
 // ===================== CMS PAGE DTOs =====================
@@ -42,7 +43,8 @@ export class CreateCmsPageDto {
   @ApiPropertyOptional({ type: [Object], description: 'Homepage Builder section blocks' })
   @IsOptional()
   @IsArray()
-  sections?: unknown[];
+  @IsObject({ each: true })
+  sections?: Record<string, unknown>[];
 
   @ApiPropertyOptional({ default: false })
   @IsOptional()
@@ -72,7 +74,8 @@ export class UpdateCmsPageDto {
   @ApiPropertyOptional({ type: [Object] })
   @IsOptional()
   @IsArray()
-  sections?: unknown[];
+  @IsObject({ each: true })
+  sections?: Record<string, unknown>[];
 
   @ApiPropertyOptional()
   @IsOptional()

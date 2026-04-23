@@ -3,8 +3,9 @@ import { Inject } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { AdminUserRepositoryPort } from '@domain/auth/ports/admin-user.repository.port';
 import { AdminUserEntity } from '@domain/auth/entities/admin-user.entity';
-import { CreateAdminUserDto, AdminUserQueryDto } from '@application/admin/user/dtos';
+import { CreateAdminUserDto, AdminUserQueryDto, UpdateAdminUserDto } from '@application/admin/user/dtos';
 import { ADMIN_USER_REPOSITORY_TOKEN } from '@domain/auth/ports/admin-user.repository.token';
+import { AdminRole } from '@domain/auth/enums/admin-role.enum';
 
 @Injectable()
 export class GetAdminUsersUseCase {
@@ -81,7 +82,7 @@ export class UpdateAdminUserUseCase {
     private readonly adminUserRepository: AdminUserRepositoryPort,
   ) {}
 
-  async execute(id: bigint, dto: { name?: string; role?: string; isActive?: boolean }): Promise<AdminUserEntity> {
+  async execute(id: bigint, dto: UpdateAdminUserDto): Promise<AdminUserEntity> {
     const user = await this.adminUserRepository.findById(id);
     if (!user) {
       throw new NotFoundException('Admin user not found');
@@ -89,7 +90,7 @@ export class UpdateAdminUserUseCase {
 
     return this.adminUserRepository.update(id, {
       name: dto.name,
-      role: dto.role as any,
+      role: dto.role,
       isActive: dto.isActive,
     });
   }

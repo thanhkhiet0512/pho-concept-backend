@@ -1,13 +1,15 @@
-import { Injectable, UnauthorizedException, ForbiddenException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, ForbiddenException, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 import { AuthRepositoryPort } from '@domain/auth/ports/auth.repository.port';
 import { RedisService } from '@infrastructure/redis/redis.service';
 import { LoginDto } from '@application/auth/dtos/login.dto';
 import { AuthTokens, AdminJwtPayload } from '@domain/auth/types/auth.types';
+import { AdminRole } from '@domain/auth/enums/admin-role.enum';
 
 @Injectable()
 export class AuthService {
+  private readonly logger = new Logger(AuthService.name);
   private readonly ACCESS_EXPIRES_IN = '24h';
   private readonly REFRESH_EXPIRES_IN = '7d';
 
@@ -58,7 +60,8 @@ export class AuthService {
       }
 
       return this.generateTokens(user.id, user.email, user.name, user.role);
-    } catch {
+    } catch (error) {
+      this.logger.error('Token refresh failed', error);
       throw new UnauthorizedException('Invalid refresh token');
     }
   }
@@ -68,7 +71,7 @@ export class AuthService {
     await this.redisService.set(`blacklist:admin:${refreshToken}`, '1', ttl);
   }
 
-  private generateTokens(userId: bigint, email: string, name: string, role: any): AuthTokens {
+  private generateTokens(userId: bigint, email: string, name: string, role: AdminRole): AuthTokens {
     const payload: AdminJwtPayload = {
       sub: Number(userId),
       email,

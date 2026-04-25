@@ -4,7 +4,7 @@ import {
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { CateringStatus } from '@domain/catering/entities/catering-request.entity';
+import { CateringStatus } from '@prisma/client';
 
 export const ALL_STATUSES: CateringStatus[] = [
   'INQUIRY', 'QUOTED', 'DEPOSIT_PAID', 'CONFIRMED', 'COMPLETED', 'CANCELLED',

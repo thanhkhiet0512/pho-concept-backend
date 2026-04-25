@@ -10,6 +10,10 @@ import { winstonConfig } from './logger/winston.config';
 import validationOptions from './common/validation-options';
 import { validateEnv } from './config/env.validation';
 
+(BigInt.prototype as unknown as Record<string, unknown>)['toJSON'] = function () {
+  return this.toString();
+};
+
 async function bootstrap() {
   validateEnv();
   const app = await NestFactory.create(AppModule, {

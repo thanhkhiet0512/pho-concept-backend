@@ -1,0 +1,2072 @@
+{
+  "data": [
+    {
+      "id": 1,
+      "slug": "appetizers",
+      "nameI18n": {
+        "en": "Appetizers & Rolls",
+        "vi": "Khai Vị & Cuốn"
+      },
+      "sortOrder": 2,
+      "isActive": true,
+      "items": [
+        {
+          "id": 1,
+          "categoryId": 1,
+          "slug": "garlic-fish-sauce-wings",
+          "nameI18n": {
+            "en": "Garlic Fish Sauce Wings",
+            "vi": "Cánh Gà Chiên Nước Mắm"
+          },
+          "descriptionI18n": {
+            "en": "Garlic fish sauce glaze",
+            "vi": "Sốt tỏi nước mắm"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 1,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 14,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 2,
+          "categoryId": 1,
+          "slug": "tiger-shrimp-spring-rolls",
+          "nameI18n": {
+            "en": "Tiger Shrimp Spring Rolls",
+            "vi": "Gỏi Cuốn Tôm Sú"
+          },
+          "descriptionI18n": {
+            "en": "Herbs, vermicelli, peanut sauce",
+            "vi": "Rau thơm, bún, nước chấm đậu phộng"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 2,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 10,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 3,
+          "categoryId": 1,
+          "slug": "pork-egg-rolls",
+          "nameI18n": {
+            "en": "Pork Egg Rolls (4 pcs)",
+            "vi": "Chả Giò Heo Khoai Môn"
+          },
+          "descriptionI18n": {
+            "en": "Pork & taro",
+            "vi": "Heo & khoai môn"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 3,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 10,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 4,
+          "categoryId": 1,
+          "slug": "pork-patty-rolls",
+          "nameI18n": {
+            "en": "Pork Patty Rolls",
+            "vi": "Nem Nướng Cuốn"
+          },
+          "descriptionI18n": {
+            "en": "Pork patty, herbs, peanut sauce",
+            "vi": "Nem nướng, rau thơm, nước chấm đậu phộng"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 4,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 10,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 5,
+          "categoryId": 1,
+          "slug": "sauteed-octopus",
+          "nameI18n": {
+            "en": "Sautéed Octopus",
+            "vi": "Bạch Tuộc Muối Ớt Xanh"
+          },
+          "descriptionI18n": {
+            "en": "Green chili salt",
+            "vi": "Muối ớt đỏ"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 5,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 15,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 6,
+          "categoryId": 1,
+          "slug": "sugarcane-shrimp-rolls",
+          "nameI18n": {
+            "en": "Sugarcane Shrimp Rolls",
+            "vi": "Chạo Tôm Cuốn"
+          },
+          "descriptionI18n": {
+            "en": "Shrimp on sugarcane, peanut sauce",
+            "vi": "Tôm bọc mía, nước chấm đậu phộng"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 6,
+          "prices": [
+            {
+              "id": 6,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 12,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 7,
+          "categoryId": 1,
+          "slug": "beef-in-betel-leaf",
+          "nameI18n": {
+            "en": "Beef in Betel Leaf",
+            "vi": "Bò Lá Lốt"
+          },
+          "descriptionI18n": {
+            "en": "Grilled betel-leaf beef",
+            "vi": "Thịt bò nướng lá lốt"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 7,
+          "prices": [
+            {
+              "id": 7,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 14,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 8,
+          "categoryId": 1,
+          "slug": "tiger-shrimp-house-salad",
+          "nameI18n": {
+            "en": "Tiger Shrimp House Salad",
+            "vi": "Gỏi Tôm Sú"
+          },
+          "descriptionI18n": {
+            "en": "Pineapple dressing",
+            "vi": "Sốt thơm"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 8,
+          "prices": [
+            {
+              "id": 8,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 17,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 2,
+      "slug": "pho",
+      "nameI18n": {
+        "en": "Pho",
+        "vi": "Phở"
+      },
+      "sortOrder": 1,
+      "isActive": true,
+      "items": [
+        {
+          "id": 9,
+          "categoryId": 2,
+          "slug": "combination-beef-pho",
+          "nameI18n": {
+            "en": "Combination Beef Pho",
+            "vi": "Phở Đặc Biệt"
+          },
+          "descriptionI18n": {
+            "en": "Rare beef, brisket, tendon, meatball, shank",
+            "vi": "Bò tái, chín, gân, bò viên, nạm"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 9,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 20,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 10,
+          "categoryId": 2,
+          "slug": "roasted-short-rib-pho",
+          "nameI18n": {
+            "en": "Roasted Short Rib Pho",
+            "vi": "Phở Sườn Non Bò Nướng"
+          },
+          "descriptionI18n": {
+            "en": "Bone-in short rib",
+            "vi": "Sườn non bò còn xương"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 10,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 25,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 11,
+          "categoryId": 2,
+          "slug": "oxtail-pho",
+          "nameI18n": {
+            "en": "Oxtail Pho",
+            "vi": "Phở Đuôi Bò"
+          },
+          "descriptionI18n": {
+            "en": "Oxtail, served with rare flap steak",
+            "vi": "Đuôi bò, phục vụ kèm thịt bò tái"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 11,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 25,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 12,
+          "categoryId": 2,
+          "slug": "sauteed-beef-pho",
+          "nameI18n": {
+            "en": "Sautéed Beef Pho",
+            "vi": "Phở Tái Lăn"
+          },
+          "descriptionI18n": {
+            "en": "Wok-seared, egg yolk",
+            "vi": "Xào chảo, lòng đỏ trứng"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 12,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 23,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 13,
+          "categoryId": 2,
+          "slug": "rare-flap-steak-pho",
+          "nameI18n": {
+            "en": "Rare Flap Steak Pho",
+            "vi": "Phở Tái"
+          },
+          "descriptionI18n": {
+            "en": "Hand-cut rare beef",
+            "vi": "Bò tái cắt tay"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 13,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 14,
+          "categoryId": 2,
+          "slug": "brisket-pho",
+          "nameI18n": {
+            "en": "Brisket Pho",
+            "vi": "Phở Chín"
+          },
+          "descriptionI18n": {
+            "en": "Brisket",
+            "vi": "Nạm bò"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 6,
+          "prices": [
+            {
+              "id": 14,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 17,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 15,
+          "categoryId": 2,
+          "slug": "brisket-meatballs-pho",
+          "nameI18n": {
+            "en": "Brisket & Meatballs",
+            "vi": "Phở Chín Bò Viên"
+          },
+          "descriptionI18n": {
+            "en": "Brisket, meatballs",
+            "vi": "Nạm, bò viên"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 7,
+          "prices": [
+            {
+              "id": 15,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 16,
+          "categoryId": 2,
+          "slug": "brisket-beef-rib-pho",
+          "nameI18n": {
+            "en": "Brisket & Beef Rib",
+            "vi": "Phở Chín Sườn Bò"
+          },
+          "descriptionI18n": {
+            "en": "Brisket, beef rib",
+            "vi": "Nạm, sườn bò"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 8,
+          "prices": [
+            {
+              "id": 16,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 21,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 17,
+          "categoryId": 2,
+          "slug": "rare-beef-brisket-pho",
+          "nameI18n": {
+            "en": "Rare Beef & Brisket",
+            "vi": "Phở Tái Chín"
+          },
+          "descriptionI18n": {
+            "en": "Rare beef, brisket",
+            "vi": "Bò tái, nạm"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 9,
+          "prices": [
+            {
+              "id": 17,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 18,
+          "categoryId": 2,
+          "slug": "rare-beef-meatballs-pho",
+          "nameI18n": {
+            "en": "Rare Beef & Meatballs",
+            "vi": "Phở Tái Bò Viên"
+          },
+          "descriptionI18n": {
+            "en": "Rare beef, meatballs",
+            "vi": "Bò tái, bò viên"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 10,
+          "prices": [
+            {
+              "id": 18,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 19,
+          "categoryId": 2,
+          "slug": "rare-beef-braised-short-rib-pho",
+          "nameI18n": {
+            "en": "Rare Beef & Braised Short Rib Pho",
+            "vi": "Phở Tái Thịt Sườn Bò"
+          },
+          "descriptionI18n": {
+            "en": "Rare flap steak, braised-cut short rib",
+            "vi": "Thịt bò tái, sườn non hầm"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 11,
+          "prices": [
+            {
+              "id": 19,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 22,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 20,
+          "categoryId": 2,
+          "slug": "vegetarian-pho",
+          "nameI18n": {
+            "en": "Vegetarian Pho",
+            "vi": "Phở Rau"
+          },
+          "descriptionI18n": {
+            "en": "Vegetables, vegan broth option",
+            "vi": "Rau củ, lựa chọn nước dùng chay"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 12,
+          "prices": [
+            {
+              "id": 20,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 17,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 3,
+      "slug": "spicy-noodle-soup",
+      "nameI18n": {
+        "en": "Spicy Noodle Soup",
+        "vi": "Bún Cay"
+      },
+      "sortOrder": 3,
+      "isActive": true,
+      "items": [
+        {
+          "id": 21,
+          "categoryId": 3,
+          "slug": "spicy-hue-beef-noodle-soup",
+          "nameI18n": {
+            "en": "Spicy Hue Beef Noodle Soup",
+            "vi": "Bún Bò Huế"
+          },
+          "descriptionI18n": {
+            "en": "Lemongrass chili broth",
+            "vi": "Nước dùng sả ớt"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 21,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 22,
+          "categoryId": 3,
+          "slug": "spicy-beef-rib-noodle-soup",
+          "nameI18n": {
+            "en": "Spicy Beef Rib Noodle Soup",
+            "vi": "Bún Bò Huế Sườn Bò"
+          },
+          "descriptionI18n": {
+            "en": "Beef ribs, spicy broth",
+            "vi": "Sườn bò, nước dùng cay"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 22,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 24,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 4,
+      "slug": "rice-vermicelli",
+      "nameI18n": {
+        "en": "Rice & Vermicelli",
+        "vi": "Cơm & Bún"
+      },
+      "sortOrder": 4,
+      "isActive": true,
+      "items": [
+        {
+          "id": 23,
+          "categoryId": 4,
+          "slug": "house-special-vermicelli",
+          "nameI18n": {
+            "en": "House Special Vermicelli",
+            "vi": "Bún Đặc Biệt"
+          },
+          "descriptionI18n": {
+            "en": "Pork, shrimp, egg roll",
+            "vi": "Thịt heo, tôm, chả giò"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 23,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 18,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 24,
+          "categoryId": 4,
+          "slug": "pork-chop-rice",
+          "nameI18n": {
+            "en": "Pork Chop Rice",
+            "vi": "Cơm Sườn Trứng Ốp La"
+          },
+          "descriptionI18n": {
+            "en": "Pork chop, fried egg",
+            "vi": "Sườn heo, trứng ốp la"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 24,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 17,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 25,
+          "categoryId": 4,
+          "slug": "xo-crab-fried-rice",
+          "nameI18n": {
+            "en": "X.O. Crab Fried Rice",
+            "vi": "Cơm Chiên Cua Phủ Trứng"
+          },
+          "descriptionI18n": {
+            "en": "X.O. sauce, egg, lump crab",
+            "vi": "Sốt X.O., trứng, thịt cua"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 25,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 25,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 26,
+          "categoryId": 4,
+          "slug": "filet-mignon-shaken-beef-garlic-noodles",
+          "nameI18n": {
+            "en": "Filet Mignon Shaken Beef Garlic Noodles",
+            "vi": "Bò Lúc Lắc Mì Tỏi"
+          },
+          "descriptionI18n": {
+            "en": "French fries",
+            "vi": "Khoai tây chiên"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 26,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 22,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 27,
+          "categoryId": 4,
+          "slug": "grilled-chicken-vermicelli",
+          "nameI18n": {
+            "en": "Grilled Chicken Vermicelli",
+            "vi": "Bún Gà Nướng Chả Giò"
+          },
+          "descriptionI18n": {
+            "en": "Chicken, egg roll",
+            "vi": "Gà, chả giò"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 27,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 17,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 28,
+          "categoryId": 4,
+          "slug": "bbq-short-rib-rice",
+          "nameI18n": {
+            "en": "BBQ Short Rib Rice",
+            "vi": "Cơm Sườn Bò Trứng Ốp La"
+          },
+          "descriptionI18n": {
+            "en": "Short rib, fried egg, sesame seeds",
+            "vi": "Sườn non bò, trứng ốp la, mè"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 6,
+          "prices": [
+            {
+              "id": 28,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 23,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 29,
+          "categoryId": 4,
+          "slug": "stir-fried-macaroni",
+          "nameI18n": {
+            "en": "Stir-Fried Macaroni",
+            "vi": "Nui Xào Sườn Chiên Trứng"
+          },
+          "descriptionI18n": {
+            "en": "Pork chop, egg",
+            "vi": "Sườn heo, trứng"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 7,
+          "prices": [
+            {
+              "id": 29,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 18,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 5,
+      "slug": "house-specialties",
+      "nameI18n": {
+        "en": "House Specialties",
+        "vi": "Đặc Sản Nhà Hàng"
+      },
+      "sortOrder": 5,
+      "isActive": true,
+      "items": [
+        {
+          "id": 30,
+          "categoryId": 5,
+          "slug": "wrap-yourself-diy-platter",
+          "nameI18n": {
+            "en": "Wrap Yourself (DIY Platter)",
+            "vi": "Cuốn Tự Chọn"
+          },
+          "descriptionI18n": {
+            "en": "Rice paper set · choose 1 · great for sharing",
+            "vi": "Bộ bánh tráng · chọn 1 · thích hợp chia sẻ"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 30,
+              "locationId": 1,
+              "sizeLabel": "Pork & Chicken",
+              "price": 26,
+              "isActive": true
+            },
+            {
+              "id": 31,
+              "locationId": 1,
+              "sizeLabel": "Pork Patty & Sugarcane Shrimp",
+              "price": 27,
+              "isActive": true
+            },
+            {
+              "id": 32,
+              "locationId": 1,
+              "sizeLabel": "Ribeye & Shrimp",
+              "price": 28,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 31,
+          "categoryId": 5,
+          "slug": "sizzling-steak-egg",
+          "nameI18n": {
+            "en": "Sizzling Steak & Egg",
+            "vi": "Bò Né"
+          },
+          "descriptionI18n": {
+            "en": "Pâté, egg, bread & fries",
+            "vi": "Pa-tê, trứng, bánh mì & khoai chiên"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 33,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 25,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 32,
+          "categoryId": 5,
+          "slug": "spicy-sour-beef-rib-soup",
+          "nameI18n": {
+            "en": "Spicy & Sour Beef Rib Soup",
+            "vi": "Sườn Bò Chua Cay"
+          },
+          "descriptionI18n": {
+            "en": "Beef ribs, vermicelli",
+            "vi": "Sườn bò, bún"
+          },
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 34,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 25,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 33,
+          "categoryId": 5,
+          "slug": "fried-rice-cake",
+          "nameI18n": {
+            "en": "Fried Rice Cake",
+            "vi": "Bột Chiên"
+          },
+          "descriptionI18n": {
+            "en": "Egg, soy sauce",
+            "vi": "Trứng, nước tương"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 35,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 14,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 34,
+          "categoryId": 5,
+          "slug": "vietnamese-crepe",
+          "nameI18n": {
+            "en": "Vietnamese Crepe",
+            "vi": "Bánh Xèo"
+          },
+          "descriptionI18n": {
+            "en": "Shrimp, squid, herbs",
+            "vi": "Tôm, mực, rau thơm"
+          },
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 36,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 19,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 6,
+      "slug": "enhance-bowl",
+      "nameI18n": {
+        "en": "Enhance Your Bowl",
+        "vi": "Thêm Vào Tô"
+      },
+      "sortOrder": 6,
+      "isActive": true,
+      "items": [
+        {
+          "id": 35,
+          "categoryId": 6,
+          "slug": "addon-hand-cut-rare-beef",
+          "nameI18n": {
+            "en": "Hand-Cut Rare Beef",
+            "vi": "Bò Tái Cắt Tay"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 37,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 8,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 36,
+          "categoryId": 6,
+          "slug": "addon-beef-shank-brisket-tendon-meatball",
+          "nameI18n": {
+            "en": "Beef Shank / Brisket / Tendon / Meatball",
+            "vi": "Nạm / Chín / Gân / Bò Viên"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 38,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 37,
+          "categoryId": 6,
+          "slug": "addon-beef-rib",
+          "nameI18n": {
+            "en": "Beef Rib (1)",
+            "vi": "Sườn Bò (1)"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 39,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 38,
+          "categoryId": 6,
+          "slug": "addon-roasted-short-rib",
+          "nameI18n": {
+            "en": "Roasted Short Rib",
+            "vi": "Sườn Non Bò Nướng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 40,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 15,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 39,
+          "categoryId": 6,
+          "slug": "addon-extra-noodles",
+          "nameI18n": {
+            "en": "Extra Noodles",
+            "vi": "Thêm Mì"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 41,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 3,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 40,
+          "categoryId": 6,
+          "slug": "addon-baguette-or-jasmine-rice",
+          "nameI18n": {
+            "en": "Baguette or Jasmine Rice",
+            "vi": "Bánh Mì Hoặc Cơm Trắng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 6,
+          "prices": [
+            {
+              "id": 42,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 3,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 41,
+          "categoryId": 6,
+          "slug": "addon-egg-yolks",
+          "nameI18n": {
+            "en": "Egg Yolks (2)",
+            "vi": "Lòng Đỏ Trứng (2)"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 7,
+          "prices": [
+            {
+              "id": 43,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 3.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 42,
+          "categoryId": 6,
+          "slug": "addon-sunny-side-egg",
+          "nameI18n": {
+            "en": "Sunny Side Egg",
+            "vi": "Trứng Ốp La"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 8,
+          "prices": [
+            {
+              "id": 44,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 2.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 43,
+          "categoryId": 6,
+          "slug": "addon-steamed-vegetables",
+          "nameI18n": {
+            "en": "Steamed Vegetables",
+            "vi": "Rau Luộc"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 9,
+          "prices": [
+            {
+              "id": 45,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 44,
+          "categoryId": 6,
+          "slug": "addon-extra-broth",
+          "nameI18n": {
+            "en": "Extra Broth",
+            "vi": "Thêm Nước Dùng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 10,
+          "prices": [
+            {
+              "id": 46,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 45,
+          "categoryId": 6,
+          "slug": "addon-french-fries",
+          "nameI18n": {
+            "en": "French Fries",
+            "vi": "Khoai Tây Chiên"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 11,
+          "prices": [
+            {
+              "id": 47,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    },
+    {
+      "id": 7,
+      "slug": "drinks",
+      "nameI18n": {
+        "en": "Drinks",
+        "vi": "Đồ Uống"
+      },
+      "sortOrder": 7,
+      "isActive": true,
+      "items": [
+        {
+          "id": 46,
+          "categoryId": 7,
+          "slug": "drink-salted-coffee",
+          "nameI18n": {
+            "en": "Salted Coffee",
+            "vi": "Cà phê muối"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 1,
+          "prices": [
+            {
+              "id": 48,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 47,
+          "categoryId": 7,
+          "slug": "drink-ube-coffee",
+          "nameI18n": {
+            "en": "Ube Coffee",
+            "vi": "Cà phê ube"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 2,
+          "prices": [
+            {
+              "id": 49,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 48,
+          "categoryId": 7,
+          "slug": "drink-vietnamese-milk-coffee",
+          "nameI18n": {
+            "en": "Vietnamese Milk Coffee",
+            "vi": "Cà phê sữa"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 3,
+          "prices": [
+            {
+              "id": 50,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 49,
+          "categoryId": 7,
+          "slug": "drink-egg-coffee",
+          "nameI18n": {
+            "en": "Egg Coffee",
+            "vi": "Cà phê trứng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 4,
+          "prices": [
+            {
+              "id": 51,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 50,
+          "categoryId": 7,
+          "slug": "drink-thai-milk-tea",
+          "nameI18n": {
+            "en": "Thai Milk Tea",
+            "vi": "Trà Sữa Thái"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 5,
+          "prices": [
+            {
+              "id": 52,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 51,
+          "categoryId": 7,
+          "slug": "drink-golden-milk-tea",
+          "nameI18n": {
+            "en": "Golden Milk Tea",
+            "vi": "Trà Sữa Golden"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 6,
+          "prices": [
+            {
+              "id": 53,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 52,
+          "categoryId": 7,
+          "slug": "drink-thai-green-milk-tea",
+          "nameI18n": {
+            "en": "Thai Green Milk Tea",
+            "vi": "Trà Sữa Thái Xanh"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 7,
+          "prices": [
+            {
+              "id": 54,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 53,
+          "categoryId": 7,
+          "slug": "drink-lychee-lemonade",
+          "nameI18n": {
+            "en": "Lychee Lemonade",
+            "vi": "Nước Chanh Vải"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 8,
+          "prices": [
+            {
+              "id": 55,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 54,
+          "categoryId": 7,
+          "slug": "drink-thai-kumquat-tea",
+          "nameI18n": {
+            "en": "Thai Kumquat Tea",
+            "vi": "Trà Thái Tắc"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": true,
+          "isActive": true,
+          "sortOrder": 9,
+          "prices": [
+            {
+              "id": 56,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 55,
+          "categoryId": 7,
+          "slug": "drink-fresh-coconut",
+          "nameI18n": {
+            "en": "Fresh Coconut",
+            "vi": "Dừa tươi"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 10,
+          "prices": [
+            {
+              "id": 57,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 7,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 56,
+          "categoryId": 7,
+          "slug": "drink-lemon-soda",
+          "nameI18n": {
+            "en": "Lemon Soda",
+            "vi": "Chanh soda"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 11,
+          "prices": [
+            {
+              "id": 58,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 57,
+          "categoryId": 7,
+          "slug": "drink-salted-lemon-soda",
+          "nameI18n": {
+            "en": "Salted Lemon Soda",
+            "vi": "Soda Chanh Muối"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 12,
+          "prices": [
+            {
+              "id": 59,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 58,
+          "categoryId": 7,
+          "slug": "drink-salted-plum-soda",
+          "nameI18n": {
+            "en": "Salted Plum Soda",
+            "vi": "Soda Xí Muội"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 13,
+          "prices": [
+            {
+              "id": 60,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 59,
+          "categoryId": 7,
+          "slug": "drink-blue-ocean-soda",
+          "nameI18n": {
+            "en": "Blue Ocean Soda",
+            "vi": "Soda Blue Ocean"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 14,
+          "prices": [
+            {
+              "id": 61,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 60,
+          "categoryId": 7,
+          "slug": "drink-avocado-smoothie",
+          "nameI18n": {
+            "en": "Avocado Smoothie",
+            "vi": "Sinh tố bơ"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 15,
+          "prices": [
+            {
+              "id": 62,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 7,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 61,
+          "categoryId": 7,
+          "slug": "drink-taro-smoothie",
+          "nameI18n": {
+            "en": "Taro Smoothie",
+            "vi": "Sinh Tố Khoai Môn"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 16,
+          "prices": [
+            {
+              "id": 63,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 62,
+          "categoryId": 7,
+          "slug": "drink-mango-smoothie",
+          "nameI18n": {
+            "en": "Mango Smoothie",
+            "vi": "Sinh Tố Xoài"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 17,
+          "prices": [
+            {
+              "id": 64,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 63,
+          "categoryId": 7,
+          "slug": "drink-strawberry-smoothie",
+          "nameI18n": {
+            "en": "Strawberry Smoothie",
+            "vi": "Sinh Tố Dâu"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 18,
+          "prices": [
+            {
+              "id": 65,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 64,
+          "categoryId": 7,
+          "slug": "drink-coconut-smoothie",
+          "nameI18n": {
+            "en": "Coconut Smoothie",
+            "vi": "Sinh Tố Dừa"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 19,
+          "prices": [
+            {
+              "id": 66,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 65,
+          "categoryId": 7,
+          "slug": "drink-carrot-juice",
+          "nameI18n": {
+            "en": "Carrot Juice",
+            "vi": "Nước Ép Cà Rốt"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 20,
+          "prices": [
+            {
+              "id": 67,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 7.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 66,
+          "categoryId": 7,
+          "slug": "drink-gotu-kola-juice",
+          "nameI18n": {
+            "en": "Gotu Kola Juice",
+            "vi": "Rau má"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 21,
+          "prices": [
+            {
+              "id": 68,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 67,
+          "categoryId": 7,
+          "slug": "drink-soft-drinks",
+          "nameI18n": {
+            "en": "Soda (Coke, Diet Coke, Sprite, Dr Pepper, Sunkist)",
+            "vi": "Nước Ngọt"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 22,
+          "prices": [
+            {
+              "id": 69,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 2.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 68,
+          "categoryId": 7,
+          "slug": "drink-iced-tea",
+          "nameI18n": {
+            "en": "Iced Tea",
+            "vi": "Trà Đá"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 23,
+          "prices": [
+            {
+              "id": 70,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 1.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 69,
+          "categoryId": 7,
+          "slug": "drink-hot-tea",
+          "nameI18n": {
+            "en": "Hot Tea",
+            "vi": "Trà Nóng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 24,
+          "prices": [
+            {
+              "id": 71,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 1.5,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 70,
+          "categoryId": 7,
+          "slug": "dessert-coconut-jelly-whole",
+          "nameI18n": {
+            "en": "Coconut Jelly (Whole Coconut)",
+            "vi": "Rau câu dừa trái"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 25,
+          "prices": [
+            {
+              "id": 72,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 8,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 71,
+          "categoryId": 7,
+          "slug": "dessert-fruit-dessert",
+          "nameI18n": {
+            "en": "Fruit Dessert",
+            "vi": "Chè trái cây"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 26,
+          "prices": [
+            {
+              "id": 73,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 7,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 72,
+          "categoryId": 7,
+          "slug": "dessert-avocado-durian",
+          "nameI18n": {
+            "en": "Avocado Durian Dessert",
+            "vi": "Bơ dầm sầu riêng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 27,
+          "prices": [
+            {
+              "id": 74,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 9,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 73,
+          "categoryId": 7,
+          "slug": "dessert-sam-bo-luong",
+          "nameI18n": {
+            "en": "Sam Bo Luong",
+            "vi": "Sâm Bổ Lượng"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 28,
+          "prices": [
+            {
+              "id": 75,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 6,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        },
+        {
+          "id": 74,
+          "categoryId": 7,
+          "slug": "dessert-coconut-jelly-cup",
+          "nameI18n": {
+            "en": "Coconut Jelly (Cup)",
+            "vi": "Rau câu dừa"
+          },
+          "descriptionI18n": null,
+          "imageUrl": null,
+          "isFeatured": false,
+          "isActive": true,
+          "sortOrder": 29,
+          "prices": [
+            {
+              "id": 76,
+              "locationId": 1,
+              "sizeLabel": null,
+              "price": 3,
+              "isActive": true
+            }
+          ],
+          "createdAt": "2026-04-25T00:00:00.000Z",
+          "updatedAt": "2026-04-25T00:00:00.000Z"
+        }
+      ],
+      "createdAt": "2026-04-25T00:00:00.000Z",
+      "updatedAt": "2026-04-25T00:00:00.000Z"
+    }
+  ],
+  "total": 7,
+  "page": 1,
+  "limit": 20,
+  "totalPages": 1
+}

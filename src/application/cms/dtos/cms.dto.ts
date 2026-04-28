@@ -1,10 +1,68 @@
 import {
-  IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, IsArray, IsObject, ValidateNested,
-  IsDefined, MaxLength, IsEnum, IsDateString,
+  IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, Max, IsArray, IsObject, ValidateNested,
+  IsDefined, MaxLength, IsEnum, IsIn, IsDateString,
 } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { I18nFieldDto } from '@application/menu/dtos/menu.dto';
+
+// ===================== POST CATEGORY DTOs =====================
+
+export class CreatePostCategoryDto {
+  @ApiProperty({ example: 'news' })
+  @IsString()
+  @MaxLength(255)
+  slug!: string;
+
+  @ApiProperty({ type: I18nFieldDto })
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n!: I18nFieldDto;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+
+  @ApiPropertyOptional({ default: true })
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+
+export class UpdatePostCategoryDto {
+  @ApiPropertyOptional({ example: 'news' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  slug?: string;
+
+  @ApiPropertyOptional({ type: I18nFieldDto })
+  @IsOptional()
+  @ValidateNested()
+  @Type(() => I18nFieldDto)
+  nameI18n?: I18nFieldDto;
+
+  @ApiPropertyOptional({ default: 0 })
+  @IsOptional()
+  @IsInt()
+  @Min(0)
+  sortOrder?: number;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isActive?: boolean;
+}
+
+export class TogglePostCategoryDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsBoolean()
+  isActive!: boolean;
+}
 
 export class CmsPageSectionsDto {
   @ApiPropertyOptional()
@@ -127,6 +185,59 @@ export class CreateBlogPostDto {
   @IsString()
   @MaxLength(500)
   coverImageUrl?: string;
+
+  @ApiPropertyOptional({ type: [String], description: 'Array of media IDs or URLs' })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  galleryImageIds?: string[];
+
+  @ApiPropertyOptional({ example: 'Ngoc Vu' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  author?: string;
+
+  @ApiPropertyOptional({ example: 'https://example.com/article' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  externalLink?: string;
+
+  @ApiPropertyOptional({ example: 'https://youtube.com/watch?v=xxx' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  videoUrl?: string;
+
+  @ApiPropertyOptional({ example: '5 min' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  readTime?: string;
+
+  @ApiPropertyOptional({ example: '12.4k' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  views?: string;
+
+  @ApiPropertyOptional({ default: false })
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional({ example: 23, description: 'Day of month (1-31) to set as publishedAt' })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(31)
+  publishDay?: number;
+
+  @ApiPropertyOptional({ example: 1 })
+  @IsOptional()
+  @IsNumber()
+  categoryId?: number;
 }
 
 export class UpdateBlogPostDto {
@@ -154,18 +265,85 @@ export class UpdateBlogPostDto {
   @Type(() => I18nFieldDto)
   metaDescriptionI18n?: I18nFieldDto;
 
-  @ApiPropertyOptional({ example: 'https://cdn.example.com/blog-cover.jpg' })
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
   @MaxLength(500)
   coverImageUrl?: string;
+
+  @ApiPropertyOptional({ type: [String] })
+  @IsOptional()
+  @IsArray()
+  @IsString({ each: true })
+  galleryImageIds?: string[];
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  author?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  externalLink?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  videoUrl?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  readTime?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsString()
+  @MaxLength(50)
+  views?: string;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @ApiPropertyOptional({ example: 23 })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(31)
+  publishDay?: number | null;
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  @IsNumber()
+  categoryId?: number | null;
 }
 
 export class UpdateBlogPostStatusDto {
-  @ApiProperty({ enum: ['DRAFT', 'PUBLISHED', 'ARCHIVED'] })
+  @ApiProperty({ enum: ['DRAFT', 'PUBLISHED', 'SCHEDULED', 'ARCHIVED'] })
   @IsDefined()
-  @IsEnum({ DRAFT: 'DRAFT', PUBLISHED: 'PUBLISHED', ARCHIVED: 'ARCHIVED' })
-  status!: string;
+  @IsIn(['DRAFT', 'PUBLISHED', 'SCHEDULED', 'ARCHIVED'])
+  status!: 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
+
+  @ApiPropertyOptional({ example: 23, description: 'Required when status=SCHEDULED' })
+  @IsOptional()
+  @IsInt()
+  @Min(1)
+  @Max(31)
+  publishDay?: number;
+}
+
+export class ToggleBlogPostFeaturedDto {
+  @ApiProperty()
+  @IsDefined()
+  @IsBoolean()
+  isFeatured!: boolean;
 }
 
 // ===================== EVENT DTOs =====================
@@ -270,4 +448,16 @@ export class UpdateMediaFileDto {
   @ValidateNested()
   @Type(() => I18nFieldDto)
   altTextI18n?: I18nFieldDto;
+
+  @ApiPropertyOptional({ example: 'Banner image' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  title?: string;
+
+  @ApiPropertyOptional({ example: 'banners' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  folder?: string;
 }

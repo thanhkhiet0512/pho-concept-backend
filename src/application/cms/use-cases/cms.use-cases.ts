@@ -3,28 +3,137 @@ import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { IStoragePort } from '@application/cms/ports/storage.port';
 import {
+  PostCategoryRepositoryPort,
   CmsPageRepositoryPort,
   BlogPostRepositoryPort,
   EventRepositoryPort,
   MediaFileRepositoryPort,
+  BlogPostFilterParams,
+  MediaFilterParams,
 } from '@domain/cms/ports/cms.repository.port';
 import {
+  POST_CATEGORY_REPOSITORY_TOKEN,
   CMS_PAGE_REPOSITORY_TOKEN,
   BLOG_POST_REPOSITORY_TOKEN,
   EVENT_REPOSITORY_TOKEN,
   MEDIA_FILE_REPOSITORY_TOKEN,
 } from '@domain/cms/ports/cms.repository.token';
 import {
+  CreatePostCategoryDto,
+  UpdatePostCategoryDto,
   CreateCmsPageDto,
   UpdateCmsPageDto,
   CreateBlogPostDto,
   UpdateBlogPostDto,
+  UpdateBlogPostStatusDto,
   CreateEventDto,
   UpdateEventDto,
   UpdateMediaFileDto,
 } from '@application/cms/dtos/cms.dto';
 import { PaginationDto } from '@common/dto/pagination.dto';
 import { BlogPostStatus, EventType } from '@domain/cms/entities/cms.entity';
+
+export const STORAGE_SERVICE_TOKEN = 'STORAGE_SERVICE_TOKEN';
+
+// ===================== POST CATEGORY USE CASES =====================
+
+@Injectable()
+export class GetPostCategoriesUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(params?: PaginationDto & { isActive?: boolean; search?: string }) {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+    return this.repository.findAll({ page, limit, isActive: params?.isActive, search: params?.search });
+  }
+}
+
+@Injectable()
+export class GetPostCategoryByIdUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(id: bigint) {
+    const cat = await this.repository.findById(id);
+    if (!cat) throw new NotFoundException(`Post category with id ${id} not found`);
+    return cat;
+  }
+}
+
+@Injectable()
+export class CreatePostCategoryUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(dto: CreatePostCategoryDto) {
+    const existing = await this.repository.findBySlug(dto.slug);
+    if (existing) throw new ConflictException(`Post category with slug "${dto.slug}" already exists`);
+    return this.repository.create({
+      slug: dto.slug,
+      nameI18n: dto.nameI18n,
+      sortOrder: dto.sortOrder ?? 0,
+      isActive: dto.isActive ?? true,
+    });
+  }
+}
+
+@Injectable()
+export class UpdatePostCategoryUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(id: bigint, dto: UpdatePostCategoryDto) {
+    const cat = await this.repository.findById(id);
+    if (!cat) throw new NotFoundException(`Post category with id ${id} not found`);
+    if (dto.slug && dto.slug !== cat.slug) {
+      const conflict = await this.repository.findBySlug(dto.slug);
+      if (conflict) throw new ConflictException(`Slug "${dto.slug}" already in use`);
+    }
+    return this.repository.update(id, {
+      slug: dto.slug,
+      nameI18n: dto.nameI18n,
+      sortOrder: dto.sortOrder,
+      isActive: dto.isActive,
+    });
+  }
+}
+
+@Injectable()
+export class TogglePostCategoryUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(id: bigint, isActive: boolean) {
+    const cat = await this.repository.findById(id);
+    if (!cat) throw new NotFoundException(`Post category with id ${id} not found`);
+    return this.repository.toggleActive(id, isActive);
+  }
+}
+
+@Injectable()
+export class DeletePostCategoryUseCase {
+  constructor(
+    @Inject(POST_CATEGORY_REPOSITORY_TOKEN)
+    private readonly repository: PostCategoryRepositoryPort,
+  ) {}
+
+  async execute(id: bigint) {
+    const cat = await this.repository.findById(id);
+    if (!cat) throw new NotFoundException(`Post category with id ${id} not found`);
+    await this.repository.hardDelete(id);
+  }
+}
 
 // ===================== CMS PAGE USE CASES =====================
 
@@ -174,10 +283,19 @@ export class GetBlogPostsUseCase {
     private readonly repository: BlogPostRepositoryPort,
   ) {}
 
-  async execute(pagination?: PaginationDto) {
-    const page = pagination?.page ?? 1;
-    const limit = pagination?.limit ?? 20;
-    return this.repository.findAll({ page, limit });
+  async execute(params?: PaginationDto & Omit<BlogPostFilterParams, 'page' | 'limit'>) {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+    return this.repository.findAll({
+      page,
+      limit,
+      status: params?.status,
+      categoryId: params?.categoryId,
+      search: params?.search,
+      author: params?.author,
+      publishMonth: params?.publishMonth,
+      isFeatured: params?.isFeatured,
+    });
   }
 }
 
@@ -206,9 +324,15 @@ export class CreateBlogPostUseCase {
 
   async execute(dto: CreateBlogPostDto) {
     const existing = await this.repository.findBySlug(dto.slug);
-    if (existing) {
-      throw new ConflictException(`Blog post with slug "${dto.slug}" already exists`);
+    if (existing) throw new ConflictException(`Blog post with slug "${dto.slug}" already exists`);
+
+    let publishedAt: Date | null = null;
+    if (dto.publishDay) {
+      const now = new Date();
+      const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
+      publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
     }
+
     return this.repository.create({
       slug: dto.slug,
       titleI18n: dto.titleI18n,
@@ -216,7 +340,16 @@ export class CreateBlogPostUseCase {
       excerptI18n: dto.excerptI18n ?? null,
       metaDescriptionI18n: dto.metaDescriptionI18n ?? null,
       coverImageUrl: dto.coverImageUrl ?? null,
+      galleryImageIds: dto.galleryImageIds ?? null,
+      author: dto.author ?? null,
+      externalLink: dto.externalLink ?? null,
+      videoUrl: dto.videoUrl ?? null,
+      readTime: dto.readTime ?? null,
+      views: dto.views ?? null,
+      isFeatured: dto.isFeatured ?? false,
       status: BlogPostStatus.DRAFT,
+      publishedAt,
+      categoryId: dto.categoryId ? BigInt(dto.categoryId) : null,
     });
   }
 }
@@ -230,15 +363,34 @@ export class UpdateBlogPostUseCase {
 
   async execute(id: bigint, dto: UpdateBlogPostDto) {
     const post = await this.repository.findById(id);
-    if (!post) {
-      throw new NotFoundException(`Blog post with id ${id} not found`);
+    if (!post) throw new NotFoundException(`Blog post with id ${id} not found`);
+
+    let publishedAt: Date | null | undefined = undefined;
+    if (dto.publishDay !== undefined) {
+      if (dto.publishDay === null) {
+        publishedAt = null;
+      } else {
+        const now = new Date();
+        const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
+        publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
+      }
     }
+
     return this.repository.update(id, {
       titleI18n: dto.titleI18n,
       contentI18n: dto.contentI18n,
-      excerptI18n: dto.excerptI18n ?? null,
+      excerptI18n: dto.excerptI18n,
       metaDescriptionI18n: dto.metaDescriptionI18n,
       coverImageUrl: dto.coverImageUrl,
+      galleryImageIds: dto.galleryImageIds,
+      author: dto.author,
+      externalLink: dto.externalLink,
+      videoUrl: dto.videoUrl,
+      readTime: dto.readTime,
+      views: dto.views,
+      isFeatured: dto.isFeatured,
+      publishedAt,
+      categoryId: dto.categoryId !== undefined ? (dto.categoryId ? BigInt(dto.categoryId) : null) : undefined,
     });
   }
 }
@@ -250,13 +402,34 @@ export class PublishBlogPostUseCase {
     private readonly repository: BlogPostRepositoryPort,
   ) {}
 
-  async execute(id: bigint, dto: { status: string }) {
+  async execute(id: bigint, dto: UpdateBlogPostStatusDto) {
     const post = await this.repository.findById(id);
-    if (!post) {
-      throw new NotFoundException(`Blog post with id ${id} not found`);
+    if (!post) throw new NotFoundException(`Blog post with id ${id} not found`);
+
+    let publishedAt: Date | null | undefined = undefined;
+    if (dto.status === BlogPostStatus.SCHEDULED && dto.publishDay) {
+      const now = new Date();
+      const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
+      publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
+    } else if (dto.status === BlogPostStatus.DRAFT || dto.status === BlogPostStatus.ARCHIVED) {
+      publishedAt = null;
     }
-    const status = dto.status as BlogPostStatus;
-    return this.repository.updateStatus(id, status);
+
+    return this.repository.updateStatus(id, BlogPostStatus[dto.status], publishedAt);
+  }
+}
+
+@Injectable()
+export class ToggleBlogPostFeaturedUseCase {
+  constructor(
+    @Inject(BLOG_POST_REPOSITORY_TOKEN)
+    private readonly repository: BlogPostRepositoryPort,
+  ) {}
+
+  async execute(id: bigint, isFeatured: boolean) {
+    const post = await this.repository.findById(id);
+    if (!post) throw new NotFoundException(`Blog post with id ${id} not found`);
+    return this.repository.toggleFeatured(id, isFeatured);
   }
 }
 
@@ -269,9 +442,7 @@ export class DeleteBlogPostUseCase {
 
   async execute(id: bigint) {
     const post = await this.repository.findById(id);
-    if (!post) {
-      throw new NotFoundException(`Blog post with id ${id} not found`);
-    }
+    if (!post) throw new NotFoundException(`Blog post with id ${id} not found`);
     await this.repository.hardDelete(id);
   }
 }
@@ -430,10 +601,10 @@ export class GetMediaFilesUseCase {
     private readonly repository: MediaFileRepositoryPort,
   ) {}
 
-  async execute(params?: { mimeType?: string }, pagination?: PaginationDto) {
-    const page = pagination?.page ?? 1;
-    const limit = pagination?.limit ?? 20;
-    return this.repository.findAll({ page, limit, mimeType: params?.mimeType });
+  async execute(params?: MediaFilterParams & PaginationDto) {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+    return this.repository.findAll({ page, limit, type: params?.type, folder: params?.folder, search: params?.search });
   }
 }
 
@@ -490,11 +661,11 @@ export class UpdateMediaFileUseCase {
 
   async execute(id: bigint, dto: UpdateMediaFileDto) {
     const file = await this.repository.findById(id);
-    if (!file) {
-      throw new NotFoundException(`Media file with id ${id} not found`);
-    }
+    if (!file) throw new NotFoundException(`Media file with id ${id} not found`);
     return this.repository.update(id, {
-      altTextI18n: dto.altTextI18n ?? null,
+      altTextI18n: dto.altTextI18n ?? undefined,
+      title: dto.title ?? undefined,
+      folder: dto.folder ?? undefined,
     });
   }
 }
@@ -502,20 +673,26 @@ export class UpdateMediaFileUseCase {
 @Injectable()
 export class DeleteMediaFileUseCase {
   constructor(
+    @Inject(STORAGE_SERVICE_TOKEN)
+    private readonly storage: IStoragePort,
     @Inject(MEDIA_FILE_REPOSITORY_TOKEN)
     private readonly repository: MediaFileRepositoryPort,
   ) {}
 
-  async execute(id: bigint) {
+  async execute(id: bigint): Promise<{ isDeleted: boolean; r2Key: string }> {
     const file = await this.repository.findById(id);
-    if (!file) {
-      throw new NotFoundException(`Media file with id ${id} not found`);
+    if (!file) throw new NotFoundException(`Media file with id ${id} not found`);
+    const usedInPosts = await this.repository.isUsedInPosts(id);
+    if (usedInPosts) {
+      const softDeleted = await this.repository.softDelete(id);
+      return { isDeleted: true, r2Key: softDeleted.r2Key };
     }
-    return this.repository.hardDelete(id);
+    const r2Key = file.r2Key;
+    await this.repository.hardDelete(id);
+    await this.storage.deleteFile(r2Key).catch(() => { /* best-effort */ });
+    return { isDeleted: false, r2Key };
   }
 }
-
-export const STORAGE_SERVICE_TOKEN = 'STORAGE_SERVICE_TOKEN';
 
 const ALLOWED_MIME_TYPES = [
   'image/jpeg', 'image/png', 'image/webp', 'image/gif', 'image/svg+xml',
@@ -540,6 +717,8 @@ export class UploadMediaUseCase {
     size: number;
     uploadedBy: bigint;
     altTextI18n?: { en: string; vi?: string } | null;
+    title?: string | null;
+    folder?: string | null;
   }) {
     if (!ALLOWED_MIME_TYPES.includes(input.mimetype)) {
       throw new BadRequestException(`File type not allowed: ${input.mimetype}`);
@@ -549,17 +728,20 @@ export class UploadMediaUseCase {
     }
 
     const ext = extname(input.originalname).toLowerCase();
-    const key = `media/${uuidv4()}${ext}`;
+    const folderPrefix = input.folder ? `${input.folder}/` : 'media/';
+    const key = `${folderPrefix}${uuidv4()}${ext}`;
 
     const uploaded = await this.storage.uploadFile(key, input.buffer, input.size, input.mimetype);
 
     return this.repository.create({
       filename: input.originalname,
+      title: input.title ?? null,
       r2Key: uploaded.key,
       url: uploaded.url,
       mimeType: input.mimetype,
       sizeBytes: BigInt(input.size),
       altTextI18n: input.altTextI18n ?? null,
+      folder: input.folder ?? null,
       uploadedBy: input.uploadedBy,
     });
   }

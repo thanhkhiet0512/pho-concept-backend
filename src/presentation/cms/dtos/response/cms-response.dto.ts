@@ -1,5 +1,31 @@
 import { I18nFieldResponseDto } from '@presentation/menu/dtos/response/menu-response.dto';
-import { CmsPageEntity, BlogPostEntity, EventEntity, MediaFileEntity } from '@domain/cms/entities/cms.entity';
+import { PostCategoryEntity, CmsPageEntity, BlogPostEntity, EventEntity, MediaFileEntity } from '@domain/cms/entities/cms.entity';
+
+export class PostCategoryResponseDto {
+  id!: number;
+  slug!: string;
+  nameI18n!: I18nFieldResponseDto;
+  sortOrder!: number;
+  isActive!: boolean;
+  createdAt!: string;
+  updatedAt!: string;
+
+  static from(entity: PostCategoryEntity): PostCategoryResponseDto {
+    const dto = new PostCategoryResponseDto();
+    dto.id = Number(entity.id);
+    dto.slug = entity.slug;
+    dto.nameI18n = I18nFieldResponseDto.from(entity.nameI18n);
+    dto.sortOrder = entity.sortOrder;
+    dto.isActive = entity.isActive;
+    dto.createdAt = entity.createdAt.toISOString();
+    dto.updatedAt = entity.updatedAt.toISOString();
+    return dto;
+  }
+
+  static fromList(entities: PostCategoryEntity[]): PostCategoryResponseDto[] {
+    return entities.map((e) => PostCategoryResponseDto.from(e));
+  }
+}
 
 export class CmsPageResponseDto {
   id!: number;
@@ -41,8 +67,17 @@ export class BlogPostResponseDto {
   excerptI18n!: I18nFieldResponseDto | null;
   metaDescriptionI18n!: I18nFieldResponseDto | null;
   coverImageUrl!: string | null;
+  galleryImageIds!: string[] | null;
+  author!: string | null;
+  externalLink!: string | null;
+  videoUrl!: string | null;
+  readTime!: string | null;
+  views!: string | null;
+  isFeatured!: boolean;
   status!: string;
   publishedAt!: string | null;
+  publishDay!: number | null;
+  categoryId!: number | null;
   createdAt!: string;
   updatedAt!: string;
 
@@ -52,15 +87,20 @@ export class BlogPostResponseDto {
     dto.slug = entity.slug;
     dto.titleI18n = I18nFieldResponseDto.from(entity.titleI18n);
     dto.contentI18n = I18nFieldResponseDto.from(entity.contentI18n);
-    dto.excerptI18n = entity.excerptI18n
-      ? I18nFieldResponseDto.from(entity.excerptI18n)
-      : null;
-    dto.metaDescriptionI18n = entity.metaDescriptionI18n
-      ? I18nFieldResponseDto.from(entity.metaDescriptionI18n)
-      : null;
+    dto.excerptI18n = entity.excerptI18n ? I18nFieldResponseDto.from(entity.excerptI18n) : null;
+    dto.metaDescriptionI18n = entity.metaDescriptionI18n ? I18nFieldResponseDto.from(entity.metaDescriptionI18n) : null;
     dto.coverImageUrl = entity.coverImageUrl;
+    dto.galleryImageIds = entity.galleryImageIds;
+    dto.author = entity.author;
+    dto.externalLink = entity.externalLink;
+    dto.videoUrl = entity.videoUrl;
+    dto.readTime = entity.readTime;
+    dto.views = entity.views;
+    dto.isFeatured = entity.isFeatured;
     dto.status = entity.status;
     dto.publishedAt = entity.publishedAt?.toISOString() ?? null;
+    dto.publishDay = entity.publishDay;
+    dto.categoryId = entity.categoryId ? Number(entity.categoryId) : null;
     dto.createdAt = entity.createdAt.toISOString();
     dto.updatedAt = entity.updatedAt.toISOString();
     return dto;
@@ -110,27 +150,35 @@ export class EventResponseDto {
 export class MediaFileResponseDto {
   id!: number;
   filename!: string;
+  title!: string | null;
   r2Key!: string;
   url!: string;
   mimeType!: string;
   sizeBytes!: number;
   altTextI18n!: I18nFieldResponseDto | null;
+  folder!: string | null;
   uploadedBy!: number;
+  isDeleted!: boolean;
+  deletedAt!: string | null;
   createdAt!: string;
+  updatedAt!: string;
 
   static from(entity: MediaFileEntity): MediaFileResponseDto {
     const dto = new MediaFileResponseDto();
     dto.id = Number(entity.id);
     dto.filename = entity.filename;
+    dto.title = entity.title;
     dto.r2Key = entity.r2Key;
     dto.url = entity.url;
     dto.mimeType = entity.mimeType;
     dto.sizeBytes = Number(entity.sizeBytes);
-    dto.altTextI18n = entity.altTextI18n
-      ? I18nFieldResponseDto.from(entity.altTextI18n)
-      : null;
+    dto.altTextI18n = entity.altTextI18n ? I18nFieldResponseDto.from(entity.altTextI18n) : null;
+    dto.folder = entity.folder;
     dto.uploadedBy = Number(entity.uploadedBy);
+    dto.isDeleted = entity.isDeleted;
+    dto.deletedAt = entity.deletedAt?.toISOString() ?? null;
     dto.createdAt = entity.createdAt.toISOString();
+    dto.updatedAt = entity.updatedAt.toISOString();
     return dto;
   }
 

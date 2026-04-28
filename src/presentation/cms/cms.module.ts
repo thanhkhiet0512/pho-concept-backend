@@ -4,6 +4,12 @@ import minioConfig from '@config/minio.config';
 import { MinioService } from '@infrastructure/storage/minio.service';
 import { PublicCmsController, InternalCmsController } from './controllers';
 import {
+  GetPostCategoriesUseCase,
+  GetPostCategoryByIdUseCase,
+  CreatePostCategoryUseCase,
+  UpdatePostCategoryUseCase,
+  TogglePostCategoryUseCase,
+  DeletePostCategoryUseCase,
   GetCmsPagesUseCase,
   GetCmsPageBySlugUseCase,
   GetCmsPageByIdUseCase,
@@ -17,6 +23,7 @@ import {
   CreateBlogPostUseCase,
   UpdateBlogPostUseCase,
   PublishBlogPostUseCase,
+  ToggleBlogPostFeaturedUseCase,
   DeleteBlogPostUseCase,
   GetActiveEventsUseCase,
   GetEventByIdPublicUseCase,
@@ -35,12 +42,14 @@ import {
   STORAGE_SERVICE_TOKEN,
 } from '@application/cms/use-cases/cms.use-cases';
 import {
+  PostCategoryAdapter,
   CmsPageAdapter,
   BlogPostAdapter,
   EventAdapter,
   MediaFileAdapter,
 } from '@infrastructure/prisma/repositories/cms/cms.adapter';
 import {
+  POST_CATEGORY_REPOSITORY_TOKEN,
   CMS_PAGE_REPOSITORY_TOKEN,
   BLOG_POST_REPOSITORY_TOKEN,
   EVENT_REPOSITORY_TOKEN,
@@ -54,10 +63,18 @@ import {
     MinioService,
     { provide: STORAGE_SERVICE_TOKEN, useExisting: MinioService },
     // Repository tokens → adapters
+    { provide: POST_CATEGORY_REPOSITORY_TOKEN, useClass: PostCategoryAdapter },
     { provide: CMS_PAGE_REPOSITORY_TOKEN, useClass: CmsPageAdapter },
     { provide: BLOG_POST_REPOSITORY_TOKEN, useClass: BlogPostAdapter },
     { provide: EVENT_REPOSITORY_TOKEN, useClass: EventAdapter },
     { provide: MEDIA_FILE_REPOSITORY_TOKEN, useClass: MediaFileAdapter },
+    // Post Category Use Cases
+    GetPostCategoriesUseCase,
+    GetPostCategoryByIdUseCase,
+    CreatePostCategoryUseCase,
+    UpdatePostCategoryUseCase,
+    TogglePostCategoryUseCase,
+    DeletePostCategoryUseCase,
     // CMS Page Use Cases
     GetCmsPagesUseCase,
     GetCmsPageBySlugUseCase,
@@ -73,6 +90,7 @@ import {
     CreateBlogPostUseCase,
     UpdateBlogPostUseCase,
     PublishBlogPostUseCase,
+    ToggleBlogPostFeaturedUseCase,
     DeleteBlogPostUseCase,
     // Event Use Cases
     GetActiveEventsUseCase,
@@ -92,6 +110,7 @@ import {
     UploadMediaUseCase,
   ],
   exports: [
+    POST_CATEGORY_REPOSITORY_TOKEN,
     CMS_PAGE_REPOSITORY_TOKEN,
     BLOG_POST_REPOSITORY_TOKEN,
     EVENT_REPOSITORY_TOKEN,

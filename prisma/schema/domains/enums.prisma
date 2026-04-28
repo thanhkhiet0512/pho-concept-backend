@@ -8,6 +8,7 @@ enum AdminRole {
 enum BlogPostStatus {
   DRAFT
   PUBLISHED
+  SCHEDULED
   ARCHIVED
 }
 

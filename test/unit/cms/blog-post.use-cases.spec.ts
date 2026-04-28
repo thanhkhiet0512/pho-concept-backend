@@ -21,8 +21,16 @@ const mockPost = BlogPostEntity.reconstitute({
   excerptI18n: { en: 'Excerpt', vi: 'Trích dẫn' },
   metaDescriptionI18n: { en: 'Meta description' },
   coverImageUrl: 'https://cdn.example.com/cover.jpg',
+  galleryImageIds: null,
+  author: null,
+  externalLink: null,
+  videoUrl: null,
+  readTime: null,
+  views: null,
+  isFeatured: false,
   status: BlogPostStatus.DRAFT,
   publishedAt: null,
+  categoryId: null,
   createdAt: new Date('2026-01-01'),
   updatedAt: new Date('2026-01-01'),
 });
@@ -120,8 +128,16 @@ describe('Blog Post Use Cases', () => {
         excerptI18n: { en: 'Excerpt', vi: 'Trích dẫn' },
         metaDescriptionI18n: { en: 'Meta description' },
         coverImageUrl: 'https://cdn.example.com/cover.jpg',
+        galleryImageIds: null,
+        author: null,
+        externalLink: null,
+        videoUrl: null,
+        readTime: null,
+        views: null,
+        isFeatured: false,
         status: BlogPostStatus.PUBLISHED,
         publishedAt: new Date(),
+        categoryId: null,
         createdAt: new Date('2026-01-01'),
         updatedAt: new Date('2026-01-01'),
       });
@@ -231,7 +247,7 @@ describe('Blog Post Use Cases', () => {
       const result = await publishBlogPostUseCase.execute(BigInt(1), { status: 'PUBLISHED' });
 
       expect(result.status).toBe(BlogPostStatus.PUBLISHED);
-      expect(mockRepository.updateStatus).toHaveBeenCalledWith(BigInt(1), BlogPostStatus.PUBLISHED);
+      expect(mockRepository.updateStatus).toHaveBeenCalledWith(BigInt(1), BlogPostStatus.PUBLISHED, undefined);
     });
 
     it('should throw NotFoundException if not found', async () => {

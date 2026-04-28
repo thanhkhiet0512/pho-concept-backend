@@ -6,11 +6,23 @@ model BlogPost {
   excerptI18n         Json?           @map("excerpt_i18n") @db.JsonB
   metaDescriptionI18n Json?           @map("meta_description_i18n") @db.JsonB
   coverImageUrl       String?         @map("cover_image_url") @db.VarChar(500)
+  galleryImageIds     Json?           @map("gallery_image_ids") @db.JsonB
+  author              String?         @map("author") @db.VarChar(255)
+  externalLink        String?         @map("external_link") @db.VarChar(500)
+  videoUrl            String?         @map("video_url") @db.VarChar(500)
+  readTime            String?         @map("read_time") @db.VarChar(50)
+  views               String?         @map("views") @db.VarChar(50)
+  isFeatured          Boolean         @default(false) @map("is_featured")
   status              BlogPostStatus  @default(DRAFT)
   publishedAt         DateTime?       @map("published_at")
+  categoryId          BigInt?         @map("category_id")
+  category            PostCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
 
   @@index([publishedAt])
+  @@index([status])
+  @@index([categoryId])
+  @@index([isFeatured])
   @@map("blog_posts")
 }

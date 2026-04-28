@@ -2,22 +2,28 @@ import { Injectable } from '@nestjs/common';
 import { Prisma } from '@prisma/client';
 import { PrismaService } from '@infrastructure/prisma/prisma.service';
 import {
+  PostCategoryRepositoryPort,
   CmsPageRepositoryPort,
   BlogPostRepositoryPort,
   EventRepositoryPort,
   MediaFileRepositoryPort,
+  CreatePostCategoryData,
+  UpdatePostCategoryData,
   CreateCmsPageData,
   UpdateCmsPageData,
   CreateBlogPostData,
   UpdateBlogPostData,
+  BlogPostFilterParams,
   CreateEventData,
   UpdateEventData,
   CreateMediaFileData,
   UpdateMediaFileData,
+  MediaFilterParams,
   PaginationParams,
   PaginatedResult,
 } from '@domain/cms/ports/cms.repository.port';
 import {
+  PostCategoryEntity,
   CmsPageEntity,
   BlogPostEntity,
   BlogPostStatus as DomainBlogPostStatus,
@@ -43,6 +49,91 @@ function toI18nOrNull(raw: unknown): I18nField | null {
 function toSections(raw: unknown): unknown[] {
   if (Array.isArray(raw)) return raw;
   return [];
+}
+
+// ==================== POST CATEGORY ADAPTER ====================
+
+@Injectable()
+export class PostCategoryAdapter implements PostCategoryRepositoryPort {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private map(data: {
+    id: bigint; slug: string; nameI18n: unknown; sortOrder: number;
+    isActive: boolean; createdAt: Date; updatedAt: Date;
+  }): PostCategoryEntity {
+    return PostCategoryEntity.reconstitute({
+      id: data.id,
+      slug: data.slug,
+      nameI18n: toI18n(data.nameI18n),
+      sortOrder: data.sortOrder,
+      isActive: data.isActive,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    });
+  }
+
+  async findAll(params?: PaginationParams & { isActive?: boolean; search?: string }): Promise<PaginatedResult<PostCategoryEntity>> {
+    const page = params?.page ?? 1;
+    const limit = params?.limit ?? 20;
+    const skip = (page - 1) * limit;
+    const where: Prisma.PostCategoryWhereInput = {};
+    if (params?.isActive !== undefined) where.isActive = params.isActive;
+    if (params?.search) {
+      where.OR = [
+        { slug: { contains: params.search, mode: 'insensitive' } },
+        { nameI18n: { path: ['en'], string_contains: params.search } },
+        { nameI18n: { path: ['vi'], string_contains: params.search } },
+      ];
+    }
+
+    const [categories, total] = await Promise.all([
+      this.prisma.postCategory.findMany({ where, orderBy: [{ sortOrder: 'asc' }, { createdAt: 'desc' }], skip, take: limit }),
+      this.prisma.postCategory.count({ where }),
+    ]);
+
+    return { data: categories.map((c) => this.map(c)), total, page, limit, totalPages: Math.ceil(total / limit) };
+  }
+
+  async findById(id: bigint): Promise<PostCategoryEntity | null> {
+    const cat = await this.prisma.postCategory.findUnique({ where: { id } });
+    return cat ? this.map(cat) : null;
+  }
+
+  async findBySlug(slug: string): Promise<PostCategoryEntity | null> {
+    const cat = await this.prisma.postCategory.findUnique({ where: { slug } });
+    return cat ? this.map(cat) : null;
+  }
+
+  async create(data: CreatePostCategoryData): Promise<PostCategoryEntity> {
+    const cat = await this.prisma.postCategory.create({
+      data: {
+        slug: data.slug,
+        nameI18n: data.nameI18n as unknown as Prisma.InputJsonValue,
+        sortOrder: data.sortOrder ?? 0,
+        isActive: data.isActive ?? true,
+      },
+    });
+    return this.map(cat);
+  }
+
+  async update(id: bigint, data: UpdatePostCategoryData): Promise<PostCategoryEntity> {
+    const updateData: Prisma.PostCategoryUncheckedUpdateInput = {};
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.nameI18n !== undefined) updateData.nameI18n = data.nameI18n as unknown as Prisma.InputJsonValue;
+    if (data.sortOrder !== undefined) updateData.sortOrder = data.sortOrder;
+    if (data.isActive !== undefined) updateData.isActive = data.isActive;
+    const cat = await this.prisma.postCategory.update({ where: { id }, data: updateData });
+    return this.map(cat);
+  }
+
+  async toggleActive(id: bigint, isActive: boolean): Promise<PostCategoryEntity> {
+    const cat = await this.prisma.postCategory.update({ where: { id }, data: { isActive } });
+    return this.map(cat);
+  }
+
+  async hardDelete(id: bigint): Promise<void> {
+    await this.prisma.postCategory.delete({ where: { id } });
+  }
 }
 
 // ==================== CMS PAGE ADAPTER ====================
@@ -147,9 +238,12 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
   private map(data: {
     id: bigint; slug: string; titleI18n: unknown; contentI18n: unknown;
     excerptI18n: unknown; metaDescriptionI18n: unknown; coverImageUrl: string | null;
-    status: 'DRAFT' | 'PUBLISHED' | 'ARCHIVED'; publishedAt: Date | null;
-    createdAt: Date; updatedAt: Date;
+    galleryImageIds: unknown; author: string | null; externalLink: string | null;
+    videoUrl: string | null; readTime: string | null; views: string | null;
+    isFeatured: boolean; status: 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
+    publishedAt: Date | null; categoryId: bigint | null; createdAt: Date; updatedAt: Date;
   }): BlogPostEntity {
+    const galleryIds = Array.isArray(data.galleryImageIds) ? (data.galleryImageIds as string[]) : null;
     return BlogPostEntity.reconstitute({
       id: data.id,
       slug: data.slug,
@@ -158,19 +252,47 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
       excerptI18n: toI18nOrNull(data.excerptI18n),
       metaDescriptionI18n: toI18nOrNull(data.metaDescriptionI18n),
       coverImageUrl: data.coverImageUrl,
+      galleryImageIds: galleryIds,
+      author: data.author,
+      externalLink: data.externalLink,
+      videoUrl: data.videoUrl,
+      readTime: data.readTime,
+      views: data.views,
+      isFeatured: data.isFeatured,
       status: DomainBlogPostStatus[data.status],
       publishedAt: data.publishedAt,
+      categoryId: data.categoryId,
       createdAt: data.createdAt,
       updatedAt: data.updatedAt,
     });
   }
 
-  async findAll(params?: PaginationParams & { status?: DomainBlogPostStatus }): Promise<PaginatedResult<BlogPostEntity>> {
+  async findAll(params?: BlogPostFilterParams): Promise<PaginatedResult<BlogPostEntity>> {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-    const where: Record<string, unknown> = {};
-    if (params?.status) where.status = params.status;
+    const where: Prisma.BlogPostWhereInput = {};
+
+    if (params?.status) where.status = BlogPostStatusToPrisma(params.status);
+    if (params?.categoryId) where.categoryId = params.categoryId;
+    if (params?.author) where.author = { contains: params.author, mode: 'insensitive' };
+    if (params?.isFeatured !== undefined) where.isFeatured = params.isFeatured;
+    if (params?.publishMonth) {
+      const [year, month] = params.publishMonth.split('-').map(Number);
+      if (year && month) {
+        const start = new Date(year, month - 1, 1);
+        const end = new Date(year, month, 1);
+        where.publishedAt = { gte: start, lt: end };
+      }
+    }
+    if (params?.search) {
+      where.OR = [
+        { slug: { contains: params.search, mode: 'insensitive' } },
+        { author: { contains: params.search, mode: 'insensitive' } },
+        { titleI18n: { path: ['en'], string_contains: params.search } },
+        { titleI18n: { path: ['vi'], string_contains: params.search } },
+      ];
+    }
 
     const [posts, total] = await Promise.all([
       this.prisma.blogPost.findMany({
@@ -219,14 +341,19 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
         slug: data.slug,
         titleI18n: data.titleI18n as unknown as Prisma.InputJsonValue,
         contentI18n: data.contentI18n as unknown as Prisma.InputJsonValue,
-        excerptI18n: data.excerptI18n
-          ? (data.excerptI18n as unknown as Prisma.InputJsonValue)
-          : undefined,
-        metaDescriptionI18n: data.metaDescriptionI18n
-          ? (data.metaDescriptionI18n as unknown as Prisma.InputJsonValue)
-          : undefined,
-        coverImageUrl: data.coverImageUrl,
+        excerptI18n: data.excerptI18n ? (data.excerptI18n as unknown as Prisma.InputJsonValue) : undefined,
+        metaDescriptionI18n: data.metaDescriptionI18n ? (data.metaDescriptionI18n as unknown as Prisma.InputJsonValue) : undefined,
+        coverImageUrl: data.coverImageUrl ?? null,
+        galleryImageIds: data.galleryImageIds ? (data.galleryImageIds as unknown as Prisma.InputJsonValue) : undefined,
+        author: data.author ?? null,
+        externalLink: data.externalLink ?? null,
+        videoUrl: data.videoUrl ?? null,
+        readTime: data.readTime ?? null,
+        views: data.views ?? null,
+        isFeatured: data.isFeatured ?? false,
         status: data.status ? BlogPostStatusToPrisma(data.status) : 'DRAFT',
+        publishedAt: data.publishedAt ?? null,
+        categoryId: data.categoryId ?? null,
       },
     });
     return this.map(post);
@@ -236,32 +363,37 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     const updateData: Prisma.BlogPostUncheckedUpdateInput = {};
     if (data.titleI18n !== undefined) updateData.titleI18n = data.titleI18n as unknown as Prisma.InputJsonValue;
     if (data.contentI18n !== undefined) updateData.contentI18n = data.contentI18n as unknown as Prisma.InputJsonValue;
-    if (data.excerptI18n !== undefined) {
-      updateData.excerptI18n = data.excerptI18n
-        ? (data.excerptI18n as unknown as Prisma.InputJsonValue)
-        : Prisma.DbNull;
-    }
-    if (data.metaDescriptionI18n !== undefined) {
-      updateData.metaDescriptionI18n = data.metaDescriptionI18n
-        ? (data.metaDescriptionI18n as unknown as Prisma.InputJsonValue)
-        : Prisma.DbNull;
-    }
+    if (data.excerptI18n !== undefined) updateData.excerptI18n = data.excerptI18n ? (data.excerptI18n as unknown as Prisma.InputJsonValue) : Prisma.DbNull;
+    if (data.metaDescriptionI18n !== undefined) updateData.metaDescriptionI18n = data.metaDescriptionI18n ? (data.metaDescriptionI18n as unknown as Prisma.InputJsonValue) : Prisma.DbNull;
     if (data.coverImageUrl !== undefined) updateData.coverImageUrl = data.coverImageUrl;
+    if (data.galleryImageIds !== undefined) updateData.galleryImageIds = data.galleryImageIds ? (data.galleryImageIds as unknown as Prisma.InputJsonValue) : Prisma.DbNull;
+    if (data.author !== undefined) updateData.author = data.author;
+    if (data.externalLink !== undefined) updateData.externalLink = data.externalLink;
+    if (data.videoUrl !== undefined) updateData.videoUrl = data.videoUrl;
+    if (data.readTime !== undefined) updateData.readTime = data.readTime;
+    if (data.views !== undefined) updateData.views = data.views;
+    if (data.isFeatured !== undefined) updateData.isFeatured = data.isFeatured;
     if (data.status !== undefined) updateData.status = BlogPostStatusToPrisma(data.status);
+    if (data.publishedAt !== undefined) updateData.publishedAt = data.publishedAt;
+    if (data.categoryId !== undefined) updateData.categoryId = data.categoryId;
     const post = await this.prisma.blogPost.update({ where: { id }, data: updateData });
     return this.map(post);
   }
 
-  async updateStatus(id: bigint, status: DomainBlogPostStatus): Promise<BlogPostEntity> {
-    const current = await this.prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } });
-    const publishedAt = status === DomainBlogPostStatus.PUBLISHED && !current?.publishedAt ? new Date() : undefined;
-    const post = await this.prisma.blogPost.update({
-      where: { id },
-      data: {
-        status: BlogPostStatusToPrisma(status),
-        ...(publishedAt ? { publishedAt } : {}),
-      },
-    });
+  async updateStatus(id: bigint, status: DomainBlogPostStatus, publishedAt?: Date | null): Promise<BlogPostEntity> {
+    const updateData: Prisma.BlogPostUncheckedUpdateInput = { status: BlogPostStatusToPrisma(status) };
+    if (publishedAt !== undefined) {
+      updateData.publishedAt = publishedAt;
+    } else if (status === DomainBlogPostStatus.PUBLISHED) {
+      const current = await this.prisma.blogPost.findUnique({ where: { id }, select: { publishedAt: true } });
+      if (!current?.publishedAt) updateData.publishedAt = new Date();
+    }
+    const post = await this.prisma.blogPost.update({ where: { id }, data: updateData });
+    return this.map(post);
+  }
+
+  async toggleFeatured(id: bigint, isFeatured: boolean): Promise<BlogPostEntity> {
+    const post = await this.prisma.blogPost.update({ where: { id }, data: { isFeatured } });
     return this.map(post);
   }
 
@@ -270,8 +402,8 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
   }
 }
 
-function BlogPostStatusToPrisma(status: DomainBlogPostStatus): 'DRAFT' | 'PUBLISHED' | 'ARCHIVED' {
-  return status as 'DRAFT' | 'PUBLISHED' | 'ARCHIVED';
+function BlogPostStatusToPrisma(status: DomainBlogPostStatus): 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED' {
+  return status as 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
 }
 
 // ==================== EVENT ADAPTER ====================
@@ -393,37 +525,45 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
   constructor(private readonly prisma: PrismaService) {}
 
   private map(data: {
-    id: bigint; filename: string; r2Key: string; url: string;
-    mimeType: string; sizeBytes: bigint; altTextI18n: unknown;
-    uploadedBy: bigint; createdAt: Date;
+    id: bigint; filename: string; title: string | null; r2Key: string; url: string;
+    mimeType: string; sizeBytes: bigint; altTextI18n: unknown; folder: string | null;
+    uploadedBy: bigint; deletedAt: Date | null; createdAt: Date; updatedAt: Date;
   }): MediaFileEntity {
     return MediaFileEntity.reconstitute({
       id: data.id,
       filename: data.filename,
+      title: data.title,
       r2Key: data.r2Key,
       url: data.url,
       mimeType: data.mimeType,
       sizeBytes: data.sizeBytes,
       altTextI18n: toI18nOrNull(data.altTextI18n),
+      folder: data.folder,
       uploadedBy: data.uploadedBy,
+      deletedAt: data.deletedAt,
       createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
     });
   }
 
-  async findAll(params?: PaginationParams & { mimeType?: string }): Promise<PaginatedResult<MediaFileEntity>> {
+  async findAll(params?: MediaFilterParams): Promise<PaginatedResult<MediaFileEntity>> {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-    const where: Record<string, unknown> = {};
-    if (params?.mimeType) where.mimeType = { startsWith: params.mimeType };
+    const where: Prisma.MediaFileWhereInput = { deletedAt: null };
+
+    if (params?.type === 'image') where.mimeType = { startsWith: 'image/' };
+    else if (params?.type === 'video') where.mimeType = { startsWith: 'video/' };
+    if (params?.folder) where.folder = params.folder;
+    if (params?.search) {
+      where.OR = [
+        { filename: { contains: params.search, mode: 'insensitive' } },
+        { title: { contains: params.search, mode: 'insensitive' } },
+      ];
+    }
 
     const [files, total] = await Promise.all([
-      this.prisma.mediaFile.findMany({
-        where,
-        orderBy: { createdAt: 'desc' },
-        skip,
-        take: limit,
-      }),
+      this.prisma.mediaFile.findMany({ where, orderBy: { createdAt: 'desc' }, skip, take: limit }),
       this.prisma.mediaFile.count({ where }),
     ]);
 
@@ -435,17 +575,31 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
     return file ? this.map(file) : null;
   }
 
+  async isUsedInPosts(id: bigint): Promise<boolean> {
+    const file = await this.prisma.mediaFile.findUnique({ where: { id }, select: { url: true } });
+    if (!file) return false;
+    const count = await this.prisma.blogPost.count({
+      where: {
+        OR: [
+          { coverImageUrl: file.url },
+          { galleryImageIds: { array_contains: file.url } },
+        ],
+      },
+    });
+    return count > 0;
+  }
+
   async create(data: CreateMediaFileData): Promise<MediaFileEntity> {
     const file = await this.prisma.mediaFile.create({
       data: {
         filename: data.filename,
+        title: data.title ?? null,
         r2Key: data.r2Key,
         url: data.url,
         mimeType: data.mimeType,
         sizeBytes: data.sizeBytes,
-        altTextI18n: data.altTextI18n
-          ? (data.altTextI18n as unknown as Prisma.InputJsonValue)
-          : undefined,
+        altTextI18n: data.altTextI18n ? (data.altTextI18n as unknown as Prisma.InputJsonValue) : undefined,
+        folder: data.folder ?? null,
         uploadedBy: data.uploadedBy,
       },
     });
@@ -454,12 +608,15 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
 
   async update(id: bigint, data: UpdateMediaFileData): Promise<MediaFileEntity> {
     const updateData: Prisma.MediaFileUncheckedUpdateInput = {};
-    if (data.altTextI18n !== undefined) {
-      updateData.altTextI18n = data.altTextI18n
-        ? (data.altTextI18n as unknown as Prisma.InputJsonValue)
-        : Prisma.DbNull;
-    }
+    if (data.altTextI18n !== undefined) updateData.altTextI18n = data.altTextI18n ? (data.altTextI18n as unknown as Prisma.InputJsonValue) : Prisma.DbNull;
+    if (data.title !== undefined) updateData.title = data.title;
+    if (data.folder !== undefined) updateData.folder = data.folder;
     const file = await this.prisma.mediaFile.update({ where: { id }, data: updateData });
+    return this.map(file);
+  }
+
+  async softDelete(id: bigint): Promise<MediaFileEntity> {
+    const file = await this.prisma.mediaFile.update({ where: { id }, data: { deletedAt: new Date() } });
     return this.map(file);
   }
 

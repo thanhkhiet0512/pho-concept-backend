@@ -16,6 +16,7 @@ import { MailModule } from './infrastructure/mail/mail.module';
 import { SmsModule } from './infrastructure/sms/sms.module';
 import { QueueModule } from './infrastructure/queue/queue.module';
 import { CateringModule } from './presentation/catering/catering.module';
+import { DashboardModule } from './presentation/dashboard/dashboard.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { CateringModule } from './presentation/catering/catering.module';
     SmsModule,
     QueueModule,
     CateringModule,
+    DashboardModule,
   ],
 })
 export class AppModule {}

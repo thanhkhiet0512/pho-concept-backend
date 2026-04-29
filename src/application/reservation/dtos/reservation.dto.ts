@@ -1,7 +1,7 @@
-import { IsString, IsOptional, IsBoolean, IsInt, IsNumber, Min, Max, MaxLength, IsEmail, IsDateString, IsEnum, ValidateNested } from 'class-validator';
+import { IsString, IsOptional, IsInt, Min, Max, MaxLength, IsEmail, IsDateString, IsEnum } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { ReservationStatus, CANCELLABLE_STATUSES, ALL_STATUSES } from '@domain/reservation/entities/reservation.entity';
+import { ReservationStatus, ALL_STATUSES } from '@domain/reservation/entities/reservation.entity';
 
 // ===================== PUBLIC DTOs =====================
 

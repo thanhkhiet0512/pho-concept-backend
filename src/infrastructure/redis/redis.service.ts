@@ -1,14 +1,11 @@
 import { Injectable, OnModuleDestroy } from '@nestjs/common';
-import type { Redis } from 'ioredis';
-
 @Injectable()
 export class RedisService implements OnModuleDestroy {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private readonly client: any;
 
   constructor() {
-    // Dynamic import to handle ioredis module format
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const RedisModule = require('ioredis');
     const RedisClient = RedisModule.default || RedisModule;
     this.client = new RedisClient(process.env.REDIS_URL || 'redis://localhost:6379');

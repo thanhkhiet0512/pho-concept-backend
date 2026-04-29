@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query, ParseIntPipe, DefaultValuePipe, Optional } from '@nestjs/common';
+import { Controller, Get, Param, Query, ParseIntPipe, DefaultValuePipe } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
 import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';

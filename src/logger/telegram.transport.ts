@@ -3,11 +3,10 @@ import Transport from 'winston-transport';
 
 const TELEGRAM_MAX = 4096;
 const JSON_INDENT = 2;
-const MAX_INFO_LEN = 1000;
 const MAX_STACK_LEN = 3000;
 const MAX_STACK_LINES = 35;
 
-function safeStringify(value: unknown, maxDepth = 6): string {
+function safeStringify(value: unknown, _maxDepth = 6): string {
   const seen = new WeakSet<object>();
   try {
     return JSON.stringify(
@@ -123,10 +122,10 @@ export class TelegramTransport extends Transport {
     this.chatId = opts?.chatId;
   }
 
-  log(info: any, callback: () => void): void {
+  log(info: Record<string, unknown>, callback: () => void): void {
     setImmediate(() => this.emit('logged', info));
 
-    const level = (info.level?.toLowerCase() || 'info') as LogLevel;
+    const level = (typeof info.level === 'string' ? info.level.toLowerCase() : 'info') as LogLevel;
     const message = typeof info.message === 'string' ? info.message : safeStringify(info.message);
     const details = info.error ?? info.stack ?? info.trace ?? null;
 

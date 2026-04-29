@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { LocationService } from '@application/location/services/location.service';
 import { LocationResponseDto } from '../dtos/response/location-response.dto';
 import { Public } from '@common/decorators/public.decorator';

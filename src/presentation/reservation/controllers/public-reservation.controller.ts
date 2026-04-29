@@ -1,7 +1,6 @@
 import { Controller, Get, Post, Delete, Body, Param, Query, HttpCode, HttpStatus } from '@nestjs/common';
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
-import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';
 import { ThrottlePublicWrite } from '@common/decorators/throttle.decorator';
 import {
   CheckAvailabilityUseCase,
@@ -14,7 +13,6 @@ import {
   CreateReservationDto,
 } from '@application/reservation/dtos/reservation.dto';
 import {
-  AvailabilityResponseDto,
   ReservationStatusResponseDto,
 } from '../dtos/response/reservation-response.dto';
 

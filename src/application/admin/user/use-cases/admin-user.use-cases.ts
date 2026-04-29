@@ -5,7 +5,6 @@ import { AdminUserRepositoryPort } from '@domain/auth/ports/admin-user.repositor
 import { AdminUserEntity } from '@domain/auth/entities/admin-user.entity';
 import { CreateAdminUserDto, AdminUserQueryDto, UpdateAdminUserDto } from '@application/admin/user/dtos';
 import { ADMIN_USER_REPOSITORY_TOKEN } from '@domain/auth/ports/admin-user.repository.token';
-import { AdminRole } from '@domain/auth/enums/admin-role.enum';
 
 @Injectable()
 export class GetAdminUsersUseCase {

@@ -9,11 +9,11 @@ import * as bcrypt from 'bcrypt';
 
 describe('AuthService', () => {
   let service: AuthService;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockAuthRepository: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockJwtService: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+   
   let mockRedisService: any;
 
   const TEST_PASSWORD = 'password123';

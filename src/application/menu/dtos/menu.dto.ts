@@ -163,6 +163,13 @@ export class UpdateMenuItemDto {
   sortOrder?: number;
 }
 
+export class ToggleActiveDto {
+  @ApiProperty({ example: true })
+  @IsDefined()
+  @IsBoolean()
+  isActive!: boolean;
+}
+
 export class UpdateMenuItemPricesDto {
   @ApiProperty({ example: 1 })
   @IsDefined()

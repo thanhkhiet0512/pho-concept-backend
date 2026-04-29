@@ -22,6 +22,15 @@ import {
 } from '@application/reservation/dtos/reservation.dto';
 import { PaginatedResult } from '@domain/reservation/ports/reservation.repository.port';
 
+const VALID_RESERVATION_TRANSITIONS: Record<ReservationStatus, ReservationStatus[]> = {
+  PENDING:   ['CONFIRMED', 'CANCELLED', 'NO_SHOW'],
+  CONFIRMED: ['SEATED', 'CANCELLED', 'NO_SHOW'],
+  SEATED:    ['COMPLETED', 'NO_SHOW'],
+  COMPLETED: [],
+  NO_SHOW:   [],
+  CANCELLED: [],
+};
+
 // ===================== AVAILABILITY ENGINE =====================
 
 export interface TimeSlotResult {
@@ -439,6 +448,13 @@ export class UpdateReservationStatusUseCase {
     const reservation = await this.reservationRepository.findById(id);
     if (!reservation) {
       throw new NotFoundException(`Reservation with id ${id} not found`);
+    }
+
+    const validTransitions = VALID_RESERVATION_TRANSITIONS[reservation.status];
+    if (!validTransitions.includes(dto.status)) {
+      throw new BadRequestException(
+        `Cannot transition reservation from "${reservation.status}" to "${dto.status}"`,
+      );
     }
 
     return this.reservationRepository.updateStatus(id, {

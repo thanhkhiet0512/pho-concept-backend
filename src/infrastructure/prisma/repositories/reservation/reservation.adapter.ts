@@ -43,12 +43,12 @@ export class ReservationAdapter implements ReservationRepositoryPort {
   }
 
   async findById(id: bigint): Promise<ReservationEntity | null> {
-    const reservation = await this.prisma.reservation.findUnique({ where: { id } });
+    const reservation = await this.prisma.reservation.findFirst({ where: { id, deletedAt: null } });
     return reservation ? this.map(reservation) : null;
   }
 
   async findByToken(token: string): Promise<ReservationEntity | null> {
-    const reservation = await this.prisma.reservation.findUnique({ where: { token } });
+    const reservation = await this.prisma.reservation.findFirst({ where: { token, deletedAt: null } });
     return reservation ? this.map(reservation) : null;
   }
 

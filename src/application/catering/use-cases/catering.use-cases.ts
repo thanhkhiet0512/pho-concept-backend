@@ -63,6 +63,10 @@ export class SubmitCateringInquiryUseCase {
       eventTime: dto.eventTime,
       guestCount: dto.guestCount,
       venue: dto.venue ?? null,
+      city: dto.city ?? null,
+      state: dto.state ?? null,
+      zip: dto.zip ?? null,
+      dietaryNotes: dto.dietaryNotes ?? null,
       specialRequest: dto.specialRequest ?? null,
     });
 

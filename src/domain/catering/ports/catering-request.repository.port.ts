@@ -15,6 +15,10 @@ export interface CreateCateringRequestData {
   eventTime: string;
   guestCount: number;
   venue?: string | null;
+  city?: string | null;
+  state?: string | null;
+  zip?: string | null;
+  dietaryNotes?: string | null;
   specialRequest?: string | null;
 }
 

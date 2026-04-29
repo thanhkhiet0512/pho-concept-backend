@@ -22,6 +22,10 @@ export class CateringRequestEntity {
   private _eventTime!: string;
   private _guestCount!: number;
   private _venue: string | null = null;
+  private _city: string | null = null;
+  private _state: string | null = null;
+  private _zip: string | null = null;
+  private _dietaryNotes: string | null = null;
   private _specialRequest: string | null = null;
   private _status!: CateringStatus;
   private _quotedAmount: number | null = null;
@@ -36,7 +40,8 @@ export class CateringRequestEntity {
     id: bigint; token: string; locationId: bigint; packageId: bigint | null;
     contactName: string; contactEmail: string; contactPhone: string;
     eventDate: Date; eventTime: string; guestCount: number; venue: string | null;
-    specialRequest: string | null; status: CateringStatus;
+    city: string | null; state: string | null; zip: string | null;
+    dietaryNotes: string | null; specialRequest: string | null; status: CateringStatus;
     quotedAmount: number | null; depositAmount: number | null;
     depositPaidAt: Date | null; quotationDeadline: Date | null;
     internalNote: string | null; handledByAdminId: bigint | null;
@@ -48,7 +53,9 @@ export class CateringRequestEntity {
     e._contactName = data.contactName; e._contactEmail = data.contactEmail;
     e._contactPhone = data.contactPhone; e._eventDate = data.eventDate;
     e._eventTime = data.eventTime; e._guestCount = data.guestCount;
-    e._venue = data.venue; e._specialRequest = data.specialRequest;
+    e._venue = data.venue; e._city = data.city; e._state = data.state;
+    e._zip = data.zip; e._dietaryNotes = data.dietaryNotes;
+    e._specialRequest = data.specialRequest;
     e._status = data.status; e._quotedAmount = data.quotedAmount;
     e._depositAmount = data.depositAmount; e._depositPaidAt = data.depositPaidAt;
     e._quotationDeadline = data.quotationDeadline; e._internalNote = data.internalNote;
@@ -66,6 +73,10 @@ export class CateringRequestEntity {
   get eventTime(): string { return this._eventTime; }
   get guestCount(): number { return this._guestCount; }
   get venue(): string | null { return this._venue; }
+  get city(): string | null { return this._city; }
+  get state(): string | null { return this._state; }
+  get zip(): string | null { return this._zip; }
+  get dietaryNotes(): string | null { return this._dietaryNotes; }
   get specialRequest(): string | null { return this._specialRequest; }
   get status(): CateringStatus { return this._status; }
   get quotedAmount(): number | null { return this._quotedAmount; }

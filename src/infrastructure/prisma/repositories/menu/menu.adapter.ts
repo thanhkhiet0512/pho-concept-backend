@@ -150,13 +150,28 @@ export class MenuCategoryAdapter implements MenuCategoryRepositoryPort {
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<MenuCategoryEntity> {
-    const c = await this.prisma.menuCategory.update({ where: { id }, data: { isActive } });
+    const c = await this.prisma.menuCategory.update({
+      where: { id },
+      data: { isActive },
+      include: {
+        items: {
+          where: { deletedAt: null },
+          include: { prices: { where: { isActive: true } } },
+          orderBy: { sortOrder: 'asc' },
+        },
+      },
+    });
     return this.map(c);
   }
 
   async softDelete(id: bigint): Promise<void> {
+    const itemIds = await this.prisma.menuItem
+      .findMany({ where: { categoryId: id, deletedAt: null }, select: { id: true } })
+      .then((rows) => rows.map((r) => r.id));
+
     await this.prisma.$transaction([
-      this.prisma.menuItem.updateMany({ where: { categoryId: id }, data: { deletedAt: new Date() } }),
+      this.prisma.menuItemPrice.updateMany({ where: { menuItemId: { in: itemIds } }, data: { isActive: false } }),
+      this.prisma.menuItem.updateMany({ where: { categoryId: id }, data: { deletedAt: new Date(), isActive: false } }),
       this.prisma.menuCategory.update({ where: { id }, data: { isActive: false } }),
     ]);
   }
@@ -275,7 +290,10 @@ export class MenuItemAdapter implements MenuItemRepositoryPort {
   }
 
   async softDelete(id: bigint): Promise<void> {
-    await this.prisma.menuItem.update({ where: { id }, data: { deletedAt: new Date() } });
+    await this.prisma.$transaction([
+      this.prisma.menuItemPrice.updateMany({ where: { menuItemId: id }, data: { isActive: false } }),
+      this.prisma.menuItem.update({ where: { id }, data: { deletedAt: new Date(), isActive: false } }),
+    ]);
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<MenuItemEntity> {

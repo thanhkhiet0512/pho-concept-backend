@@ -3,6 +3,7 @@ import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
 import { GetCateringPackagesUseCase, SubmitCateringInquiryUseCase, GetCateringByTokenUseCase } from '@application/catering/use-cases/catering.use-cases';
 import { SubmitCateringInquiryDto } from '@application/catering/dtos';
+import { ThrottlePublicWrite } from '@common/decorators/throttle.decorator';
 
 @ApiTags('Catering - Public')
 @Controller('catering')
@@ -34,6 +35,7 @@ export class PublicCateringController {
 
   @Public()
   @Post('inquiries')
+  @ThrottlePublicWrite()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Submit a catering inquiry' })
   async submitInquiryHandler(@Body() dto: SubmitCateringInquiryDto) {

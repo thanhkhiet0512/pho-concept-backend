@@ -11,7 +11,7 @@ export class GetCustomerProfileUseCase {
 
   async execute(userId: bigint) {
     const customer = await this.customerRepository.findById(userId);
-    if (!customer) {
+    if (!customer || !customer.isActive) {
       throw new UnauthorizedException('User not found');
     }
 

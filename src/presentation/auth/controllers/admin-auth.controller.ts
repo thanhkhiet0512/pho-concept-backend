@@ -7,9 +7,11 @@ import { Public } from '@common/decorators/public.decorator';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { setAuthCookies, clearAuthCookies } from '@common/helpers/set-auth-cookies.helper';
+import { ThrottleAuth } from '@common/decorators/throttle.decorator';
 
 @ApiTags('Auth - Admin')
 @Controller('i')
+@ThrottleAuth()
 export class AdminAuthController {
   constructor(private readonly authService: AuthService) {}
 

@@ -6,6 +6,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { Prisma } from '@prisma/client';
 
 interface ErrorResponse {
   isError: boolean;
@@ -37,6 +38,15 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const resp = exceptionResponse as Record<string, unknown>;
         message = (resp.message as string) || message;
         details = (resp.errors || resp.details) as Record<string, unknown> | undefined;
+      }
+    } else if (exception instanceof Prisma.PrismaClientKnownRequestError) {
+      if (exception.code === 'P2002') {
+        status = HttpStatus.CONFLICT;
+        const fields = (exception.meta?.target as string[] | undefined)?.join(', ') ?? 'field';
+        message = `A record with this ${fields} already exists`;
+      } else if (exception.code === 'P2025') {
+        status = HttpStatus.NOT_FOUND;
+        message = 'Record not found';
       }
     } else if (exception instanceof Error) {
       message = exception.message;

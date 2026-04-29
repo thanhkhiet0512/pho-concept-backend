@@ -23,9 +23,11 @@ import { Public } from '@common/decorators/public.decorator';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { CurrentUser } from '@common/decorators/current-user.decorator';
 import { setAuthCookies, clearAuthCookies } from '@common/helpers/set-auth-cookies.helper';
+import { ThrottleAuth } from '@common/decorators/throttle.decorator';
 
 @ApiTags('Auth - Customer')
 @Controller('auth/customer')
+@ThrottleAuth()
 export class CustomerAuthController {
   constructor(
     private readonly registerUseCase: RegisterCustomerUseCase,

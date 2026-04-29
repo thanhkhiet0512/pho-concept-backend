@@ -33,7 +33,7 @@ export class CateringPackageAdapter implements CateringPackageRepositoryPort {
   }
 
   async findById(id: bigint): Promise<CateringPackageEntity | null> {
-    const r = await this.prisma.cateringPackage.findUnique({ where: { id } });
+    const r = await this.prisma.cateringPackage.findFirst({ where: { id, isActive: true } });
     return r ? this.map(r) : null;
   }
 }

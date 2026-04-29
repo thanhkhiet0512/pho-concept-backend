@@ -39,7 +39,7 @@ export class PublicMenuController {
       undefined,
       {
         categoryId,
-        locationId,
+        locationId: locationId ?? BigInt(1),
         isActive: true,
       },
     );

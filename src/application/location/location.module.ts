@@ -1,6 +1,5 @@
 import { Module } from '@nestjs/common';
 import { LocationService } from './services/location.service';
-import { LocationRepositoryPort } from '@domain/location/ports/location.repository.port';
 import { LocationAdapter } from '@infrastructure/prisma/repositories/location/location.adapter';
 import { LOCATION_REPOSITORY_TOKEN } from '@domain/location/ports/location.repository.token';
 

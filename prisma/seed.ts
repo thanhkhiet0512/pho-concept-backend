@@ -13,7 +13,7 @@ async function main() {
   const managerHash = await hashPassword('Demo@123456');
   const staffHash = await hashPassword('Demo@123456');
 
-  const owner = await prisma.adminUser.upsert({
+  const _owner = await prisma.adminUser.upsert({
     where: { email: 'owner@phoconcept.com' },
     update: { passwordHash: ownerHash },
     create: {

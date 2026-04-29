@@ -24,7 +24,6 @@ import {
 import {
   ReservationResponseDto,
   SlotConfigResponseDto,
-  CalendarResponseDto,
 } from '../dtos/response/reservation-response.dto';
 
 @ApiTags('Reservation - Admin')

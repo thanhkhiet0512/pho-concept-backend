@@ -2,7 +2,6 @@ import {
   Controller,
   Get,
   Post,
-  Put,
   Patch,
   Delete,
   Body,
@@ -18,7 +17,6 @@ import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Roles } from '@common/decorators/roles.decorator';
 import { AdminRole } from '@common/enums/admin-role.enum';
-import { CurrentUser } from '@common/decorators/current-user.decorator';
 import {
   GetAdminUsersUseCase,
   GetAdminUserByIdUseCase,

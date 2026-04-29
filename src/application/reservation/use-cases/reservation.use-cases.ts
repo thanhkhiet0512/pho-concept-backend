@@ -9,7 +9,6 @@ import {
   ReservationStatus,
   SlotConfigEntity,
   ACTIVE_STATUSES,
-  CANCELLABLE_STATUSES,
 } from '@domain/reservation/entities/reservation.entity';
 import {
   CheckAvailabilityDto,

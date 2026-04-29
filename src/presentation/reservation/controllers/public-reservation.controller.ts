@@ -2,6 +2,7 @@ import { Controller, Get, Post, Delete, Body, Param, Query, HttpCode, HttpStatus
 import { ApiTags, ApiOperation } from '@nestjs/swagger';
 import { Public } from '@common/decorators/public.decorator';
 import { ParseBigIntPipe } from '@common/pipes/parse-bigint.pipe';
+import { ThrottlePublicWrite } from '@common/decorators/throttle.decorator';
 import {
   CheckAvailabilityUseCase,
   CreateReservationUseCase,
@@ -39,6 +40,7 @@ export class PublicReservationController {
 
   @Public()
   @Post()
+  @ThrottlePublicWrite()
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Create a new reservation' })
   async create(@Body() dto: CreateReservationDto) {

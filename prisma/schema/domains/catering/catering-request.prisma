@@ -10,6 +10,10 @@ model CateringRequest {
   eventTime           String         @map("event_time") @db.VarChar(5)
   guestCount          Int            @map("guest_count")
   venue               String?        @db.VarChar(500)
+  city                String?        @db.VarChar(100)
+  state               String?        @db.VarChar(50)
+  zip                 String?        @db.VarChar(20)
+  dietaryNotes        String?        @map("dietary_notes") @db.Text
   specialRequest      String?        @map("special_request") @db.Text
   status              CateringStatus @default(INQUIRY)
   quotedAmount        Decimal?       @map("quoted_amount") @db.Decimal(10, 2)

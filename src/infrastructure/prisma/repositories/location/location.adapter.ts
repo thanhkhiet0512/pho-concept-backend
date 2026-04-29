@@ -121,19 +121,20 @@ export class LocationAdapter implements LocationRepositoryPort {
   }
 
   async updateHours(id: bigint, hours: LocationHourData[]): Promise<void> {
-    await this.prisma.locationHour.deleteMany({ where: { locationId: id } });
-
-    if (hours.length > 0) {
-      await this.prisma.locationHour.createMany({
-        data: hours.map((h) => ({
-          locationId: id,
-          dayOfWeek: h.dayOfWeek,
-          openTime: h.openTime,
-          closeTime: h.closeTime,
-          isOpen: h.isOpen ?? true,
-        })),
-      });
-    }
+    await this.prisma.$transaction([
+      this.prisma.locationHour.deleteMany({ where: { locationId: id } }),
+      ...(hours.length > 0
+        ? [this.prisma.locationHour.createMany({
+            data: hours.map((h) => ({
+              locationId: id,
+              dayOfWeek: h.dayOfWeek,
+              openTime: h.openTime,
+              closeTime: h.closeTime,
+              isOpen: h.isOpen ?? true,
+            })),
+          })]
+        : []),
+    ]);
   }
 
   async toggle(id: bigint, isActive: boolean): Promise<void> {

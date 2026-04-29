@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
 import { PrismaModule } from './infrastructure/prisma/prisma.module';
 import { RedisModule } from './infrastructure/redis/redis.module';
 import { AuthModule } from './presentation/auth/auth.module';
@@ -21,6 +23,9 @@ import { DashboardModule } from './presentation/dashboard/dashboard.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([
+      { name: 'default', ttl: 60_000, limit: 120 }, // 120 req/min — baseline cho mọi route
+    ]),
     I18nConfig,
     I18nAppModule,
     PrismaModule,
@@ -38,6 +43,9 @@ import { DashboardModule } from './presentation/dashboard/dashboard.module';
     QueueModule,
     CateringModule,
     DashboardModule,
+  ],
+  providers: [
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
   ],
 })
 export class AppModule {}

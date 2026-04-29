@@ -49,6 +49,22 @@ export class SubmitCateringInquiryDto {
   @IsOptional() @IsString() @MaxLength(500)
   venue?: string;
 
+  @ApiPropertyOptional({ example: 'Las Vegas' })
+  @IsOptional() @IsString() @MaxLength(100)
+  city?: string;
+
+  @ApiPropertyOptional({ example: 'NV' })
+  @IsOptional() @IsString() @MaxLength(50)
+  state?: string;
+
+  @ApiPropertyOptional({ example: '89101' })
+  @IsOptional() @IsString() @MaxLength(20)
+  zip?: string;
+
+  @ApiPropertyOptional({ example: 'Gluten-free, no shellfish' })
+  @IsOptional() @IsString() @MaxLength(2000)
+  dietaryNotes?: string;
+
   @ApiPropertyOptional({ example: 'No pork, please' })
   @IsOptional() @IsString() @MaxLength(2000)
   specialRequest?: string;

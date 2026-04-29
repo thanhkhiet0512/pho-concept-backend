@@ -35,6 +35,17 @@ import { BlogPostStatus, EventType } from '@domain/cms/entities/cms.entity';
 
 export const STORAGE_SERVICE_TOKEN = 'STORAGE_SERVICE_TOKEN';
 
+// Resolves a publishDay (1-28) to an absolute Date, advancing to next month if the day has passed.
+// Caps at day 28 to avoid month-boundary overflow (Feb 29 issue).
+function resolvePublishDay(day: number): Date {
+  const safeDay = Math.min(day, 28);
+  const now = new Date();
+  const candidate = new Date(now.getFullYear(), now.getMonth(), safeDay);
+  return candidate <= now
+    ? new Date(now.getFullYear(), now.getMonth() + 1, safeDay)
+    : candidate;
+}
+
 // ===================== POST CATEGORY USE CASES =====================
 
 @Injectable()
@@ -326,12 +337,7 @@ export class CreateBlogPostUseCase {
     const existing = await this.repository.findBySlug(dto.slug);
     if (existing) throw new ConflictException(`Blog post with slug "${dto.slug}" already exists`);
 
-    let publishedAt: Date | null = null;
-    if (dto.publishDay) {
-      const now = new Date();
-      const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
-      publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
-    }
+    const publishedAt: Date | null = dto.publishDay ? resolvePublishDay(dto.publishDay) : null;
 
     return this.repository.create({
       slug: dto.slug,
@@ -367,13 +373,7 @@ export class UpdateBlogPostUseCase {
 
     let publishedAt: Date | null | undefined = undefined;
     if (dto.publishDay !== undefined) {
-      if (dto.publishDay === null) {
-        publishedAt = null;
-      } else {
-        const now = new Date();
-        const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
-        publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
-      }
+      publishedAt = dto.publishDay === null ? null : resolvePublishDay(dto.publishDay);
     }
 
     return this.repository.update(id, {
@@ -408,12 +408,11 @@ export class PublishBlogPostUseCase {
 
     let publishedAt: Date | null | undefined = undefined;
     if (dto.status === BlogPostStatus.SCHEDULED && dto.publishDay) {
-      const now = new Date();
-      const candidate = new Date(now.getFullYear(), now.getMonth(), dto.publishDay);
-      publishedAt = candidate < now ? new Date(now.getFullYear(), now.getMonth() + 1, dto.publishDay) : candidate;
-    } else if (dto.status === BlogPostStatus.DRAFT || dto.status === BlogPostStatus.ARCHIVED) {
+      publishedAt = resolvePublishDay(dto.publishDay);
+    } else if (dto.status === BlogPostStatus.DRAFT) {
       publishedAt = null;
     }
+    // ARCHIVED and PUBLISHED: preserve existing publishedAt (undefined = no change)
 
     return this.repository.updateStatus(id, BlogPostStatus[dto.status], publishedAt);
   }

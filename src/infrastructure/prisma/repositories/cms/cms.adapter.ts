@@ -571,7 +571,7 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
   }
 
   async findById(id: bigint): Promise<MediaFileEntity | null> {
-    const file = await this.prisma.mediaFile.findUnique({ where: { id } });
+    const file = await this.prisma.mediaFile.findFirst({ where: { id, deletedAt: null } });
     return file ? this.map(file) : null;
   }
 

@@ -20,7 +20,8 @@ export class CateringRequestAdapter implements CateringRequestRepositoryPort {
     id: bigint; token: string; locationId: bigint; packageId: bigint | null;
     contactName: string; contactEmail: string; contactPhone: string;
     eventDate: Date; eventTime: string; guestCount: number; venue: string | null;
-    specialRequest: string | null; status: CateringStatus;
+    city: string | null; state: string | null; zip: string | null;
+    dietaryNotes: string | null; specialRequest: string | null; status: CateringStatus;
     quotedAmount: Prisma.Decimal | null; depositAmount: Prisma.Decimal | null;
     depositPaidAt: Date | null; quotationDeadline: Date | null;
     internalNote: string | null; handledByAdminId: bigint | null;
@@ -111,6 +112,10 @@ export class CateringRequestAdapter implements CateringRequestRepositoryPort {
         eventTime: data.eventTime,
         guestCount: data.guestCount,
         venue: data.venue ?? null,
+        city: data.city ?? null,
+        state: data.state ?? null,
+        zip: data.zip ?? null,
+        dietaryNotes: data.dietaryNotes ?? null,
         specialRequest: data.specialRequest ?? null,
         status: 'INQUIRY',
       },

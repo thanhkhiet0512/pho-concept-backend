@@ -24,6 +24,7 @@ import {
 import {
   CreateCategoryDto,
   UpdateCategoryDto,
+  ToggleActiveDto,
   CreateMenuItemDto,
   UpdateMenuItemDto,
   UpdateMenuItemPricesDto,
@@ -104,9 +105,9 @@ export class InternalMenuController {
   @ApiOperation({ summary: 'Toggle category active status' })
   async toggleCategory(
     @Param('id', ParseBigIntPipe) id: bigint,
-    @Body('isActive') isActive: boolean,
+    @Body() dto: ToggleActiveDto,
   ) {
-    const category = await this.toggleCategoryUseCase.execute(id, isActive);
+    const category = await this.toggleCategoryUseCase.execute(id, dto.isActive);
     return MenuCategoryResponseDto.from(category);
   }
 
@@ -178,9 +179,9 @@ export class InternalMenuController {
   @ApiOperation({ summary: 'Toggle menu item active status' })
   async toggleItem(
     @Param('id', ParseBigIntPipe) id: bigint,
-    @Body('isActive') isActive: boolean,
+    @Body() dto: ToggleActiveDto,
   ) {
-    const item = await this.toggleMenuItemUseCase.execute(id, isActive);
+    const item = await this.toggleMenuItemUseCase.execute(id, dto.isActive);
     return MenuItemResponseDto.from(item);
   }
 

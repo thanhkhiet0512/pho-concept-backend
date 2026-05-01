@@ -234,10 +234,10 @@ export class CreateBlogPostDto {
   @Max(31)
   publishDay?: number;
 
-  @ApiPropertyOptional({ example: 1 })
-  @IsOptional()
-  @IsNumber()
-  categoryId?: number;
+  // @ApiPropertyOptional({ example: 1 })
+  // @IsOptional()
+  // @IsNumber()
+  // categoryId?: number;
 }
 
 export class UpdateBlogPostDto {

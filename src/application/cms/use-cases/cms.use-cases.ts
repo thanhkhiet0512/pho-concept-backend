@@ -355,7 +355,7 @@ export class CreateBlogPostUseCase {
       isFeatured: dto.isFeatured ?? false,
       status: BlogPostStatus.DRAFT,
       publishedAt,
-      categoryId: dto.categoryId ? BigInt(dto.categoryId) : null,
+      categoryId: null//dto.categoryId ? BigInt(dto.categoryId) : null,
     });
   }
 }

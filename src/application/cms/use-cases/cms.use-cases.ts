@@ -442,7 +442,7 @@ export class DeleteBlogPostUseCase {
   async execute(id: bigint) {
     const post = await this.repository.findById(id);
     if (!post) throw new NotFoundException(`Blog post with id ${id} not found`);
-    await this.repository.hardDelete(id);
+    await this.repository.softDelete(id);
   }
 }
 
@@ -587,7 +587,7 @@ export class DeleteEventUseCase {
     if (!event) {
       throw new NotFoundException(`Event with id ${id} not found`);
     }
-    await this.repository.hardDelete(id);
+    await this.repository.softDelete(id);
   }
 }
 

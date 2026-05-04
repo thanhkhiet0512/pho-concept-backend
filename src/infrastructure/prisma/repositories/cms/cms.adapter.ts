@@ -241,7 +241,7 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     galleryImageIds: unknown; author: string | null; externalLink: string | null;
     videoUrl: string | null; readTime: string | null; views: string | null;
     isFeatured: boolean; status: 'DRAFT' | 'PUBLISHED' | 'SCHEDULED' | 'ARCHIVED';
-    publishedAt: Date | null; categoryId: bigint | null; createdAt: Date; updatedAt: Date;
+    publishedAt: Date | null; categoryId: bigint | null; deletedAt: Date | null; createdAt: Date; updatedAt: Date;
   }): BlogPostEntity {
     const galleryIds = Array.isArray(data.galleryImageIds) ? (data.galleryImageIds as string[]) : null;
     return BlogPostEntity.reconstitute({
@@ -271,7 +271,7 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-    const where: Prisma.BlogPostWhereInput = {};
+    const where: Prisma.BlogPostWhereInput = { deletedAt: null };
 
     if (params?.status) where.status = BlogPostStatusToPrisma(params.status);
     if (params?.categoryId) where.categoryId = params.categoryId;
@@ -314,24 +314,24 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
 
     const [posts, total] = await Promise.all([
       this.prisma.blogPost.findMany({
-        where: { status: 'PUBLISHED' },
+        where: { status: 'PUBLISHED', deletedAt: null },
         orderBy: { publishedAt: 'desc' },
         skip,
         take: limit,
       }),
-      this.prisma.blogPost.count({ where: { status: 'PUBLISHED' } }),
+      this.prisma.blogPost.count({ where: { status: 'PUBLISHED', deletedAt: null } }),
     ]);
 
     return { data: posts.map((p) => this.map(p)), total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
   async findById(id: bigint): Promise<BlogPostEntity | null> {
-    const post = await this.prisma.blogPost.findUnique({ where: { id } });
+    const post = await this.prisma.blogPost.findFirst({ where: { id, deletedAt: null } });
     return post ? this.map(post) : null;
   }
 
   async findBySlug(slug: string): Promise<BlogPostEntity | null> {
-    const post = await this.prisma.blogPost.findUnique({ where: { slug } });
+    const post = await this.prisma.blogPost.findFirst({ where: { slug, deletedAt: null } });
     return post ? this.map(post) : null;
   }
 
@@ -397,6 +397,10 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     return this.map(post);
   }
 
+  async softDelete(id: bigint): Promise<void> {
+    await this.prisma.blogPost.update({ where: { id }, data: { deletedAt: new Date() } });
+  }
+
   async hardDelete(id: bigint): Promise<void> {
     await this.prisma.blogPost.delete({ where: { id } });
   }
@@ -416,7 +420,7 @@ export class EventAdapter implements EventRepositoryPort {
     id: bigint; titleI18n: unknown; descriptionI18n: unknown;
     coverImageUrl: string | null; eventDate: Date; eventEndDate: Date | null;
     eventType: 'PROMOTION' | 'HOLIDAY' | 'SPECIAL_EVENT'; isFeatured: boolean;
-    isActive: boolean; createdAt: Date; updatedAt: Date;
+    isActive: boolean; deletedAt: Date | null; createdAt: Date; updatedAt: Date;
   }): EventEntity {
     return EventEntity.reconstitute({
       id: data.id,
@@ -439,7 +443,7 @@ export class EventAdapter implements EventRepositoryPort {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-    const where: Record<string, unknown> = {};
+    const where: Record<string, unknown> = { deletedAt: null };
     if (params?.isActive !== undefined) where.isActive = params.isActive;
     if (params?.isFeatured !== undefined) where.isFeatured = params.isFeatured;
     if (params?.upcoming) where.eventDate = { gte: new Date() };
@@ -464,7 +468,7 @@ export class EventAdapter implements EventRepositoryPort {
   }
 
   async findById(id: bigint): Promise<EventEntity | null> {
-    const event = await this.prisma.event.findUnique({ where: { id } });
+    const event = await this.prisma.event.findFirst({ where: { id, deletedAt: null } });
     return event ? this.map(event) : null;
   }
 
@@ -507,6 +511,10 @@ export class EventAdapter implements EventRepositoryPort {
   async toggleFeatured(id: bigint, isFeatured: boolean): Promise<EventEntity> {
     const event = await this.prisma.event.update({ where: { id }, data: { isFeatured } });
     return this.map(event);
+  }
+
+  async softDelete(id: bigint): Promise<void> {
+    await this.prisma.event.update({ where: { id }, data: { deletedAt: new Date() } });
   }
 
   async hardDelete(id: bigint): Promise<void> {

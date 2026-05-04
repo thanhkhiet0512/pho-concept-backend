@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, HttpCode, HttpStatus } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Body, Param, Query, UseGuards, HttpCode, HttpStatus, UnauthorizedException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
@@ -107,8 +107,9 @@ export class InternalReservationController {
   @ApiOperation({ summary: 'Create walk-in reservation' })
   async create(
     @Body() dto: AdminCreateReservationDto,
-    @CurrentUser() currentUser: { id: number },
+    @CurrentUser() currentUser: { id: number } | null,
   ) {
+    if (!currentUser?.id) throw new UnauthorizedException('User not authenticated');
     const adminId = BigInt(currentUser.id);
     const reservation = await this.adminCreateReservationUseCase.execute(dto, adminId);
     return {

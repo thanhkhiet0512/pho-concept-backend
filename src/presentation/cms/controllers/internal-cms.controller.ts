@@ -4,7 +4,7 @@ import {
   ParseFilePipe, MaxFileSizeValidator, FileTypeValidator, BadRequestException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiBearerAuth, ApiQuery, ApiConsumes, ApiBody } from '@nestjs/swagger';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 import { RolesGuard } from '@common/guards/roles.guard';
 import { Roles } from '@common/decorators/roles.decorator';
@@ -381,14 +381,29 @@ export class InternalCmsController {
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
   @HttpCode(HttpStatus.CREATED)
   @ApiOperation({ summary: 'Upload file to MinIO storage' })
+  @ApiConsumes('multipart/form-data')
+  @ApiBody({
+    schema: {
+      type: 'object',
+      required: ['file'],
+      properties: {
+        file: { type: 'string', format: 'binary', description: 'Image/video/PDF (max 50MB)' },
+        altTextEn: { type: 'string' },
+        altTextVi: { type: 'string' },
+        title: { type: 'string' },
+        folder: { type: 'string', description: 'e.g. blog, events, menu' },
+      },
+    },
+  })
   @UseInterceptors(FileInterceptor('file', { limits: { fileSize: 50 * 1024 * 1024 } }))
   async uploadMedia(
     @UploadedFile(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 50 * 1024 * 1024 }),
-          new FileTypeValidator({ fileType: /^(image\/(jpeg|png|webp|gif|svg\+xml)|video\/(mp4|webm)|application\/pdf)$/ }),
+          new FileTypeValidator({ fileType: /^(image\/(jpeg|png|webp|gif|svg\+xml)|video\/(mp4|webm)|application\/pdf)$/, skipMagicNumbersValidation: true }),
         ],
+        errorHttpStatusCode: HttpStatus.UNPROCESSABLE_ENTITY,
       }),
     )
     file: Express.Multer.File,

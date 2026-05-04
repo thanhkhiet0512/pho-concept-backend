@@ -34,6 +34,10 @@ export class MinioService extends IStoragePort implements OnModuleInit {
   }
 
   async onModuleInit() {
+    await this.tryConnect();
+  }
+
+  private async tryConnect(): Promise<void> {
     try {
       const exists = await this.client.bucketExists(this.bucket);
       if (!exists) {
@@ -44,7 +48,10 @@ export class MinioService extends IStoragePort implements OnModuleInit {
       this.isReady = true;
       this.logger.log(`MinIO bucket ready: ${this.bucket}`);
     } catch (err) {
-      this.logger.warn(`MinIO not available at startup: ${(err as Error).message}`);
+      const error = err as Error & { code?: string };
+      this.logger.error(
+        `MinIO connection failed — ${error.message} (code: ${error.code ?? 'unknown'})`,
+      );
     }
   }
 
@@ -73,6 +80,10 @@ export class MinioService extends IStoragePort implements OnModuleInit {
     size: number,
     contentType: string,
   ): Promise<UploadResult> {
+    if (!this.isReady) {
+      // Retry connect once — app may have started before MinIO was ready
+      await this.tryConnect();
+    }
     if (!this.isReady) {
       throw new ServiceUnavailableException('Storage service is not available. Please try again later.');
     }

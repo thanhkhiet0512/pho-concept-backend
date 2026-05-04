@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { CateringRequestRepositoryPort, PaginatedResult, CateringRequestWithItems } from '@domain/catering/ports/catering-request.repository.port';
 import { CateringPackageRepositoryPort } from '@domain/catering/ports/catering-package.repository.port';
 import { CATERING_REQUEST_REPOSITORY_TOKEN, CATERING_PACKAGE_REPOSITORY_TOKEN } from '@domain/catering/ports/catering.repository.token';
@@ -33,6 +33,8 @@ export class GetCateringPackagesUseCase {
 
 @Injectable()
 export class SubmitCateringInquiryUseCase {
+  private readonly logger = new Logger(SubmitCateringInquiryUseCase.name);
+
   constructor(
     @Inject(CATERING_REQUEST_REPOSITORY_TOKEN)
     private readonly requestRepository: CateringRequestRepositoryPort,
@@ -70,7 +72,11 @@ export class SubmitCateringInquiryUseCase {
       specialRequest: dto.specialRequest ?? null,
     });
 
-    await this.cateringQueue.addInquiryReceived(request.id);
+    try {
+      await this.cateringQueue.addInquiryReceived(request.id);
+    } catch (err) {
+      this.logger.warn(`Failed to queue inquiry notification for request ${request.id}: ${(err as Error).message}`);
+    }
     return request;
   }
 }
@@ -131,6 +137,8 @@ export class GetCateringRequestDetailUseCase {
 
 @Injectable()
 export class QuoteCateringRequestUseCase {
+  private readonly logger = new Logger(QuoteCateringRequestUseCase.name);
+
   constructor(
     @Inject(CATERING_REQUEST_REPOSITORY_TOKEN)
     private readonly requestRepository: CateringRequestRepositoryPort,
@@ -176,7 +184,11 @@ export class QuoteCateringRequestUseCase {
       internalNote: dto.internalNote ?? null,
     });
 
-    await this.cateringQueue.addQuoteSent(quoted.id);
+    try {
+      await this.cateringQueue.addQuoteSent(quoted.id);
+    } catch (err) {
+      this.logger.warn(`Failed to queue quote notification for request ${quoted.id}: ${(err as Error).message}`);
+    }
     return quoted;
   }
 }
@@ -185,6 +197,8 @@ export class QuoteCateringRequestUseCase {
 
 @Injectable()
 export class UpdateCateringStatusUseCase {
+  private readonly logger = new Logger(UpdateCateringStatusUseCase.name);
+
   constructor(
     @Inject(CATERING_REQUEST_REPOSITORY_TOKEN)
     private readonly requestRepository: CateringRequestRepositoryPort,
@@ -203,7 +217,11 @@ export class UpdateCateringStatusUseCase {
     }
 
     const updated = await this.requestRepository.updateStatus(id, dto.status, dto.internalNote);
-    await this.cateringQueue.addStatusChanged(updated.id, dto.status);
+    try {
+      await this.cateringQueue.addStatusChanged(updated.id, dto.status);
+    } catch (err) {
+      this.logger.warn(`Failed to queue status change notification for request ${updated.id}: ${(err as Error).message}`);
+    }
     return updated;
   }
 }

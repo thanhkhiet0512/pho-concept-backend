@@ -17,6 +17,7 @@ model BlogPost {
   publishedAt         DateTime?       @map("published_at")
   categoryId          BigInt?         @map("category_id")
   category            PostCategory?   @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  deletedAt           DateTime?       @map("deleted_at")
   createdAt           DateTime        @default(now()) @map("created_at")
   updatedAt           DateTime        @updatedAt @map("updated_at")
 
@@ -24,5 +25,6 @@ model BlogPost {
   @@index([status])
   @@index([categoryId])
   @@index([isFeatured])
+  @@index([deletedAt])
   @@map("blog_posts")
 }

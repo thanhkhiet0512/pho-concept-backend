@@ -1,4 +1,4 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit, ServiceUnavailableException, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as Minio from 'minio';
 import type { Readable } from 'stream';
@@ -11,6 +11,7 @@ export class MinioService extends IStoragePort implements OnModuleInit {
   private bucket: string;
   private internalBaseUrl: string;
   private publicBaseUrl: string | null;
+  private isReady = false;
 
   constructor(private readonly config: ConfigService) {
     super();
@@ -40,9 +41,10 @@ export class MinioService extends IStoragePort implements OnModuleInit {
         this.logger.log(`Bucket created: ${this.bucket}`);
       }
       await this.setPublicReadPolicy();
+      this.isReady = true;
       this.logger.log(`MinIO bucket ready: ${this.bucket}`);
     } catch (err) {
-      this.logger.warn(`MinIO not available: ${(err as Error).message}`);
+      this.logger.warn(`MinIO not available at startup: ${(err as Error).message}`);
     }
   }
 
@@ -71,14 +73,27 @@ export class MinioService extends IStoragePort implements OnModuleInit {
     size: number,
     contentType: string,
   ): Promise<UploadResult> {
-    await this.client.putObject(this.bucket, key, stream, size, { 'Content-Type': contentType });
+    if (!this.isReady) {
+      throw new ServiceUnavailableException('Storage service is not available. Please try again later.');
+    }
+    try {
+      await this.client.putObject(this.bucket, key, stream, size, { 'Content-Type': contentType });
+    } catch (err) {
+      this.logger.error(`MinIO upload failed: ${(err as Error).message}`, { key });
+      throw new InternalServerErrorException('Failed to upload file to storage.');
+    }
     const url = this.getPublicUrl(key);
     this.logger.log(`Uploaded: ${key}`);
     return { key, bucket: this.bucket, url, size, contentType };
   }
 
   async deleteFile(key: string): Promise<void> {
-    await this.client.removeObject(this.bucket, key);
+    try {
+      await this.client.removeObject(this.bucket, key);
+    } catch (err) {
+      this.logger.warn(`MinIO delete failed for key ${key}: ${(err as Error).message}`);
+      return;
+    }
     this.logger.log(`Deleted: ${key}`);
   }
 

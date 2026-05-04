@@ -34,7 +34,8 @@ export class DashboardController {
   @ApiOperation({ summary: 'Recent activities feed: reservations, catering, customers, posts' })
   @ApiQuery({ name: 'limit', required: false, type: Number, description: 'Default: 20' })
   async getRecentActivities(@Query('limit') limit?: string) {
-    const parsedLimit = limit ? Math.min(parseInt(limit, 10), 50) : 20;
+    const parsed = limit ? parseInt(limit, 10) : 20;
+    const parsedLimit = isNaN(parsed) ? 20 : Math.min(parsed, 50);
     return this.dashboardService.getRecentActivities(parsedLimit);
   }
 

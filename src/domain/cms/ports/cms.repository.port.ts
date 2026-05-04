@@ -168,6 +168,7 @@ export abstract class BlogPostRepositoryPort {
   abstract update(id: bigint, data: UpdateBlogPostData): Promise<BlogPostEntity>;
   abstract updateStatus(id: bigint, status: BlogPostStatus, publishedAt?: Date | null): Promise<BlogPostEntity>;
   abstract toggleFeatured(id: bigint, isFeatured: boolean): Promise<BlogPostEntity>;
+  abstract softDelete(id: bigint): Promise<void>;
   abstract hardDelete(id: bigint): Promise<void>;
 }
 
@@ -178,6 +179,7 @@ export abstract class EventRepositoryPort {
   abstract create(data: CreateEventData): Promise<EventEntity>;
   abstract update(id: bigint, data: UpdateEventData): Promise<EventEntity>;
   abstract toggleFeatured(id: bigint, isFeatured: boolean): Promise<EventEntity>;
+  abstract softDelete(id: bigint): Promise<void>;
   abstract hardDelete(id: bigint): Promise<void>;
 }
 

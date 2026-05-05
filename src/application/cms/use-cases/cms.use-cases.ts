@@ -292,6 +292,18 @@ export class GetBlogPostBySlugUseCase {
 }
 
 @Injectable()
+export class GetLatestPublishedBlogPostUseCase {
+  constructor(
+    @Inject(BLOG_POST_REPOSITORY_TOKEN)
+    private readonly repository: BlogPostRepositoryPort,
+  ) {}
+
+  async execute() {
+    return this.repository.findLatestPublished();
+  }
+}
+
+@Injectable()
 export class GetBlogPostsUseCase {
   constructor(
     @Inject(BLOG_POST_REPOSITORY_TOKEN)

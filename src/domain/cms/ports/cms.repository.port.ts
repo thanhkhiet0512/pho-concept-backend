@@ -162,6 +162,7 @@ export abstract class CmsPageRepositoryPort {
 export abstract class BlogPostRepositoryPort {
   abstract findAll(params?: BlogPostFilterParams): Promise<PaginatedResult<BlogPostEntity>>;
   abstract findPublished(params?: PaginationParams): Promise<PaginatedResult<BlogPostEntity>>;
+  abstract findLatestPublished(): Promise<BlogPostEntity | null>;
   abstract findById(id: bigint): Promise<BlogPostEntity | null>;
   abstract findBySlug(slug: string): Promise<BlogPostEntity | null>;
   abstract create(data: CreateBlogPostData): Promise<BlogPostEntity>;

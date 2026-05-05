@@ -6,6 +6,7 @@ import {
   GetCmsPageBySlugUseCase,
   GetPublishedBlogPostsUseCase,
   GetBlogPostBySlugUseCase,
+  GetLatestPublishedBlogPostUseCase,
   GetActiveEventsUseCase,
   GetEventByIdPublicUseCase,
 } from '@application/cms/use-cases/cms.use-cases';
@@ -18,6 +19,7 @@ export class PublicCmsController {
     private readonly getCmsPageBySlugUseCase: GetCmsPageBySlugUseCase,
     private readonly getPublishedBlogPostsUseCase: GetPublishedBlogPostsUseCase,
     private readonly getBlogPostBySlugUseCase: GetBlogPostBySlugUseCase,
+    private readonly getLatestPublishedBlogPostUseCase: GetLatestPublishedBlogPostUseCase,
     private readonly getActiveEventsUseCase: GetActiveEventsUseCase,
     private readonly getEventByIdPublicUseCase: GetEventByIdPublicUseCase,
   ) {}
@@ -49,6 +51,15 @@ export class PublicCmsController {
       limit: result.limit,
       totalPages: result.totalPages,
     };
+  }
+
+  @Public()
+  @Get('blog/latest')
+  @ApiOperation({ summary: 'Get the most recently created published blog post' })
+  async getLatestPost() {
+    const post = await this.getLatestPublishedBlogPostUseCase.execute();
+    if (!post) return { data: null };
+    return { data: BlogPostResponseDto.from(post) };
   }
 
   @Public()

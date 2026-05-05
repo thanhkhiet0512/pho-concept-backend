@@ -18,6 +18,7 @@ import {
   PublishCmsPageUseCase,
   GetPublishedBlogPostsUseCase,
   GetBlogPostBySlugUseCase,
+  GetLatestPublishedBlogPostUseCase,
   GetBlogPostsUseCase,
   GetBlogPostByIdUseCase,
   CreateBlogPostUseCase,
@@ -93,6 +94,7 @@ import {
     // Blog Post Use Cases
     GetPublishedBlogPostsUseCase,
     GetBlogPostBySlugUseCase,
+    GetLatestPublishedBlogPostUseCase,
     GetBlogPostsUseCase,
     GetBlogPostByIdUseCase,
     CreateBlogPostUseCase,

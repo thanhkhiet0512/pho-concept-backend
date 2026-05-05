@@ -329,6 +329,14 @@ export class BlogPostAdapter implements BlogPostRepositoryPort {
     return { data: posts.map((p) => this.map(p)), total, page, limit, totalPages: Math.ceil(total / limit) };
   }
 
+  async findLatestPublished(): Promise<BlogPostEntity | null> {
+    const post = await this.prisma.blogPost.findFirst({
+      where: { status: 'PUBLISHED', deletedAt: null },
+      orderBy: { createdAt: 'desc' },
+    });
+    return post ? this.map(post) : null;
+  }
+
   async findById(id: bigint): Promise<BlogPostEntity | null> {
     const post = await this.prisma.blogPost.findFirst({ where: { id, deletedAt: null } });
     return post ? this.map(post) : null;

@@ -1,4 +1,4 @@
-import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ConflictException, BadRequestException, Logger } from '@nestjs/common';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { IStoragePort } from '@application/cms/ports/storage.port';
@@ -8,6 +8,7 @@ import {
   BlogPostRepositoryPort,
   EventRepositoryPort,
   MediaFileRepositoryPort,
+  MediaFolderRepositoryPort,
   BlogPostFilterParams,
   MediaFilterParams,
 } from '@domain/cms/ports/cms.repository.port';
@@ -17,6 +18,7 @@ import {
   BLOG_POST_REPOSITORY_TOKEN,
   EVENT_REPOSITORY_TOKEN,
   MEDIA_FILE_REPOSITORY_TOKEN,
+  MEDIA_FOLDER_REPOSITORY_TOKEN,
 } from '@domain/cms/ports/cms.repository.token';
 import {
   CreatePostCategoryDto,
@@ -29,6 +31,8 @@ import {
   CreateEventDto,
   UpdateEventDto,
   UpdateMediaFileDto,
+  CreateMediaFolderDto,
+  UpdateMediaFolderDto,
 } from '@application/cms/dtos/cms.dto';
 import { PaginationDto } from '@common/dto/pagination.dto';
 import { BlogPostStatus, EventType } from '@domain/cms/entities/cms.entity';
@@ -355,7 +359,7 @@ export class CreateBlogPostUseCase {
       isFeatured: dto.isFeatured ?? false,
       status: BlogPostStatus.DRAFT,
       publishedAt,
-      categoryId: null//dto.categoryId ? BigInt(dto.categoryId) : null,
+      categoryId: null, // categoryId not supported on create; use UpdateBlogPost to assign
     });
   }
 }
@@ -656,15 +660,22 @@ export class UpdateMediaFileUseCase {
   constructor(
     @Inject(MEDIA_FILE_REPOSITORY_TOKEN)
     private readonly repository: MediaFileRepositoryPort,
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly folderRepository: MediaFolderRepositoryPort,
   ) {}
 
   async execute(id: bigint, dto: UpdateMediaFileDto) {
     const file = await this.repository.findById(id);
     if (!file) throw new NotFoundException(`Media file with id ${id} not found`);
+    if (dto.folder !== undefined && dto.folder !== null) {
+      const folderExists = await this.folderRepository.slugExists(dto.folder);
+      if (!folderExists) throw new BadRequestException(`Folder "${dto.folder}" does not exist`);
+    }
     return this.repository.update(id, {
       altTextI18n: dto.altTextI18n ?? undefined,
       title: dto.title ?? undefined,
-      folder: dto.folder ?? undefined,
+      // dto.folder: undefined = no change | null = unassign | string = assign to folder
+      folder: dto.folder !== undefined ? dto.folder : undefined,
     });
   }
 }
@@ -707,6 +718,8 @@ export class UploadMediaUseCase {
     private readonly storage: IStoragePort,
     @Inject(MEDIA_FILE_REPOSITORY_TOKEN)
     private readonly repository: MediaFileRepositoryPort,
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly folderRepository: MediaFolderRepositoryPort,
   ) {}
 
   async execute(input: {
@@ -724,6 +737,10 @@ export class UploadMediaUseCase {
     }
     if (input.size > MAX_FILE_SIZE) {
       throw new BadRequestException('File size exceeds 50MB limit');
+    }
+    if (input.folder) {
+      const folderExists = await this.folderRepository.slugExists(input.folder);
+      if (!folderExists) throw new BadRequestException(`Folder "${input.folder}" does not exist`);
     }
 
     const ext = extname(input.originalname).toLowerCase();
@@ -743,5 +760,90 @@ export class UploadMediaUseCase {
       folder: input.folder ?? null,
       uploadedBy: input.uploadedBy,
     });
+  }
+}
+
+// ===================== MEDIA FOLDER USE CASES =====================
+
+@Injectable()
+export class GetMediaFoldersUseCase {
+  constructor(
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly repository: MediaFolderRepositoryPort,
+  ) {}
+
+  async execute() {
+    return this.repository.findAll();
+  }
+}
+
+@Injectable()
+export class GetMediaFolderByIdUseCase {
+  constructor(
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly repository: MediaFolderRepositoryPort,
+  ) {}
+
+  async execute(id: bigint) {
+    const folder = await this.repository.findById(id);
+    if (!folder) throw new NotFoundException(`Media folder with id ${id} not found`);
+    return folder;
+  }
+}
+
+@Injectable()
+export class CreateMediaFolderUseCase {
+  constructor(
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly repository: MediaFolderRepositoryPort,
+  ) {}
+
+  async execute(dto: CreateMediaFolderDto) {
+    const existing = await this.repository.findBySlug(dto.slug);
+    if (existing) throw new ConflictException(`Folder with slug "${dto.slug}" already exists`);
+    return this.repository.create({
+      name: dto.name,
+      slug: dto.slug,
+      description: dto.description ?? null,
+    });
+  }
+}
+
+@Injectable()
+export class UpdateMediaFolderUseCase {
+  constructor(
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly repository: MediaFolderRepositoryPort,
+  ) {}
+
+  async execute(id: bigint, dto: UpdateMediaFolderDto) {
+    const folder = await this.repository.findById(id);
+    if (!folder) throw new NotFoundException(`Media folder with id ${id} not found`);
+    const oldSlug = folder.slug;
+    if (dto.slug && dto.slug !== oldSlug) {
+      const conflict = await this.repository.findBySlug(dto.slug);
+      if (conflict) throw new ConflictException(`Folder with slug "${dto.slug}" already exists`);
+    }
+    return this.repository.updateAndSyncFiles(id, {
+      name: dto.name,
+      slug: dto.slug,
+      description: dto.description,
+    }, oldSlug);
+  }
+}
+
+@Injectable()
+export class DeleteMediaFolderUseCase {
+  constructor(
+    @Inject(MEDIA_FOLDER_REPOSITORY_TOKEN)
+    private readonly repository: MediaFolderRepositoryPort,
+  ) {}
+
+  async execute(id: bigint) {
+    const folder = await this.repository.findById(id);
+    if (!folder) throw new NotFoundException(`Media folder with id ${id} not found`);
+    const hasFiles = await this.repository.hasFiles(folder.slug);
+    if (hasFiles) throw new BadRequestException(`Cannot delete folder "${folder.name}" because it still contains files`);
+    await this.repository.delete(id);
   }
 }

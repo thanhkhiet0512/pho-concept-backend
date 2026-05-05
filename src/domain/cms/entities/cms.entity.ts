@@ -290,3 +290,34 @@ export class MediaFileEntity {
   get deletedAt(): Date | null { return this._deletedAt; }
   get isDeleted(): boolean { return this._deletedAt !== null; }
 }
+
+export class MediaFolderEntity {
+  id!: bigint;
+  createdAt!: Date;
+  updatedAt!: Date;
+  private _name!: string;
+  private _slug!: string;
+  private _description: string | null = null;
+
+  static reconstitute(data: {
+    id: bigint;
+    name: string;
+    slug: string;
+    description: string | null;
+    createdAt: Date;
+    updatedAt: Date;
+  }): MediaFolderEntity {
+    const entity = new MediaFolderEntity();
+    entity.id = data.id;
+    entity._name = data.name;
+    entity._slug = data.slug;
+    entity._description = data.description;
+    entity.createdAt = data.createdAt;
+    entity.updatedAt = data.updatedAt;
+    return entity;
+  }
+
+  get name(): string { return this._name; }
+  get slug(): string { return this._slug; }
+  get description(): string | null { return this._description; }
+}

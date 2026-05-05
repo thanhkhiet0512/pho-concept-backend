@@ -1,7 +1,7 @@
-import { PostCategoryEntity, CmsPageEntity, BlogPostEntity, BlogPostStatus, EventEntity, EventType, MediaFileEntity } from '@domain/cms/entities/cms.entity';
+import { PostCategoryEntity, CmsPageEntity, BlogPostEntity, BlogPostStatus, EventEntity, EventType, MediaFileEntity, MediaFolderEntity } from '@domain/cms/entities/cms.entity';
 import { I18nField } from '@domain/menu/entities/menu.entity';
 
-export { PostCategoryEntity, CmsPageEntity, BlogPostEntity, BlogPostStatus, EventEntity, EventType, MediaFileEntity };
+export { PostCategoryEntity, CmsPageEntity, BlogPostEntity, BlogPostStatus, EventEntity, EventType, MediaFileEntity, MediaFolderEntity };
 
 export interface PaginationParams {
   page?: number;
@@ -191,4 +191,29 @@ export abstract class MediaFileRepositoryPort {
   abstract update(id: bigint, data: UpdateMediaFileData): Promise<MediaFileEntity>;
   abstract softDelete(id: bigint): Promise<MediaFileEntity>;
   abstract hardDelete(id: bigint): Promise<MediaFileEntity>;
+  abstract updateFolderSlug(oldSlug: string, newSlug: string): Promise<void>;
+}
+
+export interface CreateMediaFolderData {
+  name: string;
+  slug: string;
+  description?: string | null;
+}
+
+export interface UpdateMediaFolderData {
+  name?: string;
+  slug?: string;
+  description?: string | null;
+}
+
+export abstract class MediaFolderRepositoryPort {
+  abstract findAll(): Promise<MediaFolderEntity[]>;
+  abstract findById(id: bigint): Promise<MediaFolderEntity | null>;
+  abstract findBySlug(slug: string): Promise<MediaFolderEntity | null>;
+  abstract create(data: CreateMediaFolderData): Promise<MediaFolderEntity>;
+  abstract update(id: bigint, data: UpdateMediaFolderData): Promise<MediaFolderEntity>;
+  abstract updateAndSyncFiles(id: bigint, data: UpdateMediaFolderData, oldSlug: string): Promise<MediaFolderEntity>;
+  abstract delete(id: bigint): Promise<void>;
+  abstract hasFiles(slug: string): Promise<boolean>;
+  abstract slugExists(slug: string): Promise<boolean>;
 }

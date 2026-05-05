@@ -1,5 +1,5 @@
 import { I18nFieldResponseDto } from '@presentation/menu/dtos/response/menu-response.dto';
-import { PostCategoryEntity, CmsPageEntity, BlogPostEntity, EventEntity, MediaFileEntity } from '@domain/cms/entities/cms.entity';
+import { PostCategoryEntity, CmsPageEntity, BlogPostEntity, EventEntity, MediaFileEntity, MediaFolderEntity } from '@domain/cms/entities/cms.entity';
 
 export class PostCategoryResponseDto {
   id!: number;
@@ -184,5 +184,29 @@ export class MediaFileResponseDto {
 
   static fromList(entities: MediaFileEntity[]): MediaFileResponseDto[] {
     return entities.map((e) => MediaFileResponseDto.from(e));
+  }
+}
+
+export class MediaFolderResponseDto {
+  id!: number;
+  name!: string;
+  slug!: string;
+  description!: string | null;
+  createdAt!: string;
+  updatedAt!: string;
+
+  static from(entity: MediaFolderEntity): MediaFolderResponseDto {
+    const dto = new MediaFolderResponseDto();
+    dto.id = Number(entity.id);
+    dto.name = entity.name;
+    dto.slug = entity.slug;
+    dto.description = entity.description;
+    dto.createdAt = entity.createdAt.toISOString();
+    dto.updatedAt = entity.updatedAt.toISOString();
+    return dto;
+  }
+
+  static fromList(entities: MediaFolderEntity[]): MediaFolderResponseDto[] {
+    return entities.map((e) => MediaFolderResponseDto.from(e));
   }
 }

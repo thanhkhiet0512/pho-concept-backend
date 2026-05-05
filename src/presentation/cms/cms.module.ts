@@ -35,10 +35,14 @@ import {
   DeleteEventUseCase,
   GetMediaFilesUseCase,
   GetMediaFileByIdUseCase,
-  CreateMediaFileUseCase,
   UpdateMediaFileUseCase,
   DeleteMediaFileUseCase,
   UploadMediaUseCase,
+  GetMediaFoldersUseCase,
+  GetMediaFolderByIdUseCase,
+  CreateMediaFolderUseCase,
+  UpdateMediaFolderUseCase,
+  DeleteMediaFolderUseCase,
   STORAGE_SERVICE_TOKEN,
 } from '@application/cms/use-cases/cms.use-cases';
 import {
@@ -47,13 +51,16 @@ import {
   BlogPostAdapter,
   EventAdapter,
   MediaFileAdapter,
+  MediaFolderAdapter,
 } from '@infrastructure/prisma/repositories/cms/cms.adapter';
+
 import {
   POST_CATEGORY_REPOSITORY_TOKEN,
   CMS_PAGE_REPOSITORY_TOKEN,
   BLOG_POST_REPOSITORY_TOKEN,
   EVENT_REPOSITORY_TOKEN,
   MEDIA_FILE_REPOSITORY_TOKEN,
+  MEDIA_FOLDER_REPOSITORY_TOKEN,
 } from '@domain/cms/ports/cms.repository.token';
 
 @Module({
@@ -68,6 +75,7 @@ import {
     { provide: BLOG_POST_REPOSITORY_TOKEN, useClass: BlogPostAdapter },
     { provide: EVENT_REPOSITORY_TOKEN, useClass: EventAdapter },
     { provide: MEDIA_FILE_REPOSITORY_TOKEN, useClass: MediaFileAdapter },
+    { provide: MEDIA_FOLDER_REPOSITORY_TOKEN, useClass: MediaFolderAdapter },
     // Post Category Use Cases
     GetPostCategoriesUseCase,
     GetPostCategoryByIdUseCase,
@@ -104,10 +112,15 @@ import {
     // Media File Use Cases
     GetMediaFilesUseCase,
     GetMediaFileByIdUseCase,
-    CreateMediaFileUseCase,
     UpdateMediaFileUseCase,
     DeleteMediaFileUseCase,
     UploadMediaUseCase,
+    // Media Folder Use Cases
+    GetMediaFoldersUseCase,
+    GetMediaFolderByIdUseCase,
+    CreateMediaFolderUseCase,
+    UpdateMediaFolderUseCase,
+    DeleteMediaFolderUseCase,
   ],
   exports: [
     POST_CATEGORY_REPOSITORY_TOKEN,
@@ -115,6 +128,7 @@ import {
     BLOG_POST_REPOSITORY_TOKEN,
     EVENT_REPOSITORY_TOKEN,
     MEDIA_FILE_REPOSITORY_TOKEN,
+    MEDIA_FOLDER_REPOSITORY_TOKEN,
   ],
 })
 export class CmsModule {}

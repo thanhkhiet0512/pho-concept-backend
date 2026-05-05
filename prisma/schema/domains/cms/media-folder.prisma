@@ -1,0 +1,11 @@
+model MediaFolder {
+  id          BigInt      @id @default(autoincrement()) @map("media_folder_id")
+  name        String      @map("name") @db.VarChar(255)
+  slug        String      @unique @map("slug") @db.VarChar(255)
+  description String?     @map("description") @db.VarChar(500)
+  createdAt   DateTime    @default(now()) @map("created_at")
+  updatedAt   DateTime    @updatedAt @map("updated_at")
+
+  @@index([slug])
+  @@map("media_folders")
+}

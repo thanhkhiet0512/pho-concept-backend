@@ -455,9 +455,53 @@ export class UpdateMediaFileDto {
   @MaxLength(255)
   title?: string;
 
-  @ApiPropertyOptional({ example: 'banners' })
+  @ApiPropertyOptional({
+    example: 'banners',
+    nullable: true,
+    description: 'Folder slug to move file into. Send null to remove from folder.',
+  })
   @IsOptional()
   @IsString()
   @MaxLength(255)
-  folder?: string;
+  folder?: string | null;
+}
+
+// ===================== MEDIA FOLDER DTOs =====================
+
+export class CreateMediaFolderDto {
+  @ApiProperty({ example: 'Blog Images' })
+  @IsString()
+  @MaxLength(255)
+  name!: string;
+
+  @ApiProperty({ example: 'blog-images' })
+  @IsString()
+  @MaxLength(255)
+  slug!: string;
+
+  @ApiPropertyOptional({ example: 'Images used in blog posts' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
+}
+
+export class UpdateMediaFolderDto {
+  @ApiPropertyOptional({ example: 'Blog Images' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  name?: string;
+
+  @ApiPropertyOptional({ example: 'blog-images' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(255)
+  slug?: string;
+
+  @ApiPropertyOptional({ example: 'Images used in blog posts' })
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  description?: string;
 }

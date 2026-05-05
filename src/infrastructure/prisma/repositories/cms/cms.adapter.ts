@@ -7,6 +7,7 @@ import {
   BlogPostRepositoryPort,
   EventRepositoryPort,
   MediaFileRepositoryPort,
+  MediaFolderRepositoryPort,
   CreatePostCategoryData,
   UpdatePostCategoryData,
   CreateCmsPageData,
@@ -18,6 +19,8 @@ import {
   UpdateEventData,
   CreateMediaFileData,
   UpdateMediaFileData,
+  CreateMediaFolderData,
+  UpdateMediaFolderData,
   MediaFilterParams,
   PaginationParams,
   PaginatedResult,
@@ -30,6 +33,7 @@ import {
   EventEntity,
   EventType as DomainEventType,
   MediaFileEntity,
+  MediaFolderEntity,
 } from '@domain/cms/ports/cms.repository.port';
 import { I18nField } from '@domain/menu/entities/menu.entity';
 
@@ -443,7 +447,7 @@ export class EventAdapter implements EventRepositoryPort {
     const page = params?.page ?? 1;
     const limit = params?.limit ?? 20;
     const skip = (page - 1) * limit;
-    const where: Record<string, unknown> = { deletedAt: null };
+    const where: Prisma.EventWhereInput = { deletedAt: null };
     if (params?.isActive !== undefined) where.isActive = params.isActive;
     if (params?.isFeatured !== undefined) where.isFeatured = params.isFeatured;
     if (params?.upcoming) where.eventDate = { gte: new Date() };
@@ -588,6 +592,7 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
     if (!file) return false;
     const count = await this.prisma.blogPost.count({
       where: {
+        deletedAt: null,
         OR: [
           { coverImageUrl: file.url },
           { galleryImageIds: { array_contains: file.url } },
@@ -631,5 +636,101 @@ export class MediaFileAdapter implements MediaFileRepositoryPort {
   async hardDelete(id: bigint): Promise<MediaFileEntity> {
     const file = await this.prisma.mediaFile.delete({ where: { id } });
     return this.map(file);
+  }
+
+  async updateFolderSlug(oldSlug: string, newSlug: string): Promise<void> {
+    await this.prisma.mediaFile.updateMany({
+      where: { folder: oldSlug },
+      data: { folder: newSlug },
+    });
+  }
+}
+
+// ==================== MEDIA FOLDER ADAPTER ====================
+
+@Injectable()
+export class MediaFolderAdapter implements MediaFolderRepositoryPort {
+  constructor(private readonly prisma: PrismaService) {}
+
+  private map(data: {
+    id: bigint; name: string; slug: string;
+    description: string | null; createdAt: Date; updatedAt: Date;
+  }): MediaFolderEntity {
+    return MediaFolderEntity.reconstitute({
+      id: data.id,
+      name: data.name,
+      slug: data.slug,
+      description: data.description,
+      createdAt: data.createdAt,
+      updatedAt: data.updatedAt,
+    });
+  }
+
+  async findAll(): Promise<MediaFolderEntity[]> {
+    const folders = await this.prisma.mediaFolder.findMany({
+      orderBy: { name: 'asc' },
+    });
+    return folders.map((f) => this.map(f));
+  }
+
+  async findById(id: bigint): Promise<MediaFolderEntity | null> {
+    const folder = await this.prisma.mediaFolder.findUnique({ where: { id } });
+    return folder ? this.map(folder) : null;
+  }
+
+  async findBySlug(slug: string): Promise<MediaFolderEntity | null> {
+    const folder = await this.prisma.mediaFolder.findUnique({ where: { slug } });
+    return folder ? this.map(folder) : null;
+  }
+
+  async create(data: CreateMediaFolderData): Promise<MediaFolderEntity> {
+    const folder = await this.prisma.mediaFolder.create({
+      data: {
+        name: data.name,
+        slug: data.slug,
+        description: data.description ?? null,
+      },
+    });
+    return this.map(folder);
+  }
+
+  async update(id: bigint, data: UpdateMediaFolderData): Promise<MediaFolderEntity> {
+    const updateData: Prisma.MediaFolderUncheckedUpdateInput = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.description !== undefined) updateData.description = data.description;
+    const folder = await this.prisma.mediaFolder.update({ where: { id }, data: updateData });
+    return this.map(folder);
+  }
+
+  async updateAndSyncFiles(id: bigint, data: UpdateMediaFolderData, oldSlug: string): Promise<MediaFolderEntity> {
+    const updateData: Prisma.MediaFolderUncheckedUpdateInput = {};
+    if (data.name !== undefined) updateData.name = data.name;
+    if (data.slug !== undefined) updateData.slug = data.slug;
+    if (data.description !== undefined) updateData.description = data.description;
+
+    const [folder] = await this.prisma.$transaction([
+      this.prisma.mediaFolder.update({ where: { id }, data: updateData }),
+      ...(data.slug && data.slug !== oldSlug
+        ? [this.prisma.mediaFile.updateMany({ where: { folder: oldSlug }, data: { folder: data.slug } })]
+        : []),
+    ]);
+    return this.map(folder as Parameters<typeof this.map>[0]);
+  }
+
+  async delete(id: bigint): Promise<void> {
+    await this.prisma.mediaFolder.delete({ where: { id } });
+  }
+
+  async hasFiles(slug: string): Promise<boolean> {
+    const count = await this.prisma.mediaFile.count({
+      where: { folder: slug, deletedAt: null },
+    });
+    return count > 0;
+  }
+
+  async slugExists(slug: string): Promise<boolean> {
+    const folder = await this.prisma.mediaFolder.findUnique({ where: { slug }, select: { id: true } });
+    return folder !== null;
   }
 }

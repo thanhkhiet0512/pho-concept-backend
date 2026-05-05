@@ -41,10 +41,14 @@ import {
   DeleteEventUseCase,
   GetMediaFilesUseCase,
   GetMediaFileByIdUseCase,
-  CreateMediaFileUseCase,
   UpdateMediaFileUseCase,
   DeleteMediaFileUseCase,
   UploadMediaUseCase,
+  GetMediaFoldersUseCase,
+  GetMediaFolderByIdUseCase,
+  CreateMediaFolderUseCase,
+  UpdateMediaFolderUseCase,
+  DeleteMediaFolderUseCase,
 } from '@application/cms/use-cases/cms.use-cases';
 import {
   CreatePostCategoryDto,
@@ -61,6 +65,8 @@ import {
   UpdateEventDto,
   ToggleEventFeaturedDto,
   UpdateMediaFileDto,
+  CreateMediaFolderDto,
+  UpdateMediaFolderDto,
 } from '@application/cms/dtos/cms.dto';
 import {
   PostCategoryResponseDto,
@@ -68,6 +74,7 @@ import {
   BlogPostResponseDto,
   EventResponseDto,
   MediaFileResponseDto,
+  MediaFolderResponseDto,
 } from '../dtos/response/cms-response.dto';
 import { BlogPostStatus } from '@domain/cms/entities/cms.entity';
 
@@ -110,10 +117,15 @@ export class InternalCmsController {
     // Media Files
     private readonly getMediaFilesUseCase: GetMediaFilesUseCase,
     private readonly getMediaFileByIdUseCase: GetMediaFileByIdUseCase,
-    private readonly createMediaFileUseCase: CreateMediaFileUseCase,
     private readonly updateMediaFileUseCase: UpdateMediaFileUseCase,
     private readonly deleteMediaFileUseCase: DeleteMediaFileUseCase,
     private readonly uploadMediaUseCase: UploadMediaUseCase,
+    // Media Folders
+    private readonly getMediaFoldersUseCase: GetMediaFoldersUseCase,
+    private readonly getMediaFolderByIdUseCase: GetMediaFolderByIdUseCase,
+    private readonly createMediaFolderUseCase: CreateMediaFolderUseCase,
+    private readonly updateMediaFolderUseCase: UpdateMediaFolderUseCase,
+    private readonly deleteMediaFolderUseCase: DeleteMediaFolderUseCase,
   ) {}
 
   // ===================== POST CATEGORIES =====================
@@ -281,7 +293,7 @@ export class InternalCmsController {
   @Delete('posts/:id')
   @Roles(AdminRole.OWNER)
   @HttpCode(HttpStatus.OK)
-  @ApiOperation({ summary: 'Hard delete blog post (OWNER only)' })
+  @ApiOperation({ summary: 'Soft delete blog post (OWNER only)' })
   async deleteBlogPost(@Param('id', ParseBigIntPipe) id: bigint) {
     await this.deleteBlogPostUseCase.execute(id);
     return { message: 'Blog post deleted successfully' };
@@ -370,12 +382,8 @@ export class InternalCmsController {
     return { data: MediaFileResponseDto.fromList(result.data), total: result.total, page: result.page, limit: result.limit, totalPages: result.totalPages };
   }
 
-  @Get('media/:id')
-  @Roles(AdminRole.OWNER, AdminRole.MANAGER, AdminRole.STAFF, AdminRole.VIEW_ONLY)
-  @ApiOperation({ summary: 'Get media file by ID' })
-  async getMediaFileById(@Param('id', ParseBigIntPipe) id: bigint) {
-    return MediaFileResponseDto.from(await this.getMediaFileByIdUseCase.execute(id));
-  }
+  // IMPORTANT: static routes (/media/upload, /media/folders) must be declared
+  // BEFORE dynamic route (/media/:id) to prevent NestJS routing conflicts.
 
   @Post('media/upload')
   @Roles(AdminRole.OWNER, AdminRole.MANAGER)
@@ -424,6 +432,56 @@ export class InternalCmsController {
       title: title ?? null,
       folder: folder ?? null,
     }));
+  }
+
+  // ===================== MEDIA FOLDERS =====================
+
+  @Get('media/folders')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER, AdminRole.STAFF, AdminRole.VIEW_ONLY)
+  @ApiOperation({ summary: 'List all media folders' })
+  async getMediaFolders() {
+    const folders = await this.getMediaFoldersUseCase.execute();
+    return { data: MediaFolderResponseDto.fromList(folders) };
+  }
+
+  @Get('media/folders/:id')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER, AdminRole.STAFF, AdminRole.VIEW_ONLY)
+  @ApiOperation({ summary: 'Get media folder by ID' })
+  async getMediaFolderById(@Param('id', ParseBigIntPipe) id: bigint) {
+    return MediaFolderResponseDto.from(await this.getMediaFolderByIdUseCase.execute(id));
+  }
+
+  @Post('media/folders')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER)
+  @HttpCode(HttpStatus.CREATED)
+  @ApiOperation({ summary: 'Create media folder' })
+  async createMediaFolder(@Body() dto: CreateMediaFolderDto) {
+    return MediaFolderResponseDto.from(await this.createMediaFolderUseCase.execute(dto));
+  }
+
+  @Put('media/folders/:id')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER)
+  @ApiOperation({ summary: 'Update media folder (rename, change slug)' })
+  async updateMediaFolder(@Param('id', ParseBigIntPipe) id: bigint, @Body() dto: UpdateMediaFolderDto) {
+    return MediaFolderResponseDto.from(await this.updateMediaFolderUseCase.execute(id, dto));
+  }
+
+  @Delete('media/folders/:id')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER)
+  @HttpCode(HttpStatus.OK)
+  @ApiOperation({ summary: 'Delete media folder (only if empty)' })
+  async deleteMediaFolder(@Param('id', ParseBigIntPipe) id: bigint) {
+    await this.deleteMediaFolderUseCase.execute(id);
+    return { message: 'Media folder deleted successfully' };
+  }
+
+  // Dynamic route AFTER all static /media/* routes
+
+  @Get('media/:id')
+  @Roles(AdminRole.OWNER, AdminRole.MANAGER, AdminRole.STAFF, AdminRole.VIEW_ONLY)
+  @ApiOperation({ summary: 'Get media file by ID' })
+  async getMediaFileById(@Param('id', ParseBigIntPipe) id: bigint) {
+    return MediaFileResponseDto.from(await this.getMediaFileByIdUseCase.execute(id));
   }
 
   @Put('media/:id')

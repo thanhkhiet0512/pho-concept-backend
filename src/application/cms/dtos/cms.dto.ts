@@ -6,6 +6,18 @@ import { Type } from 'class-transformer';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { I18nFieldDto } from '@application/menu/dtos/menu.dto';
 
+// Long-form i18n field for rich text content (blog post body, etc.) — no MaxLength
+export class I18nLongFieldDto {
+  @ApiProperty({ example: '<p>Full article content...</p>' })
+  @IsString()
+  en!: string;
+
+  @ApiPropertyOptional({ example: '<p>Nội dung đầy đủ...</p>' })
+  @IsOptional()
+  @IsString()
+  vi?: string;
+}
+
 // ===================== POST CATEGORY DTOs =====================
 
 export class CreatePostCategoryDto {
@@ -162,11 +174,11 @@ export class CreateBlogPostDto {
   @Type(() => I18nFieldDto)
   titleI18n!: I18nFieldDto;
 
-  @ApiProperty({ type: I18nFieldDto })
+  @ApiProperty({ type: I18nLongFieldDto })
   @IsDefined()
   @ValidateNested()
-  @Type(() => I18nFieldDto)
-  contentI18n!: I18nFieldDto;
+  @Type(() => I18nLongFieldDto)
+  contentI18n!: I18nLongFieldDto;
 
   @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()
@@ -247,11 +259,11 @@ export class UpdateBlogPostDto {
   @Type(() => I18nFieldDto)
   titleI18n?: I18nFieldDto;
 
-  @ApiPropertyOptional({ type: I18nFieldDto })
+  @ApiPropertyOptional({ type: I18nLongFieldDto })
   @IsOptional()
   @ValidateNested()
-  @Type(() => I18nFieldDto)
-  contentI18n?: I18nFieldDto;
+  @Type(() => I18nLongFieldDto)
+  contentI18n?: I18nLongFieldDto;
 
   @ApiPropertyOptional({ type: I18nFieldDto })
   @IsOptional()

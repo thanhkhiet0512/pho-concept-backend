@@ -12,6 +12,7 @@ async function main() {
   const ownerHash = await hashPassword('Demo@123456');
   const managerHash = await hashPassword('Demo@123456');
   const staffHash = await hashPassword('Demo@123456');
+  const adminHash = await hashPassword('Admin@123');
 
   const _owner = await prisma.adminUser.upsert({
     where: { email: 'owner@phoconcept.com' },
@@ -49,7 +50,19 @@ async function main() {
     },
   });
 
-  console.log(`✅ Admin users: owner, manager, staff (password: Demo@123456)`);
+  await prisma.adminUser.upsert({
+    where: { email: 'admin@phoconcept.com' },
+    update: { passwordHash: adminHash },
+    create: {
+      email: 'admin@phoconcept.com',
+      passwordHash: adminHash,
+      name: 'Admin',
+      role: AdminRole.owner,
+      isActive: true,
+    },
+  });
+
+  console.log(`✅ Admin users seeded (including admin@phoconcept.com)`);
 
   // ── 2. LOCATION ───────────────────────────────────────────────────────────────
   const location = await prisma.location.upsert({
